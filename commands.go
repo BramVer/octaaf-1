@@ -420,6 +420,41 @@ func issues(message *tgbotapi.Message) {
 
 	reply(message, msg)
 }
+func mcaffee(message *tgbotapi.Message) {
+	res, err := http.Get("https://diegorod.github.io/WillMcAfeeEatHisOwnDick/")
+
+	var msg = "Will McAffee eat his down dick?"
+	if err != nil {
+		msg += "\nI don't know!"
+		reply(message, msg)
+		return
+	}
+
+	defer res.Body.Close()
+
+	doc, err := goquery.NewDocumentFromReader(res.Body)
+
+	if err != nil {
+		msg += "\nI don't know!"
+		reply(message, msg)
+		return
+	}
+
+	dickBool := doc.Find("#isDickOnTheMenu").First().Text()
+	percDiff := doc.Find("#percDiff").First().Text()
+	currBpi := doc.Find("#currBpi").First().Text()
+
+	msg += dickBool
+	msg += fmt.Sprintf(" The current bitcoin price index (%s) is %s", percDiff, currBpi)
+
+	if dickBool == "Yes!" {
+		msg += " below the current price target."
+	} else {
+		msg += " above the current price target."
+	}
+
+	reply(message, msg)
+}
 
 func kaliRank(message *tgbotapi.Message) {
 	if message.Chat.ID != KaliID {
