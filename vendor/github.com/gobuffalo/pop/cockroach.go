@@ -229,12 +229,16 @@ func (p *cockroach) TruncateAll(tx *Connection) error {
 		return err
 	}
 
-	table_names := make([]string, len(tables))
-	for i, t := range tables {
-		table_names[i] = t.TableName
+	if len(tables) == 0 {
+		return nil
 	}
 
-	return tx.RawQuery(fmt.Sprintf("truncate %s cascade;", strings.Join(table_names, ", "))).Exec()
+	tableNames := make([]string, len(tables))
+	for i, t := range tables {
+		tableNames[i] = t.TableName
+	}
+
+	return tx.RawQuery(fmt.Sprintf("truncate %s cascade;", strings.Join(tableNames, ", "))).Exec()
 }
 
 func newCockroach(deets *ConnectionDetails) dialect {

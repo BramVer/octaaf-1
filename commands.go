@@ -366,23 +366,26 @@ func nextLaunch(message *tgbotapi.Message) {
 	layout := "January 2, 2006 15:04:05 MST"
 
 	for index, launch := range launches {
+		log.Printf("Doing dink")
 		whenStr := launch.Get("net").String()
 		when, err := time.Parse(layout, whenStr)
 
-		msg += fmt.Sprintf("\n*%v*: %v", index+1, launch.Get("name").String())
+		msg += fmt.Sprintf("\n*%v*: %v", index+1, MDEscape(launch.Get("name").String()))
 
 		if err != nil {
-			msg += fmt.Sprintf("\n    _%v_", whenStr)
+			msg += fmt.Sprintf("\n	  %v", Markdown(whenStr, mdcursive))
 		} else {
-			msg += fmt.Sprintf("\n    _%v_", humanize.Time(when))
+			msg += fmt.Sprintf("\n	  %v", Markdown(humanize.Time(when), mdcursive))
 		}
 
 		vods := launch.Get("vidURLs").Array()
 
 		if len(vods) > 0 {
-			msg += fmt.Sprintf("\n    %v", vods[0])
+			msg += "\n    " + MDEscape(vods[0].String())
 		}
 	}
+
+	log.Printf(msg)
 
 	reply(message, msg)
 }
@@ -412,9 +415,9 @@ func issues(message *tgbotapi.Message) {
 
 	issues.ForEach(func(key, value gjson.Result) bool {
 		count++
-		msg += fmt.Sprintf("\n*%v: %v*", count, value.Get("title").String())
-		msg += fmt.Sprintf("\n    *url:* _%v_", value.Get("url").String())
-		msg += fmt.Sprintf("\n    *creator:* _%v_", value.Get("user.login").String())
+		msg += fmt.Sprintf("\n*%v: %v*", count, MDEscape(value.Get("title").String()))
+		msg += fmt.Sprintf("\n    *url:* %v", Markdown(value.Get("url").String(), mdcursive))
+		msg += fmt.Sprintf("\n    *creator:* %v", Markdown(value.Get("user.login").String(), mdcursive))
 		return true
 	})
 

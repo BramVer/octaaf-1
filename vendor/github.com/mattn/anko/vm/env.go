@@ -104,7 +104,7 @@ func (e *Env) NewPackage(n string) *Env {
 // AddPackage creates a new env with a name that has methods and types in it. Created under the parent env
 func (e *Env) AddPackage(name string, methods map[string]interface{}, types map[string]interface{}) (*Env, error) {
 	if strings.Contains(name, ".") {
-		return nil, fmt.Errorf("Unknown symbol '%s'", name)
+		return nil, fmt.Errorf("unknown symbol '%s'", name)
 	}
 	var err error
 	pack := e.NewPackage(name)
@@ -185,7 +185,7 @@ func (e *Env) Addr(k string) (reflect.Value, error) {
 		if v.CanAddr() {
 			return v.Addr(), nil
 		}
-		return nilValue, fmt.Errorf("Unaddressable")
+		return nilValue, fmt.Errorf("unaddressable")
 	}
 	if e.external != nil {
 		v, err := e.external.Get(k)
@@ -193,11 +193,11 @@ func (e *Env) Addr(k string) (reflect.Value, error) {
 			if v.CanAddr() {
 				return v.Addr(), nil
 			}
-			return nilValue, fmt.Errorf("Unaddressable")
+			return nilValue, fmt.Errorf("unaddressable")
 		}
 	}
 	if e.parent == nil {
-		return nilValue, fmt.Errorf("Undefined symbol '%s'", k)
+		return nilValue, fmt.Errorf("undefined symbol '%s'", k)
 	}
 	return e.parent.Addr(k)
 }
@@ -247,7 +247,7 @@ func (e *Env) get(k string) (reflect.Value, error) {
 		}
 	}
 	if e.parent == nil {
-		return nilValue, fmt.Errorf("Undefined symbol '%s'", k)
+		return nilValue, fmt.Errorf("undefined symbol '%s'", k)
 	}
 	return e.parent.get(k)
 }
@@ -272,7 +272,7 @@ func (e *Env) setValue(k string, v reflect.Value) error {
 		return nil
 	}
 	if e.parent == nil {
-		return fmt.Errorf("Unknown symbol '%s'", k)
+		return fmt.Errorf("unknown symbol '%s'", k)
 	}
 	return e.parent.setValue(k, v)
 }
@@ -304,7 +304,7 @@ func (e *Env) Define(k string, v interface{}) error {
 // defineValue defines symbol in current scope.
 func (e *Env) defineValue(k string, v reflect.Value) error {
 	if strings.Contains(k, ".") {
-		return fmt.Errorf("Unknown symbol '%s'", k)
+		return fmt.Errorf("unknown symbol '%s'", k)
 	}
 
 	e.Lock()
@@ -312,6 +312,36 @@ func (e *Env) defineValue(k string, v reflect.Value) error {
 	e.Unlock()
 
 	return nil
+}
+
+// Delete deletes symbol in current scope.
+func (e *Env) Delete(k string) error {
+	if strings.Contains(k, ".") {
+		return fmt.Errorf("Unknown symbol '%s'", k)
+	}
+
+	e.Lock()
+	delete(e.env, k)
+	e.Unlock()
+
+	return nil
+}
+
+// DeleteGlobal deletes the first matching symbol found in current or parent scope.
+func (e *Env) DeleteGlobal(k string) error {
+	if e.parent == nil {
+		return e.Delete(k)
+	}
+
+	e.RLock()
+	_, ok := e.env[k]
+	e.RUnlock()
+
+	if ok {
+		return e.Delete(k)
+	}
+
+	return e.parent.DeleteGlobal(k)
 }
 
 // DefineGlobalType defines type in global scope.
@@ -349,7 +379,7 @@ func (e *Env) DefineType(k string, t interface{}) error {
 // DefineReflectType defines type in current scope.
 func (e *Env) DefineReflectType(k string, t reflect.Type) error {
 	if strings.Contains(k, ".") {
-		return fmt.Errorf("Unknown symbol '%s'", k)
+		return fmt.Errorf("unknown symbol '%s'", k)
 	}
 
 	e.Lock()

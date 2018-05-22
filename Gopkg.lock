@@ -17,7 +17,7 @@
   branch = "master"
   name = "github.com/araddon/dateparse"
   packages = ["."]
-  revision = "4b079c6fdd8d7d3e224357566f278da3c159f441"
+  revision = "1e64c9214ab00f5ed65d81b8d4db2f6496aa2065"
 
 [[projects]]
   branch = "master"
@@ -34,8 +34,8 @@
 [[projects]]
   name = "github.com/fatih/color"
   packages = ["."]
-  revision = "507f6050b8568533fb3f5504de8e5205fa62a114"
-  version = "v1.6.0"
+  revision = "5b77d2a35fb0ede96d138fc9a99f5c9b6aef11b4"
+  version = "v1.7.0"
 
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
@@ -48,6 +48,12 @@
   packages = ["."]
   revision = "ef60bfc50c8f92d1ee64674d8ce7a48f1f67625e"
   version = "v1.6.2"
+
+[[projects]]
+  name = "github.com/gobuffalo/makr"
+  packages = ["."]
+  revision = "2f752af1831478b8c496635cb46b947811097061"
+  version = "v1.1.0"
 
 [[projects]]
   name = "github.com/gobuffalo/packr"
@@ -65,8 +71,8 @@
     "fizz/translators",
     "nulls"
   ]
-  revision = "c67c14d737b88d2ce006c1d2c578289e1a984a82"
-  version = "v4.5.6"
+  revision = "9985012f32f5e36b1a10e9191ee460daac4a9bc7"
+  version = "v4.5.9"
 
 [[projects]]
   name = "github.com/gobuffalo/uuid"
@@ -127,7 +133,7 @@
   branch = "master"
   name = "github.com/markbates/inflect"
   packages = ["."]
-  revision = "fbc6b23ce49e2578f572d2e72bb72fa03c7145de"
+  revision = "dd7de90c06bca70f18136e59dec2270c19a401e7"
 
 [[projects]]
   name = "github.com/mattn/anko"
@@ -137,8 +143,8 @@
     "parser",
     "vm"
   ]
-  revision = "4e3cdcf522140b26466698841bfdc3227c898043"
-  version = "v0.0.3"
+  revision = "e9c5c0ca86cf129292c56ddbddc4fff027844d65"
+  version = "v0.0.4"
 
 [[projects]]
   name = "github.com/mattn/go-colorable"
@@ -205,7 +211,7 @@
     "html",
     "html/atom"
   ]
-  revision = "5f9ae10d9af5b1c89ae6904293b14b064d4ada23"
+  revision = "8e0cdda24ed423affc8f35c241e5e9b16180338e"
 
 [[projects]]
   branch = "master"
@@ -217,7 +223,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "bb9c189858d91f42db229b04d45a4c3d23a7662a"
+  revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
 
 [[projects]]
   name = "gopkg.in/telegram-bot-api.v4"

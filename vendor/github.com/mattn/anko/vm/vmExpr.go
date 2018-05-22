@@ -88,7 +88,7 @@ func invokeExpr(expr ast.Expr, env *Env) (reflect.Value, error) {
 				if vme, ok := v.Interface().(*Env); ok {
 					m, err := vme.get(ee.Name)
 					if !m.IsValid() || err != nil {
-						return nilValue, newStringError(e, fmt.Sprintf("Invalid operation '%s'", ee.Name))
+						return nilValue, newStringError(e, fmt.Sprintf("invalid operation '%s'", ee.Name))
 					}
 					return m, nil
 				}
@@ -110,17 +110,17 @@ func invokeExpr(expr ast.Expr, env *Env) (reflect.Value, error) {
 					// It returns the zero Value if key is not found in the map or if v represents a nil map.
 					m = v.MapIndex(reflect.ValueOf(ee.Name))
 				} else {
-					return nilValue, newStringError(e, fmt.Sprintf("Invalid operation '%s'", ee.Name))
+					return nilValue, newStringError(e, fmt.Sprintf("invalid operation '%s'", ee.Name))
 				}
 				v = m
 			} else {
 				v = m
 			}
 		default:
-			return nilValue, newStringError(e, "Invalid operation for the value")
+			return nilValue, newStringError(e, "invalid operation for the value")
 		}
 		if v.Kind() != reflect.Ptr {
-			return nilValue, newStringError(e, "Cannot deference for the value")
+			return nilValue, newStringError(e, "cannot deference for the value")
 		}
 		return v.Elem(), nil
 
@@ -150,7 +150,7 @@ func invokeExpr(expr ast.Expr, env *Env) (reflect.Value, error) {
 				if vme, ok := v.Interface().(*Env); ok {
 					m, err := vme.get(ee.Name)
 					if !m.IsValid() || err != nil {
-						return nilValue, newStringError(e, fmt.Sprintf("Invalid operation '%s'", ee.Name))
+						return nilValue, newStringError(e, fmt.Sprintf("invalid operation '%s'", ee.Name))
 					}
 					return m, nil
 				}
@@ -164,21 +164,21 @@ func invokeExpr(expr ast.Expr, env *Env) (reflect.Value, error) {
 				if v.Kind() == reflect.Struct {
 					m = v.FieldByName(ee.Name)
 					if !m.IsValid() {
-						return nilValue, newStringError(e, fmt.Sprintf("Invalid operation '%s'", ee.Name))
+						return nilValue, newStringError(e, fmt.Sprintf("invalid operation '%s'", ee.Name))
 					}
 				} else if v.Kind() == reflect.Map {
 					// From reflect MapIndex:
 					// It returns the zero Value if key is not found in the map or if v represents a nil map.
 					m = v.MapIndex(reflect.ValueOf(ee.Name))
 				} else {
-					return nilValue, newStringError(e, fmt.Sprintf("Invalid operation '%s'", ee.Name))
+					return nilValue, newStringError(e, fmt.Sprintf("invalid operation '%s'", ee.Name))
 				}
 				v = m
 			} else {
 				v = m
 			}
 		default:
-			return nilValue, newStringError(e, "Invalid operation for the value")
+			return nilValue, newStringError(e, "invalid operation for the value")
 		}
 		if !v.CanAddr() {
 			i := v.Interface()
@@ -205,7 +205,7 @@ func invokeExpr(expr ast.Expr, env *Env) (reflect.Value, error) {
 		case "!":
 			return reflect.ValueOf(!toBool(v)), nil
 		default:
-			return nilValue, newStringError(e, "Unknown operator ''")
+			return nilValue, newStringError(e, "unknown operator ''")
 		}
 
 	case *ast.ParenExpr:
@@ -230,7 +230,7 @@ func invokeExpr(expr ast.Expr, env *Env) (reflect.Value, error) {
 			if vme, ok := v.Interface().(*Env); ok {
 				m, err := vme.get(e.Name)
 				if err != nil || !m.IsValid() {
-					return nilValue, newStringError(e, fmt.Sprintf("Invalid operation '%s'", e.Name))
+					return nilValue, newStringError(e, fmt.Sprintf("invalid operation '%s'", e.Name))
 				}
 				return m, nil
 			}
@@ -530,7 +530,7 @@ func invokeExpr(expr ast.Expr, env *Env) (reflect.Value, error) {
 		case "<<":
 			return reflect.ValueOf(toInt64(lhsV) << uint64(toInt64(rhsV))), nil
 		default:
-			return nilValue, newStringError(e, "Unknown operator")
+			return nilValue, newStringError(e, "unknown operator")
 		}
 
 	case *ast.ConstExpr:
@@ -695,13 +695,13 @@ func invokeExpr(expr ast.Expr, env *Env) (reflect.Value, error) {
 			} else if rhs.Kind() == reflect.Chan {
 				rv, ok := rhs.Recv()
 				if !ok {
-					return nilValue, newErrorf(expr, "Failed to send to channel")
+					return nilValue, newErrorf(expr, "failed to send to channel")
 				}
 				return invokeLetExpr(e.Lhs, rv, env)
 			}
 		}
 
-		return nilValue, newStringError(e, "Invalid operation for chan")
+		return nilValue, newStringError(e, "invalid operation for chan")
 
 	case *ast.FuncExpr:
 		return funcExpr(e, env)
@@ -713,42 +713,55 @@ func invokeExpr(expr ast.Expr, env *Env) (reflect.Value, error) {
 		return callExpr(e, env)
 
 	case *ast.DeleteExpr:
-		mapExpr, err := invokeExpr(e.MapExpr, env)
+		whatExpr, err := invokeExpr(e.WhatExpr, env)
 		if err != nil {
-			return nilValue, newError(e.MapExpr, err)
+			return nilValue, newError(e.WhatExpr, err)
 		}
-		keyExpr, err := invokeExpr(e.KeyExpr, env)
-		if err != nil {
-			return nilValue, newError(e.KeyExpr, err)
-		}
-
-		if mapExpr.Kind() == reflect.Interface && !mapExpr.IsNil() {
-			mapExpr = mapExpr.Elem()
-		}
-		if mapExpr.Kind() != reflect.Map {
-			return nilValue, newStringError(e, "first argument to delete must be map; have "+mapExpr.Kind().String())
-		}
-		if mapExpr.IsNil() {
-			return nilValue, nil
-		}
-		if mapExpr.Type().Key() != keyExpr.Type() {
-			keyExpr, err = convertReflectValueToType(keyExpr, mapExpr.Type().Key())
+		var keyExpr reflect.Value
+		if e.KeyExpr != nil {
+			keyExpr, err = invokeExpr(e.KeyExpr, env)
 			if err != nil {
-				return nilValue, newStringError(e, "cannot use type "+mapExpr.Type().Key().String()+" as type "+keyExpr.Type().String()+" in delete")
+				return nilValue, newError(e.KeyExpr, err)
 			}
 		}
+		if whatExpr.Kind() == reflect.Interface && !whatExpr.IsNil() {
+			whatExpr = whatExpr.Elem()
+		}
 
-		mapExpr.SetMapIndex(keyExpr, reflect.Value{})
-		return nilValue, nil
+		switch whatExpr.Kind() {
+		case reflect.String:
+			if e.KeyExpr == nil {
+				return nilValue, env.Delete(whatExpr.String())
+			}
+			if keyExpr.Kind() == reflect.Bool && keyExpr.Bool() {
+				return nilValue, env.DeleteGlobal(whatExpr.String())
+			}
+			return nilValue, env.Delete(whatExpr.String())
+
+		case reflect.Map:
+			if whatExpr.IsNil() {
+				return nilValue, nil
+			}
+			if whatExpr.Type().Key() != keyExpr.Type() {
+				keyExpr, err = convertReflectValueToType(keyExpr, whatExpr.Type().Key())
+				if err != nil {
+					return nilValue, newStringError(e, "cannot use type "+whatExpr.Type().Key().String()+" as type "+keyExpr.Type().String()+" in delete")
+				}
+			}
+			whatExpr.SetMapIndex(keyExpr, reflect.Value{})
+			return nilValue, nil
+		}
+
+		return nilValue, newStringError(e, "first argument to delete cannot be type "+whatExpr.Kind().String())
 
 	case *ast.IncludeExpr:
 		itemExpr, err := invokeExpr(e.ItemExpr, env)
 		if err != nil {
 			return nilValue, newError(e.ItemExpr, err)
 		}
-		listExpr, err := invokeExpr(&e.ListExpr, env)
+		listExpr, err := invokeExpr(e.ListExpr.(*ast.SliceExpr), env)
 		if err != nil {
-			return nilValue, newError(&e.ListExpr, err)
+			return nilValue, newError(e.ListExpr.(*ast.SliceExpr), err)
 		}
 
 		if listExpr.Kind() != reflect.Slice && listExpr.Kind() != reflect.Array {
@@ -764,6 +777,6 @@ func invokeExpr(expr ast.Expr, env *Env) (reflect.Value, error) {
 		return falseValue, nil
 
 	default:
-		return nilValue, newStringError(e, "Unknown expression")
+		return nilValue, newStringError(e, "unknown expression")
 	}
 }

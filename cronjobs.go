@@ -18,7 +18,7 @@ func initCrons() {
 func setKaliCount() {
 	lastCount := models.MessageCount{}
 
-	err := DB.Order("created_at desc").Limit(1).First(&lastCount)
+	err := DB.Last(&lastCount)
 
 	count := models.MessageCount{
 		Count: KaliCount,

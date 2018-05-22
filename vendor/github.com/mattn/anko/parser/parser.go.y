@@ -47,7 +47,7 @@ import (
 	terms                  ast.Token
 	opt_terms              ast.Token
 	array_count            ast.ArrayCount
-	expr_slice             ast.SliceExpr
+	expr_slice             ast.Expr
 	stmt_multi_case        []ast.Stmt
 }
 
@@ -197,6 +197,26 @@ stmt :
 	| SWITCH expr '{' stmt_cases '}'
 	{
 		$$ = &ast.SwitchStmt{Expr: $2, Cases: $4}
+		$$.SetPosition($1.Position())
+	}
+	| GO IDENT '(' exprs VARARG ')'
+	{
+		$$ = &ast.GoroutineStmt{Expr: &ast.CallExpr{Name: $2.Lit, SubExprs: $4, VarArg: true, Go: true}}
+		$$.SetPosition($2.Position())
+	}
+	| GO IDENT '(' exprs ')'
+	{
+		$$ = &ast.GoroutineStmt{Expr: &ast.CallExpr{Name: $2.Lit, SubExprs: $4, Go: true}}
+		$$.SetPosition($2.Position())
+	}
+	| GO expr '(' exprs VARARG ')'
+	{
+		$$ = &ast.GoroutineStmt{Expr: &ast.AnonCallExpr{Expr: $2, SubExprs: $4, VarArg: true, Go: true}}
+		$$.SetPosition($2.Position())
+	}
+	| GO expr '(' exprs ')'
+	{
+		$$ = &ast.GoroutineStmt{Expr: &ast.AnonCallExpr{Expr: $2, SubExprs: $4, Go: true}}
 		$$.SetPosition($1.Position())
 	}
 	| expr
@@ -389,27 +409,27 @@ exprs :
 expr_slice :
 	IDENT '[' expr ':' expr ']'
 	{
-		$$ = ast.SliceExpr{Value: &ast.IdentExpr{Lit: $1.Lit}, Begin: $3, End: $5}
+		$$ = &ast.SliceExpr{Value: &ast.IdentExpr{Lit: $1.Lit}, Begin: $3, End: $5}
 	}
 	| IDENT '[' expr ':' ']'
 	{
-		$$ = ast.SliceExpr{Value: &ast.IdentExpr{Lit: $1.Lit}, Begin: $3, End: nil}
+		$$ = &ast.SliceExpr{Value: &ast.IdentExpr{Lit: $1.Lit}, Begin: $3, End: nil}
 	}
 	| IDENT '[' ':' expr ']'
 	{
-		$$ = ast.SliceExpr{Value: &ast.IdentExpr{Lit: $1.Lit}, Begin: nil, End: $4}
+		$$ = &ast.SliceExpr{Value: &ast.IdentExpr{Lit: $1.Lit}, Begin: nil, End: $4}
 	}
 	| expr '[' expr ':' expr ']'
 	{
-		$$ = ast.SliceExpr{Value: $1, Begin: $3, End: $5}
+		$$ = &ast.SliceExpr{Value: $1, Begin: $3, End: $5}
 	}
 	| expr '[' expr ':' ']'
 	{
-		$$ = ast.SliceExpr{Value: $1, Begin: $3, End: nil}
+		$$ = &ast.SliceExpr{Value: $1, Begin: $3, End: nil}
 	}
 	| expr '[' ':' expr ']'
 	{
-		$$ = ast.SliceExpr{Value: $1, Begin: nil, End: $4}
+		$$ = &ast.SliceExpr{Value: $1, Begin: nil, End: $4}
 	}
 
 expr :
@@ -681,16 +701,6 @@ expr :
 		$$ = &ast.CallExpr{Name: $1.Lit, SubExprs: $3}
 		$$.SetPosition($1.Position())
 	}
-	| GO IDENT '(' exprs VARARG ')'
-	{
-		$$ = &ast.CallExpr{Name: $2.Lit, SubExprs: $4, VarArg: true, Go: true}
-		$$.SetPosition($2.Position())
-	}
-	| GO IDENT '(' exprs ')'
-	{
-		$$ = &ast.CallExpr{Name: $2.Lit, SubExprs: $4, Go: true}
-		$$.SetPosition($2.Position())
-	}
 	| expr '(' exprs VARARG ')'
 	{
 		$$ = &ast.AnonCallExpr{Expr: $1, SubExprs: $3, VarArg: true}
@@ -699,16 +709,6 @@ expr :
 	| expr '(' exprs ')'
 	{
 		$$ = &ast.AnonCallExpr{Expr: $1, SubExprs: $3}
-		$$.SetPosition($1.Position())
-	}
-	| GO expr '(' exprs VARARG ')'
-	{
-		$$ = &ast.AnonCallExpr{Expr: $2, SubExprs: $4, VarArg: true, Go: true}
-		$$.SetPosition($2.Position())
-	}
-	| GO expr '(' exprs ')'
-	{
-		$$ = &ast.AnonCallExpr{Expr: $2, SubExprs: $4, Go: true}
 		$$.SetPosition($1.Position())
 	}
 	| IDENT '[' expr ']'
@@ -723,7 +723,7 @@ expr :
 	}
 	| expr_slice
 	{
-		$$ = &$1
+		$$ = $1
 		$$.SetPosition($1.Position())
 	}
 	| LEN '(' expr ')'
@@ -776,19 +776,19 @@ expr :
 		$$ = &ast.ChanExpr{Rhs: $2}
 		$$.SetPosition($2.Position())
 	}
-	| DELETE '(' expr ',' expr ')'
+	| DELETE '(' expr ')'
 	{
-		$$ = &ast.DeleteExpr{MapExpr: $3, KeyExpr: $5}
+		$$ = &ast.DeleteExpr{WhatExpr: $3}
 		$$.SetPosition($1.Position())
 	}
-	| expr IN expr_slice
+	| DELETE '(' expr ',' expr ')'
 	{
-		$$ = &ast.IncludeExpr{ItemExpr: $1, ListExpr: $3}
+		$$ = &ast.DeleteExpr{WhatExpr: $3, KeyExpr: $5}
 		$$.SetPosition($1.Position())
 	}
 	| expr IN expr
 	{
-		$$ = &ast.IncludeExpr{ItemExpr: $1, ListExpr: ast.SliceExpr{Value: $3, Begin: nil, End: nil}}
+		$$ = &ast.IncludeExpr{ItemExpr: $1, ListExpr: &ast.SliceExpr{Value: $3, Begin: nil, End: nil}}
 		$$.SetPosition($1.Position())
 	}
 
