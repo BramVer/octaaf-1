@@ -123,11 +123,11 @@ func what(message *tgbotapi.Message) {
 	result := gjson.Get(string(body), "AbstractText").String()
 
 	if len(result) == 0 {
-		reply(message, fmt.Sprintf("What is this *%v* you speak of? 🤔", query))
+		reply(message, fmt.Sprintf("What is this %v you speak of? 🤔", Markdown(query, mdbold)))
 		return
 	}
 
-	reply(message, fmt.Sprintf("*%v:* %v", query, result))
+	reply(message, fmt.Sprintf("%v: %v", Markdown(query, mdbold), result))
 }
 
 func weather(message *tgbotapi.Message) {
@@ -231,6 +231,7 @@ func sendImage(message *tgbotapi.Message) {
 
 	if err != nil {
 		reply(message, "Something went wrong!")
+		return
 	}
 
 	timeout := time.Duration(2 * time.Second)
@@ -315,9 +316,9 @@ func quote(message *tgbotapi.Message) {
 		if userErr != nil {
 			reply(message, quote.Quote)
 		} else {
-			msg := fmt.Sprintf("\"%v\"", quote.Quote)
-			msg += fmt.Sprintf("\n    ~@%v", user.User.UserName)
-			reply(message, msg, false)
+			msg := fmt.Sprintf("\"%v\"", Markdown(quote.Quote, mdquote))
+			msg += fmt.Sprintf(" \n    ~@%v", MDEscape(user.User.UserName))
+			reply(message, msg)
 		}
 
 		return
@@ -423,6 +424,7 @@ func issues(message *tgbotapi.Message) {
 
 	reply(message, msg)
 }
+
 func mcaffee(message *tgbotapi.Message) {
 	res, err := http.Get("https://diegorod.github.io/WillMcAfeeEatHisOwnDick/")
 
