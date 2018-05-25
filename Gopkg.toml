@@ -54,10 +54,6 @@
   version = "2.0.0"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/jasonlvhit/gocron"
-
-[[constraint]]
   name = "github.com/o1egl/govatar"
   version = "0.2.0"
 

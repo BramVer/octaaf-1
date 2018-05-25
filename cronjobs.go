@@ -3,16 +3,18 @@ package main
 import (
 	"octaaf/models"
 
-	"github.com/jasonlvhit/gocron"
+	"gopkg.in/robfig/cron.v2"
 )
 
 func initCrons() {
-	gocron.Every(1).Day().At("13:37").Do(sendGlobal, "1337")
-	gocron.Every(1).Day().At("14:14").Do(sendGlobal, "🐔 Daar is hij weer. Het kip. Mooi. \nhttps://youtu.be/r_qOBZcQqWo")
-	gocron.Every(1).Day().At("16:20").Do(sendGlobal, "420")
-	gocron.Every(1).Day().At("23:59").Do(setKaliCount)
+	Cron = cron.New()
+	Cron.AddFunc("@daily", func() { sendGlobal("Hoedje op!") })
+	Cron.AddFunc("37 13 * * *", func() { sendGlobal("1337") })
+	Cron.AddFunc("14 14 * * *", func() { sendGlobal("🐔 Daar is hij weer. Het kip. Mooi. \nhttps://youtu.be/r_qOBZcQqWo") })
+	Cron.AddFunc("20 16 * * *", func() { sendGlobal("420") })
+	Cron.AddFunc("59 23 * * *", setKaliCount)
 
-	<-gocron.Start()
+	Cron.Start()
 }
 
 func setKaliCount() {

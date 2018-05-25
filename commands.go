@@ -197,7 +197,7 @@ func search(message *tgbotapi.Message) {
 	url, found := scrapers.Search(message.CommandArguments(), message.Command() == "search_nsfw")
 
 	if found {
-		reply(message, url)
+		reply(message, MDEscape(url))
 		return
 	}
 

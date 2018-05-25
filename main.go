@@ -4,6 +4,7 @@ import (
 	"log"
 
 	"github.com/gobuffalo/envy"
+	"gopkg.in/robfig/cron.v2"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
@@ -16,6 +17,9 @@ var KaliID int64
 // ReporterID is the id of the user who reports everyone
 var ReporterID int
 
+// Cron executes all the cron jobs
+var Cron *cron.Cron
+
 func main() {
 	envy.Load("config/.env")
 
@@ -23,7 +27,9 @@ func main() {
 	migrateDB()
 	initBot()
 
-	go initCrons()
+	initCrons()
+
+	defer Cron.Stop()
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60

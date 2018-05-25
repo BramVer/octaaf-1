@@ -91,12 +91,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/jasonlvhit/gocron"
-  packages = ["."]
-  revision = "54194c9749d48b073c9aeb2c787b6882e95dd0cd"
-
-[[projects]]
-  branch = "master"
   name = "github.com/jmoiron/sqlx"
   packages = [
     ".",
@@ -240,6 +234,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "35fad371089ed639a9374a3d605a5bd5b4f262f1428b0f282c27cb16554035ca"
+  inputs-digest = "cbc05897e2a0e12b2b0f6c58d18fcad35c4aefc0c5a878f731a05b976afed561"
   solver-name = "gps-cdcl"
   solver-version = 1
