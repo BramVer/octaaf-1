@@ -220,6 +220,12 @@
   revision = "7c87d13f8e835d2fb3a70a2912c811ed0c1d241b"
 
 [[projects]]
+  branch = "v2"
+  name = "gopkg.in/robfig/cron.v2"
+  packages = ["."]
+  revision = "be2e0b0deed5a68ffee390b4583a13aff8321535"
+
+[[projects]]
   name = "gopkg.in/telegram-bot-api.v4"
   packages = ["."]
   revision = "0e0af0c480ea98e982d5f4d45fb39577c6ab1e3e"
@@ -234,6 +240,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "cbc05897e2a0e12b2b0f6c58d18fcad35c4aefc0c5a878f731a05b976afed561"
+  inputs-digest = "d8fb3c2592dd4ea1ac6c3b14c6219ce051f1a871e2accff062b8812e2fa89e23"
   solver-name = "gps-cdcl"
   solver-version = 1
