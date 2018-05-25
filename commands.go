@@ -247,6 +247,8 @@ func sendImage(message *tgbotapi.Message) {
 			continue
 		}
 
+		defer res.Body.Close()
+
 		content, err := ioutil.ReadAll(res.Body)
 
 		if err != nil {
