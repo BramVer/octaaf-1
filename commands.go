@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"image/png"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"net/http"
 	"net/http/cookiejar"
