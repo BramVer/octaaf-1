@@ -143,7 +143,8 @@ func sendAvatar(message *tgbotapi.Message) {
 	img, err := govatar.GenerateFromUsername(govatar.MALE, message.From.UserName)
 
 	if err != nil {
-		log.Printf("Error: %v", err)
+		reply(message, "Error while generating your avatar.")
+		return
 	}
 
 	buf := new(bytes.Buffer)
@@ -275,6 +276,7 @@ func xkcd(message *tgbotapi.Message) {
 
 	if err != nil {
 		reply(message, "Failed to parse XKCD image")
+		return
 	}
 
 	bytes := tgbotapi.FileBytes{Name: "image.jpg", Bytes: image}
@@ -300,11 +302,6 @@ func quote(message *tgbotapi.Message) {
 
 		if err != nil {
 			reply(message, "Something went wrong while fetching a quote!")
-			return
-		}
-
-		if quote == (models.Quote{}) {
-			reply(message, "No quotes have been saved yet.")
 			return
 		}
 
@@ -369,7 +366,6 @@ func nextLaunch(message *tgbotapi.Message) {
 	layout := "January 2, 2006 15:04:05 MST"
 
 	for index, launch := range launches {
-		log.Printf("Doing dink")
 		whenStr := launch.Get("net").String()
 		when, err := time.Parse(layout, whenStr)
 
@@ -387,8 +383,6 @@ func nextLaunch(message *tgbotapi.Message) {
 			msg += "\n    " + MDEscape(vods[0].String())
 		}
 	}
-
-	log.Printf(msg)
 
 	reply(message, msg)
 }
