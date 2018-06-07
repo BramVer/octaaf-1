@@ -43,13 +43,13 @@ func initBot() {
 	}
 
 	if env != "development" {
-		sendGlobal("I'm back up and running! 👌")
+		sendGlobal("I'm up and running! 👌")
 
 		c := make(chan os.Signal, 2)
 		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 		go func() {
 			<-c
-			sendGlobal("I'm going down for onderhoud! ☝️")
+			sendGlobal("I'm going to sleep! 💤💤")
 			DB.Close()
 			os.Exit(0)
 		}()
