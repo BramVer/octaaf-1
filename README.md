@@ -4,6 +4,7 @@ A telegram bot written in Go
 
 ## Commands
 
+* /aldi - Subscribe someone to the Aldi newsletter
 * /avatar - Create an avatar
 * /bodegem - A place that is real and exists
 * /bol - Help someone out by subscribing them to the bol.com mailing lists!

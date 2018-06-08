@@ -188,6 +188,28 @@ func bol(message *tgbotapi.Message) {
 	reply(message, fmt.Sprintf("Succesfully subscribed *%v* to the bol.com mailing lists!", message.CommandArguments()))
 }
 
+func aldi(message *tgbotapi.Message) {
+	data := url.Values{
+		"email":                       {message.CommandArguments()},
+		"elettershop_mandat":          {"69"},
+		"elettershop_membercontainer": {"69"},
+		"languagecode":                {"de"},
+		"sign-button":                 {"Abbonneren+»"}}
+
+	req, err := http.NewRequest("POST", "https://www.elettershop.de/subscription/optin/", strings.NewReader(data.Encode()))
+
+	if err != nil {
+		reply(message, "An aldi error occured!")
+		return
+	}
+	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36")
+	client := &http.Client{}
+	client.Do(req)
+
+	reply(message, "Possibly succesfully subscribed you to the aldi newsletter!")
+}
+
 func search(message *tgbotapi.Message) {
 	if len(message.CommandArguments()) == 0 {
 		reply(message, "What do you expect me to do? 🤔🤔🤔🤔")
@@ -416,42 +438,6 @@ func issues(message *tgbotapi.Message) {
 		msg += fmt.Sprintf("\n    *creator:* %v", Markdown(value.Get("user.login").String(), mdcursive))
 		return true
 	})
-
-	reply(message, msg)
-}
-
-func mcaffee(message *tgbotapi.Message) {
-	res, err := http.Get("https://diegorod.github.io/WillMcAfeeEatHisOwnDick/")
-
-	var msg = "Will McAffee eat his down dick?"
-	if err != nil {
-		msg += "\nI don't know!"
-		reply(message, msg)
-		return
-	}
-
-	defer res.Body.Close()
-
-	doc, err := goquery.NewDocumentFromReader(res.Body)
-
-	if err != nil {
-		msg += "\nI don't know!"
-		reply(message, msg)
-		return
-	}
-
-	dickBool := doc.Find("#isDickOnTheMenu").First().Text()
-	percDiff := doc.Find("#percDiff").First().Text()
-	currBpi := doc.Find("#currBpi").First().Text()
-
-	msg += dickBool
-	msg += fmt.Sprintf(" The current bitcoin price index (%s) is %s", percDiff, currBpi)
-
-	if dickBool == "Yes!" {
-		msg += " below the current price target."
-	} else {
-		msg += " above the current price target."
-	}
 
 	reply(message, msg)
 }
