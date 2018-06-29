@@ -6,6 +6,7 @@ package dateparse
 import (
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 	"unicode"
 	"unicode/utf8"
@@ -15,6 +16,21 @@ import (
 // 	gou.SetupLogging("debug")
 // 	gou.SetColorOutput()
 // }
+
+var months = []string{
+	"january",
+	"february",
+	"march",
+	"april",
+	"may",
+	"june",
+	"july",
+	"august",
+	"september",
+	"october",
+	"november",
+	"december",
+}
 
 type dateState uint8
 type timeState uint8
@@ -41,8 +57,10 @@ const (
 	dateAlphaWsDigitComma
 	dateAlphaWsDigitCommaWs
 	dateAlphaWsDigitCommaWsYear
+	dateAlphaWsMonth
 	dateAlphaWsAlpha
 	dateAlphaWsAlphaYearmaybe
+	dateAlphaPeriodWsDigit
 	dateWeekdayComma
 	dateWeekdayAbbrevComma
 )
@@ -85,6 +103,10 @@ const (
 var (
 	ErrAmbiguousMMDD = fmt.Errorf("This date has ambiguous mm/dd vs dd/mm type format")
 )
+
+func unknownErr(datestr string) error {
+	return fmt.Errorf("Could not find format for %q", datestr)
+}
 
 // ParseAny parse an unknown date format, detect the layout.
 // Normal parse.  Equivalent Timezone rules as time.Parse().
@@ -338,6 +360,7 @@ func (p *parser) parse() (time.Time, error) {
 	}
 	return time.ParseInLocation(string(p.format), p.datestr, p.loc)
 }
+
 func parseTime(datestr string, loc *time.Location) (*parser, error) {
 
 	p := newParser(datestr, loc)
@@ -363,7 +386,7 @@ iterRunes:
 			} else if unicode.IsLetter(r) {
 				p.stateDate = dateAlpha
 			} else {
-				return nil, fmt.Errorf("unrecognized first character '%s' in %v", string(r), datestr)
+				return nil, unknownErr(datestr)
 			}
 		case dateDigit:
 
@@ -431,7 +454,7 @@ iterRunes:
 				// Chinese Year
 				p.stateDate = dateDigitChineseYear
 			case ',':
-				return nil, fmt.Errorf("Unrecognized format %q", datestr)
+				return nil, unknownErr(datestr)
 			default:
 				//if unicode.IsDigit(r) {
 				continue
@@ -628,7 +651,12 @@ iterRunes:
 			//  dateAlphaWSDigit
 			//    May 8, 2009 5:57:51 PM
 			//    oct 1, 1970
-			//
+			//  dateAlphaWsMonth
+			//    April 8, 2009
+			//  dateAlphaWsMonthTime
+			//    January 02, 2006 at 3:04pm MST-07
+			//  dateAlphaPeriodWsDigit
+			//    oct. 1, 1970
 			// dateWeekdayComma
 			//   Monday, 02 Jan 2006 15:04:05 MST
 			//   Monday, 02-Jan-06 15:04:05 MST
@@ -640,17 +668,34 @@ iterRunes:
 			//   Thu, 13 Jul 2017 08:58:40 +0100
 			//   Tue, 11 Jul 2017 16:28:13 +0200 (CEST)
 			//   Mon, 02-Jan-06 15:04:05 MST
+
 			switch {
 			case r == ' ':
-				if i > 4 {
-					// September 17, 2012 at 5:00pm UTC-05
-					// This one doesn't follow standard parse methodologies.   the "January"
-					// is difficult to use the format string replace method because of its variable-length (march, june)
-					// so we just use this format here.  If we see more similar to this we will do something else.
-					p.format = []byte("January 02, 2006 at 3:04pm MST-07")
-					return p, nil
+				if i > 3 {
+					prefix := strings.ToLower(datestr[0:i])
+					for _, month := range months {
+						if prefix == month {
+							// len(" 31, 2018")   = 9
+							if len(datestr[i:]) < 10 {
+								// April 8, 2009
+								p.dayi = i + 1
+								p.stateDate = dateAlphaWsMonth
+								break
+							}
+						}
+					}
+					if p.stateDate != dateAlphaWsMonth {
+						// September 17, 2012 at 5:00pm UTC-05
+						// This one doesn't follow standard parse methodologies.   the "January"
+						// is difficult to use the format string replace method because of its variable-length (march, june)
+						// so we just use this format here.  If we see more similar to this we will do something else.
+						p.format = []byte("January 02, 2006 at 3:04pm MST-07")
+						return p, nil
+					}
+				} else {
+					p.stateDate = dateAlphaWs
 				}
-				p.stateDate = dateAlphaWs
+
 			case r == ',':
 				// p.moi = 0
 				// p.molen = i
@@ -659,63 +704,16 @@ iterRunes:
 					p.set(0, "Mon")
 				} else {
 					p.stateDate = dateWeekdayComma
-					//p.set(0, "Monday")
 					p.skip = i + 2
 					i++
 					// TODO:  lets just make this "skip" as we don't need
 					// the mon, monday, they are all superfelous and not needed
 					// just lay down the skip, no need to fill and then skip
 				}
-			}
-		case dateWeekdayComma:
-			// Monday, 02 Jan 2006 15:04:05 MST
-			// Monday, 02 Jan 2006 15:04:05 -0700
-			// Monday, 02 Jan 2006 15:04:05 +0100
-			// Monday, 02-Jan-06 15:04:05 MST
-			if p.dayi == 0 {
-				p.dayi = i
-			}
-			switch r {
-			case ' ', '-':
-				if p.moi == 0 {
-					p.moi = i + 1
-					p.daylen = i - p.dayi
-					p.setDay()
-				} else if p.yeari == 0 {
-
-					p.yeari = i + 1
-					p.molen = i - p.moi
-					p.set(p.moi, "Jan")
-				} else {
-					p.stateTime = timeStart
-					break iterRunes
-				}
-			}
-		case dateWeekdayAbbrevComma:
-			// Mon, 02 Jan 2006 15:04:05 MST
-			// Mon, 02 Jan 2006 15:04:05 -0700
-			// Thu, 13 Jul 2017 08:58:40 +0100
-			// Thu, 4 Jan 2018 17:53:36 +0000
-			// Tue, 11 Jul 2017 16:28:13 +0200 (CEST)
-			// Mon, 02-Jan-06 15:04:05 MST
-			switch r {
-			case ' ', '-':
-				if p.dayi == 0 {
-					p.dayi = i + 1
-				} else if p.moi == 0 {
-					p.daylen = i - p.dayi
-					p.setDay()
-					p.moi = i + 1
-				} else if p.yeari == 0 {
-					p.molen = i - p.moi
-					p.set(p.moi, "Jan")
-					p.yeari = i + 1
-				} else {
-					p.yearlen = i - p.yeari
-					p.setYear()
-					p.stateTime = timeStart
-					break iterRunes
-				}
+			case r == '.':
+				p.stateDate = dateAlphaPeriodWsDigit
+				p.molen = i
+				p.set(0, "Jan")
 			}
 
 		case dateAlphaWs:
@@ -733,7 +731,6 @@ iterRunes:
 			case unicode.IsLetter(r):
 				p.set(0, "Mon")
 				p.stateDate = dateAlphaWsAlpha
-				//p.moi = i
 				p.set(i, "Jan")
 			case unicode.IsDigit(r):
 				p.set(0, "Jan")
@@ -745,6 +742,7 @@ iterRunes:
 			// May 8, 2009 5:57:51 PM
 			// oct 1, 1970
 			// oct 7, '70
+			// oct. 7, 1970
 			//gou.Debugf("%d %s dateAlphaWsDigit  %s %s", i, string(r), p.ds(), p.ts())
 			if r == ',' {
 				p.daylen = i - p.dayi
@@ -796,6 +794,7 @@ iterRunes:
 					p.dayi = i
 				}
 			}
+
 		case dateAlphaWsAlphaYearmaybe:
 			//            x
 			// Mon Jan _2 15:04:05 2006
@@ -810,6 +809,79 @@ iterRunes:
 				p.yearlen = i - p.yeari
 				p.setYear()
 				break iterRunes
+			}
+
+		case dateAlphaWsMonth:
+			// April 8, 2009
+			if r == ',' {
+				if i-p.dayi == 2 {
+					p.format = []byte("January 02, 2006")
+					return p, nil
+				}
+				p.format = []byte("January 2, 2006")
+				return p, nil
+			}
+
+		case dateAlphaPeriodWsDigit:
+			//    oct. 7, '70
+			switch {
+			case r == ' ':
+				// continue
+			case unicode.IsDigit(r):
+				p.stateDate = dateAlphaWsDigit
+				p.dayi = i
+			default:
+				return p, unknownErr(datestr)
+			}
+		case dateWeekdayComma:
+			// Monday, 02 Jan 2006 15:04:05 MST
+			// Monday, 02 Jan 2006 15:04:05 -0700
+			// Monday, 02 Jan 2006 15:04:05 +0100
+			// Monday, 02-Jan-06 15:04:05 MST
+			if p.dayi == 0 {
+				p.dayi = i
+			}
+			switch r {
+			case ' ', '-':
+				if p.moi == 0 {
+					p.moi = i + 1
+					p.daylen = i - p.dayi
+					p.setDay()
+				} else if p.yeari == 0 {
+
+					p.yeari = i + 1
+					p.molen = i - p.moi
+					p.set(p.moi, "Jan")
+				} else {
+					p.stateTime = timeStart
+					break iterRunes
+				}
+			}
+		case dateWeekdayAbbrevComma:
+			// Mon, 02 Jan 2006 15:04:05 MST
+			// Mon, 02 Jan 2006 15:04:05 -0700
+			// Thu, 13 Jul 2017 08:58:40 +0100
+			// Thu, 4 Jan 2018 17:53:36 +0000
+			// Tue, 11 Jul 2017 16:28:13 +0200 (CEST)
+			// Mon, 02-Jan-06 15:04:05 MST
+			switch r {
+			case ' ', '-':
+				if p.dayi == 0 {
+					p.dayi = i + 1
+				} else if p.moi == 0 {
+					p.daylen = i - p.dayi
+					p.setDay()
+					p.moi = i + 1
+				} else if p.yeari == 0 {
+					p.molen = i - p.moi
+					p.set(p.moi, "Jan")
+					p.yeari = i + 1
+				} else {
+					p.yearlen = i - p.yeari
+					p.setYear()
+					p.stateTime = timeStart
+					break iterRunes
+				}
 			}
 
 		default:
@@ -1462,5 +1534,5 @@ iterRunes:
 
 	}
 
-	return nil, fmt.Errorf("Could not find date format for %s", datestr)
+	return nil, unknownErr(datestr)
 }

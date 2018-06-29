@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"image/png"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"net/http/cookiejar"
@@ -319,10 +320,19 @@ func quote(message *tgbotapi.Message) {
 	if message.ReplyToMessage == nil {
 		quote := models.Quote{}
 
-		err := DB.Where("chat_id = ?", message.Chat.ID).Order("random()").Limit(1).First(&quote)
+		var err error
+
+		if len(message.CommandArguments()) > 0 {
+			query := DB.Where("chat_id = ? AND quote ilike '%' || ? || '%'", message.Chat.ID, message.CommandArguments())
+			err = query.Order("random()").Limit(1).First(&quote)
+		} else {
+			err = DB.Where("chat_id = ?", message.Chat.ID).Order("random()").Limit(1).First(&quote)
+		}
+
+		log.Printf("ERROR %s", err)
 
 		if err != nil {
-			reply(message, "Something went wrong while fetching a quote!")
+			reply(message, "No quote found boi")
 			return
 		}
 
