@@ -190,6 +190,12 @@ func bol(message *tgbotapi.Message) {
 }
 
 func aldi(message *tgbotapi.Message) {
+
+	if len(message.CommandArguments()) == 0 {
+		reply(message, "WHO?? WHO DO YOU WANT TO SUBSCRIBE?? 🤔🤔🤔")
+		return
+	}
+
 	data := url.Values{
 		"email":                       {message.CommandArguments()},
 		"elettershop_mandat":          {"69"},
