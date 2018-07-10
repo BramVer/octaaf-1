@@ -2,6 +2,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"image/png"
 	"io/ioutil"
@@ -189,34 +190,6 @@ func bol(message *tgbotapi.Message) {
 	reply(message, fmt.Sprintf("Succesfully subscribed *%v* to the bol.com mailing lists!", message.CommandArguments()))
 }
 
-func aldi(message *tgbotapi.Message) {
-
-	if len(message.CommandArguments()) == 0 {
-		reply(message, "WHO?? WHO DO YOU WANT TO SUBSCRIBE?? 🤔🤔🤔")
-		return
-	}
-
-	data := url.Values{
-		"email":                       {message.CommandArguments()},
-		"elettershop_mandat":          {"69"},
-		"elettershop_membercontainer": {"69"},
-		"languagecode":                {"de"},
-		"sign-button":                 {"Abbonneren+»"}}
-
-	req, err := http.NewRequest("POST", "https://www.elettershop.de/subscription/optin/", strings.NewReader(data.Encode()))
-
-	if err != nil {
-		reply(message, "An aldi error occured!")
-		return
-	}
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36")
-	client := &http.Client{}
-	client.Do(req)
-
-	reply(message, "Possibly succesfully subscribed you to the aldi newsletter!")
-}
-
 func search(message *tgbotapi.Message) {
 	if len(message.CommandArguments()) == 0 {
 		reply(message, "What do you expect me to do? 🤔🤔🤔🤔")
@@ -251,16 +224,40 @@ func sendStallman(message *tgbotapi.Message) {
 }
 
 func sendImage(message *tgbotapi.Message) {
-	if len(message.CommandArguments()) == 0 {
-		reply(message, fmt.Sprintf("What am I to do, @%v? 🤔🤔🤔🤔", message.From.UserName))
-		return
-	}
+	var images []string
+	var err error
+	if message.Command() != "more" {
+		if len(message.CommandArguments()) == 0 {
+			reply(message, fmt.Sprintf("What am I to do, @%v? 🤔🤔🤔🤔", message.From.UserName))
+			return
+		}
 
-	images, err := scrapers.GetImages(message.CommandArguments(), message.Command() == "img_sfw")
+		images, err = scrapers.GetImages(message.CommandArguments(), message.Command() == "img_sfw")
+		if err != nil {
+			reply(message, "Something went wrong!")
+			return
+		}
 
-	if err != nil {
-		reply(message, "Something went wrong!")
-		return
+		json_images, err := json.Marshal(images)
+
+		if err == nil {
+			Redis.Set(fmt.Sprintf("images_%v", message.Chat.ID), json_images, 0)
+		}
+	} else {
+		json_images, err := Redis.Get(fmt.Sprintf("images_%v", message.Chat.ID)).Bytes()
+
+		// Unable to get images from redis
+		if err != nil {
+			reply(message, "I can't fetch them for you right now.")
+			return
+		}
+
+		err = json.Unmarshal(json_images, &images)
+		if err != nil {
+			reply(message, "Well this didn't work out as expected 🤔🤔🤔🤔")
+			return
+		}
+
 	}
 
 	// Shuffle the images so that the same query can get a random result

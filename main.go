@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 
+	"github.com/go-redis/redis"
 	"github.com/gobuffalo/envy"
 	"gopkg.in/robfig/cron.v2"
 	"gopkg.in/telegram-bot-api.v4"
@@ -20,12 +21,21 @@ var ReporterID int
 // Cron executes all the cron jobs
 var Cron *cron.Cron
 
+// Redis client
+var Redis *redis.Client
+
 func main() {
 	envy.Load("config/.env")
 
 	connectDB()
 	migrateDB()
 	initBot()
+
+	Redis = redis.NewClient(&redis.Options{
+		Addr:     envy.Get("REDIS_URI", "localhost:6379"),
+		Password: "", // no password set
+		DB:       0,  // use default DB
+	})
 
 	initCrons()
 

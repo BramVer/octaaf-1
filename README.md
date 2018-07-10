@@ -4,7 +4,6 @@ A telegram bot written in Go
 
 ## Commands
 
-* /aldi - Subscribe someone to the Aldi newsletter
 * /avatar - Create an avatar
 * /bodegem - A place that is real and exists
 * /bol - Help someone out by subscribing them to the bol.com mailing lists!
@@ -16,7 +15,7 @@ A telegram bot written in Go
 * /issues - Show a list of open issues
 * /kalirank - Show the kali rankings
 * /m8ball - Let fate decide your future
-* /mcaffee - Will McAffee eat his down dick?
+* /more - MORE IMAGES
 * /next_launch - Show the next 5 rocket launches
 * /quote - Get or store random kali quotes
 * /roll - Praise kek

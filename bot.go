@@ -79,7 +79,7 @@ func handle(message *tgbotapi.Message) {
 			m8Ball(message)
 		case "bodegem":
 			sendBodegem(message)
-		case "img", "img_sfw":
+		case "img", "img_sfw", "more":
 			sendImage(message)
 		case "stallman":
 			sendStallman(message)
@@ -111,8 +111,6 @@ func handle(message *tgbotapi.Message) {
 			kaliRank(message)
 		case "iasip":
 			iasip(message)
-		case "aldi":
-			aldi(message)
 		}
 	}
 
