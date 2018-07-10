@@ -263,6 +263,12 @@ func sendImage(message *tgbotapi.Message) {
 		return
 	}
 
+	// Shuffle the images so that the same query can get a random result
+	for i := range images {
+		j := rand.Intn(i + 1)
+		images[i], images[j] = images[j], images[i]
+	}
+
 	timeout := time.Duration(2 * time.Second)
 	client := &http.Client{
 		Timeout: timeout,
