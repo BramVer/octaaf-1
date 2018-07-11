@@ -2,7 +2,6 @@ package main
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"image/png"
 	"io/ioutil"
@@ -19,6 +18,7 @@ import (
 
 	"github.com/PuerkitoBio/goquery"
 	humanize "github.com/dustin/go-humanize"
+	"github.com/go-redis/cache"
 	"github.com/o1egl/govatar"
 	"github.com/tidwall/gjson"
 	"gopkg.in/telegram-bot-api.v4"
@@ -226,6 +226,7 @@ func sendStallman(message *tgbotapi.Message) {
 func sendImage(message *tgbotapi.Message) {
 	var images []string
 	var err error
+	key := fmt.Sprintf("images_%v", message.Chat.ID)
 	if message.Command() != "more" {
 		if len(message.CommandArguments()) == 0 {
 			reply(message, fmt.Sprintf("What am I to do, @%v? 🤔🤔🤔🤔", message.From.UserName))
@@ -238,31 +239,22 @@ func sendImage(message *tgbotapi.Message) {
 			return
 		}
 
-		json_images, err := json.Marshal(images)
-
-		if err == nil {
-			Redis.Set(fmt.Sprintf("images_%v", message.Chat.ID), json_images, 0)
-		}
+		Codec.Set(&cache.Item{
+			Key:        key,
+			Object:     images,
+			Expiration: 0,
+		})
 	} else {
-		json_images, err := Redis.Get(fmt.Sprintf("images_%v", message.Chat.ID)).Bytes()
-
-		// Unable to get images from redis
-		if err != nil {
+		if err := Codec.Get(key, &images); err != nil {
 			reply(message, "I can't fetch them for you right now.")
 			return
 		}
 
-		err = json.Unmarshal(json_images, &images)
-		if err != nil {
-			reply(message, "Well this didn't work out as expected 🤔🤔🤔🤔")
-			return
-		}
-
+		// Randomly order images for a different /more
 		for i := range images {
 			j := rand.Intn(i + 1)
 			images[i], images[j] = images[j], images[i]
 		}
-
 	}
 
 	timeout := time.Duration(2 * time.Second)
