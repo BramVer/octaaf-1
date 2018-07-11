@@ -258,6 +258,11 @@ func sendImage(message *tgbotapi.Message) {
 			return
 		}
 
+		for i := range images {
+			j := rand.Intn(i + 1)
+			images[i], images[j] = images[j], images[i]
+		}
+
 	}
 
 	timeout := time.Duration(2 * time.Second)
