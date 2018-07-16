@@ -23,7 +23,7 @@
   branch = "master"
   name = "github.com/araddon/dateparse"
   packages = ["."]
-  revision = "4109f1d4abcccb029db905678c1019b53d72203e"
+  revision = "089f77b1d92b615cc77fde0d2fa528b5e85e832d"
 
 [[projects]]
   branch = "master"
@@ -35,7 +35,7 @@
   branch = "master"
   name = "github.com/dustin/go-humanize"
   packages = ["."]
-  revision = "02af3965c54e8cacf948b97fef38925c4120652c"
+  revision = "9f541cc9db5d55bce703bd99987c9d5cb8eea45e"
 
 [[projects]]
   name = "github.com/fatih/color"
@@ -92,8 +92,8 @@
     ".",
     "translators"
   ]
-  revision = "54d48e049b627a443c2f85713c170ca2dc8c3427"
-  version = "v1.0.0"
+  revision = "a68affc47dc7145d791149e996c379a0f46ee507"
+  version = "v1.0.2"
 
 [[projects]]
   name = "github.com/gobuffalo/makr"
@@ -128,8 +128,8 @@
     "fix",
     "nulls"
   ]
-  revision = "17c57a27af47d175c7c09b22bfbb0b1188195155"
-  version = "v4.5.11"
+  revision = "9936c00d4230dae87d8ac5cf73149d9de7b0e899"
+  version = "v4.6.1"
 
 [[projects]]
   name = "github.com/gobuffalo/tags"
@@ -138,8 +138,8 @@
     "form",
     "form/bootstrap"
   ]
-  revision = "1b65be1e79c25b52aa5778d8605877ab6dd6e9ec"
-  version = "v2.0.6"
+  revision = "96c7cdfcadcb28eb1b42b9080ba7f93936ffc5c5"
+  version = "v2.0.7"
 
 [[projects]]
   name = "github.com/gobuffalo/uuid"
@@ -221,10 +221,10 @@
   version = "v1.9.0"
 
 [[projects]]
-  branch = "master"
   name = "github.com/microcosm-cc/bluemonday"
   packages = ["."]
-  revision = "f0761eb8ed07c1cc892ef631b00c33463b9b6868"
+  revision = "dafebb5b6ff2861a0d69af64991e10866c19be85"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/o1egl/govatar"
@@ -359,7 +359,7 @@
     "html",
     "html/atom"
   ]
-  revision = "e514e69ffb8bc3c76a71ae40de0118d794855992"
+  revision = "d0887baf81f4598189d4e12a37c6da86f0bba4d0"
 
 [[projects]]
   branch = "master"
@@ -371,7 +371,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "7138fd3d9dc8335c567ca206f4333fb75eb05d56"
+  revision = "ac767d655b305d4e9612f5f6e33120b9176c4ad4"
 
 [[projects]]
   name = "google.golang.org/appengine"

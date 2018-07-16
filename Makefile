@@ -33,7 +33,6 @@ package:
 	cp ./config/.env.dist $(CONFIG)/.env
 	cp ./config/database.yml.dist $(CONFIG)/database.yml
 	cp -r ./migrations $(TARGET)/
-	cp -r ./assets $(TARGET)/
 	
 	fpm -s dir -t rpm \
 		--name "$(NAME)" \
