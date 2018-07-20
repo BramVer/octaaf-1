@@ -310,7 +310,7 @@ func xkcd(message *tgbotapi.Message) {
 }
 
 func doubt(message *tgbotapi.Message) {
-	msg := tgbotapi.NewPhotoUpload(message.Chat.ID, tgbotapi.FileBytes{Name: "doubt.jpg", Bytes: Assets.Bytes("doubt.jpg")})
+	msg := tgbotapi.NewPhotoUpload(message.Chat.ID, "assets/doubt.jpg")
 	msg.ReplyToMessageID = message.MessageID
 	Octaaf.Send(msg)
 }

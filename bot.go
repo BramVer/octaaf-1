@@ -12,15 +12,11 @@ import (
 	"time"
 
 	"github.com/gobuffalo/envy"
-	"github.com/gobuffalo/packr"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
 // Octaaf is the global bot endpoint
 var Octaaf *tgbotapi.BotAPI
-
-// Assets contains the assets the bot needs at runtime (images,..)
-var Assets packr.Box
 
 func initBot() {
 	var err error
@@ -45,8 +41,6 @@ func initBot() {
 	if err != nil {
 		log.Panic(err)
 	}
-
-	Assets = packr.NewBox("./assets")
 
 	if env != "development" {
 		sendGlobal("I'm up and running! 👌")

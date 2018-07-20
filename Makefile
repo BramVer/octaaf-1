@@ -16,7 +16,7 @@ ARCH 		= x86_64
 all: build
 
 build:
-	docker run --rm -v "$$PWD":/go/src/octaaf -w /go/src/octaaf golang:1.10 go build
+	docker run --rm -v "$$PWD":/go/src/octaaf -w /go/src/octaaf golang:1.10 go build -ldflags "-s -w"
 
 TMPDIR := $(shell mktemp -d)
 TARGET := $(TMPDIR)/opt/octaaf
@@ -27,11 +27,11 @@ package:
 	mkdir -p $(CONFIG)
 	mkdir -p $(SYSTEM)
 
-	strip octaaf
 	cp ./octaaf $(TARGET)/
 	cp ./octaaf.service $(SYSTEM)/octaaf.service
 	cp ./config/.env.dist $(CONFIG)/.env
 	cp ./config/database.yml.dist $(CONFIG)/database.yml
+	cp -r ./assets $(TARGET)/
 	cp -r ./migrations $(TARGET)/
 	
 	fpm -s dir -t rpm \
