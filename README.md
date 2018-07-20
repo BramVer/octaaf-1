@@ -18,6 +18,7 @@ A telegram bot written in Go
 * /more - MORE IMAGES
 * /next_launch - Show the next 5 rocket launches
 * /quote - Get or store random kali quotes
+* /reported - Get the reported count
 * /roll - Praise kek
 * /search - Search stuff on DuckDuckGo with safe search on
 * /search_nsfw - Search dirty stuff on DuckDuckGo

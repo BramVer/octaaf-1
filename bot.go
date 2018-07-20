@@ -111,6 +111,8 @@ func handle(message *tgbotapi.Message) {
 			kaliRank(message)
 		case "iasip":
 			iasip(message)
+		case "reported":
+			reported(message)
 		}
 	}
 

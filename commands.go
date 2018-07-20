@@ -493,3 +493,30 @@ func iasip(message *tgbotapi.Message) {
 
 	reply(message, string(body))
 }
+
+func reported(message *tgbotapi.Message) {
+	if message.Chat.ID != KaliID {
+		reply(message, "Yeah well, you need to update to Strontbot Enterprise edition for Workgroups to use this feature.")
+		return
+	}
+
+	reportCount, err := DB.Count(models.Report{})
+
+	if err != nil {
+		reply(message, "I can't seem to be able to count the reports.")
+		return
+	}
+
+	config := tgbotapi.ChatConfigWithUser{
+		ChatID:             message.Chat.ID,
+		SuperGroupUsername: "",
+		UserID:             ReporterID}
+
+	reporter, err := Octaaf.GetChatMember(config)
+
+	if err != nil {
+		reply(message, fmt.Sprintf("So far, %v people have been reported by Dieter", reportCount))
+	} else {
+		reply(message, MDEscape(fmt.Sprintf("So far, %v people have been reported by: @%v", reportCount, reporter.User.UserName)))
+	}
+}
