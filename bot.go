@@ -83,8 +83,6 @@ func handle(message *tgbotapi.Message) {
 			sendImage(message)
 		case "stallman":
 			sendStallman(message)
-		case "avatar":
-			sendAvatar(message)
 		case "search", "search_nsfw":
 			search(message)
 		case "where":
@@ -149,5 +147,8 @@ func reply(message *tgbotapi.Message, text string, markdown ...bool) {
 		msg.ParseMode = "markdown"
 	}
 
-	Octaaf.Send(msg)
+	_, err := Octaaf.Send(msg)
+	if err != nil {
+		log.Printf("Error while sending message with content: '%s'; Error: %s", text, err)
+	}
 }

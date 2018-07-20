@@ -1,9 +1,7 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
-	"image/png"
 	"io/ioutil"
 	"log"
 	"math/rand"
@@ -19,7 +17,6 @@ import (
 	"github.com/PuerkitoBio/goquery"
 	humanize "github.com/dustin/go-humanize"
 	"github.com/go-redis/cache"
-	"github.com/o1egl/govatar"
 	"github.com/tidwall/gjson"
 	"gopkg.in/telegram-bot-api.v4"
 )
@@ -138,23 +135,6 @@ func weather(message *tgbotapi.Message) {
 	} else {
 		reply(message, "*Weather:* "+weather)
 	}
-}
-
-func sendAvatar(message *tgbotapi.Message) {
-	img, err := govatar.GenerateFromUsername(govatar.MALE, message.From.UserName)
-
-	if err != nil {
-		reply(message, "Error while generating your avatar.")
-		return
-	}
-
-	buf := new(bytes.Buffer)
-	png.Encode(buf, img)
-
-	bytes := tgbotapi.FileBytes{Name: "avatar.png", Bytes: buf.Bytes()}
-	msg := tgbotapi.NewPhotoUpload(message.Chat.ID, bytes)
-	msg.ReplyToMessageID = message.MessageID
-	Octaaf.Send(msg)
 }
 
 func bol(message *tgbotapi.Message) {

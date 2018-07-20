@@ -4,7 +4,6 @@ A telegram bot written in Go
 
 ## Commands
 
-* /avatar - Create an avatar
 * /bodegem - A place that is real and exists
 * /bol - Help someone out by subscribing them to the bol.com mailing lists!
 * /count - Get your current message count
