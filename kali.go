@@ -17,11 +17,11 @@ func kaliHandler(message *tgbotapi.Message) {
 		go kaliReport(message)
 
 		if time.Now().Hour() == 13 && time.Now().Minute() == 37 {
-			setLeetBlazer(message, "1337")
+			go setLeetBlazer(message, "1337")
 		}
 
 		if time.Now().Hour() == 16 && time.Now().Minute() == 20 {
-			setLeetBlazer(message, "420")
+			go setLeetBlazer(message, "420")
 		}
 	}
 }
