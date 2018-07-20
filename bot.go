@@ -3,13 +3,10 @@ package main
 import (
 	"fmt"
 	"log"
-	"octaaf/models"
 	"os"
 	"os/signal"
 	"strconv"
-	"strings"
 	"syscall"
-	"time"
 
 	"github.com/gobuffalo/envy"
 	"gopkg.in/telegram-bot-api.v4"
@@ -57,19 +54,8 @@ func initBot() {
 }
 
 func handle(message *tgbotapi.Message) {
-	if message.Chat.ID == KaliID {
 
-		go func() {
-			KaliCount = message.MessageID
-
-			if message.From.ID == ReporterID {
-				if strings.ToLower(message.Text) == "reported" ||
-					(message.Sticker != nil && message.Sticker.FileID == "CAADBAAD5gEAAreTBA3s5qVy8bxHfAI") {
-					DB.Save(&models.Report{})
-				}
-			}
-		}()
-	}
+	go kaliHandler(message)
 
 	if message.IsCommand() {
 		switch message.Command() {
@@ -124,9 +110,6 @@ func handle(message *tgbotapi.Message) {
 }
 
 func sendGlobal(message string) {
-	// Wait 1.5 seconds because Telegram has bad NTP
-	time.Sleep(1500)
-
 	msg := tgbotapi.NewMessage(KaliID, message)
 	_, err := Octaaf.Send(msg)
 
