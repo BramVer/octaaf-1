@@ -47,11 +47,11 @@ pipeline {
                 }
             }
             steps {
-                sh '''
+                sh """
                 ssh root@${REPO_SERVER} '\\
                     yum -y install https://repo.youkebox.be/master/packages/${NAME}-${VERSION}-${env.BUILD_NUMBER}.${ARCH}.rpm && systemctl restart octaaf \\
                 '
-                '''
+                """
             }
         }
     }
