@@ -47,9 +47,9 @@ pipeline {
                 }
             }
             steps {
-                 sh "ssh root@${REPO_SERVER} 'yum makecache; yum update octaaf -y'"
+                 sh "ssh root@${REPO_SERVER} 'yum install https://repo.youkebox.be/master/packages/${NAME}-${VERSION}-${env.BUILD_NUMBER}.${ARCH}.rpm'"
                  sh "ssh root@${REPO_SERVER} 'systemctl restart octaaf'"
             }
-       }
+        }
     }
 }

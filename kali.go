@@ -10,6 +10,15 @@ import (
 	"gopkg.in/telegram-bot-api.v4"
 )
 
+// ReporterID is the id of the user who reports everyone
+var ReporterID int
+
+// KaliCount is an integer that holds the ID of the last sent message in the Kali group
+var KaliCount int
+
+// KaliID is the ID of the kali group
+var KaliID int64
+
 func kaliHandler(message *tgbotapi.Message) {
 	if message.Chat.ID == KaliID {
 		KaliCount = message.MessageID
@@ -17,19 +26,18 @@ func kaliHandler(message *tgbotapi.Message) {
 		go kaliReport(message)
 
 		if time.Now().Hour() == 13 && time.Now().Minute() == 37 {
-			go setLeetBlazer(message, "1337")
+			go addLeetBlazer(message, "1337")
 		}
 
 		if time.Now().Hour() == 16 && time.Now().Minute() == 20 {
-			go setLeetBlazer(message, "420")
+			go addLeetBlazer(message, "420")
 		}
 	}
 }
 
 func kaliReport(message *tgbotapi.Message) {
 	if message.From.ID == ReporterID {
-		if strings.ToLower(message.Text) == "reported" ||
-			(message.Sticker != nil && message.Sticker.FileID == "CAADBAAD5gEAAreTBA3s5qVy8bxHfAI") {
+		if strings.ToLower(message.Text) == "reported" || (message.Sticker != nil && message.Sticker.FileID == "CAADBAAD5gEAAreTBA3s5qVy8bxHfAI") {
 			DB.Save(&models.Report{})
 		}
 	}
@@ -72,8 +80,8 @@ func getLeetBlazers(event string) {
 	Redis.Del(event)
 }
 
-func setLeetBlazer(message *tgbotapi.Message, event string) {
-	if len(message.Text) > 0 && strings.Contains(message.Text, event) {
+func addLeetBlazer(message *tgbotapi.Message, event string) {
+	if strings.Contains(message.Text, event) {
 		log.Printf("Leetblazer found!")
 		Redis.SAdd(event, message.From.UserName)
 	}

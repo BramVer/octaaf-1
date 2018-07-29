@@ -4,6 +4,9 @@ import (
 	"gopkg.in/robfig/cron.v2"
 )
 
+// Cron executes all the cron jobs
+var Cron *cron.Cron
+
 func initCrons() {
 	Cron = cron.New()
 	// Cron func: ss mm hh
