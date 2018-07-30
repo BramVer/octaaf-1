@@ -19,18 +19,14 @@ pipeline {
         }
 
         stage('Package') {
-            when { 
-                expression { tag ==~ /(beta|release)-*/ }
-            }
+            when { buildingTag() }
             steps {
                 sh "make package --environment-overrides BUILD_NO=${env.BUILD_NUMBER}"
             }
         }
 
         stage('Upload') {
-            when { 
-                expression { tag ==~ /(beta|release)-*/ }
-            }
+            when { buildingTag() }
             steps {
                 sh "scp octaaf-*.rpm root@${REPO_SERVER}:${REPO_PATH}/packages/"
                 sh """
@@ -43,7 +39,12 @@ pipeline {
         }
 
         stage('Deploy') {
-            when { tag "release-*" }
+            when { 
+                allOf {
+                    buildingTag()
+                    tag "release-*"
+                }
+            }
             steps {
                 sh """
                 ssh root@${REPO_SERVER} '\\
