@@ -21,7 +21,7 @@ pipeline {
         stage('Package') {
             when { buildingTag() }
             steps {
-                sh "make package --environment-overrides BUILD_NO=${env.BUILD_NUMBER}"
+                sh "make package"
             }
         }
 
@@ -29,12 +29,7 @@ pipeline {
             when { buildingTag() }
             steps {
                 sh "scp octaaf-*.rpm root@${REPO_SERVER}:${REPO_PATH}/"
-                sh """
-                ssh root@${REPO_SERVER} '\\
-                    cd ${REPO_PATH}/packages/ \\
-                    && rm -rf \$(ls ${REPO_PATH}/packages/ -1t | grep ${NAME}-${VERSION} | tail -n +4) \\
-                    && createrepo --update ${REPO_PATH}'
-                """
+                sh "ssh root@${REPO_SERVER} 'createrepo --update ${REPO_PATH}'"
             }
         }
 

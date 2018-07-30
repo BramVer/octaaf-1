@@ -39,7 +39,7 @@ package:
 		--description "$(DESCRIPTION)" \
 		--version "$(VERSION)" \
 		--architecture "$(ARCH)" \
-		--iteration $(BUILD_NO) \
+		--iteration $(BUILD_NUMBER) \
 		--force \
 		--config-files /usr/lib/systemd/system/octaaf.service \
 		--config-files /opt/octaaf/config/.env \
