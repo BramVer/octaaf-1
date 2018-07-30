@@ -50,6 +50,23 @@
   version = "v1.0"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/gin-contrib/sse"
+  packages = ["."]
+  revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
+
+[[projects]]
+  branch = "master"
+  name = "github.com/gin-gonic/gin"
+  packages = [
+    ".",
+    "binding",
+    "json",
+    "render"
+  ]
+  revision = "220e8d34538f5dfdcc299dda79bf83cf52e633f6"
+
+[[projects]]
   name = "github.com/go-redis/cache"
   packages = [
     ".",
@@ -178,6 +195,12 @@
   version = "v1.2.0"
 
 [[projects]]
+  name = "github.com/json-iterator/go"
+  packages = ["."]
+  revision = "ab8a2e0c74be9d3be70b3184d9acc634935ded82"
+  version = "1.1.4"
+
+[[projects]]
   branch = "master"
   name = "github.com/lib/pq"
   packages = [
@@ -227,13 +250,16 @@
   version = "v1.0.0"
 
 [[projects]]
-  name = "github.com/o1egl/govatar"
-  packages = [
-    ".",
-    "bindata"
-  ]
-  revision = "24a017dc0e9680762aeddd75c4f9cd91c55ad5b8"
-  version = "0.2.0"
+  name = "github.com/modern-go/concurrent"
+  packages = ["."]
+  revision = "bacd9c7ef1dd9b15be4a9909b8ac7a4e313eec94"
+  version = "1.0.3"
+
+[[projects]]
+  name = "github.com/modern-go/reflect2"
+  packages = ["."]
+  revision = "4b7aa43c6742a2c18fdef89dd197aaae7dac7ccd"
+  version = "1.0.1"
 
 [[projects]]
   name = "github.com/pkg/errors"
@@ -343,6 +369,12 @@
   revision = "1731857f09b1f38450e2c12409748407822dc6be"
 
 [[projects]]
+  name = "github.com/ugorji/go"
+  packages = ["codec"]
+  revision = "b4c50a2b199d93b13dc15e78929cfb23bfdf21ab"
+  version = "v1.1.1"
+
+[[projects]]
   name = "github.com/vmihailenco/msgpack"
   packages = [
     ".",
@@ -391,6 +423,12 @@
   version = "v1.1.0"
 
 [[projects]]
+  name = "gopkg.in/go-playground/validator.v8"
+  packages = ["."]
+  revision = "5f1438d3fca68893a817e4a66806cea46a9e4ebf"
+  version = "v8.18.2"
+
+[[projects]]
   branch = "v2"
   name = "gopkg.in/robfig/cron.v2"
   packages = ["."]
@@ -411,6 +449,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "e6ff6e4e21be3762471a398723a007007fbc6f5f5dd4cb025b923975d62923a9"
+  inputs-digest = "d12d1254274726ea84d7544c584b192d2432853a9b521525f6013cf73aa955b8"
   solver-name = "gps-cdcl"
   solver-version = 1

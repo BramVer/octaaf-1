@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 
-	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/pop"
 )
 
@@ -12,12 +11,11 @@ var DB *pop.Connection
 
 func connectDB() {
 	var err error
-	env := envy.Get("GO_ENV", "development")
-	DB, err = pop.Connect(env)
+	DB, err = pop.Connect(OctaafEnv)
 	if err != nil {
 		log.Fatal(err)
 	}
-	pop.Debug = env == "development"
+	pop.Debug = OctaafEnv == "development"
 }
 
 func migrateDB() {

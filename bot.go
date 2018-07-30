@@ -23,8 +23,7 @@ func initBot() {
 		log.Panic(err)
 	}
 
-	env := envy.Get("GO_ENV", "development")
-	Octaaf.Debug = env == "development"
+	Octaaf.Debug = OctaafEnv == "development"
 
 	log.Printf("Authorized on account %s", Octaaf.Self.UserName)
 
@@ -39,7 +38,7 @@ func initBot() {
 		log.Panic(err)
 	}
 
-	if env != "development" {
+	if OctaafEnv == "production" {
 		sendGlobal("I'm up and running! 👌")
 
 		c := make(chan os.Signal, 2)

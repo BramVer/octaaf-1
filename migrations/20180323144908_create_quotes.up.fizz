@@ -1,5 +1,5 @@
-create_table("quotes", func(t) {
+create_table("quotes") {
 	t.Column("id", "uuid", {"primary": true})
 	t.Column("quote", "text", {})
 	t.Column("user_id", "integer", {})
-})
+}

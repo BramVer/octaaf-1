@@ -1,5 +1,5 @@
-create_table("message_counts", func(t) {
+create_table("message_counts"){
 	t.Column("id", "uuid", {"primary": true})
 	t.Column("count", "integer", {})
 	t.Column("diff", "integer", {})
-})
+}

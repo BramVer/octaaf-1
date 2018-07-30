@@ -7,8 +7,13 @@ import (
 	"gopkg.in/telegram-bot-api.v4"
 )
 
+// OctaafEnv is either development or production
+var OctaafEnv string
+
 func main() {
 	envy.Load("config/.env")
+
+	OctaafEnv = envy.Get("GO_ENV", "development")
 
 	connectDB()
 	migrateDB()
@@ -16,6 +21,8 @@ func main() {
 	initBot()
 
 	initCrons()
+
+	go ginit()
 
 	defer Cron.Stop()
 

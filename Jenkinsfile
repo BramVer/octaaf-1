@@ -33,8 +33,11 @@ pipeline {
             }
             steps {
                 sh "scp octaaf-*.rpm root@${REPO_SERVER}:${REPO_PATH}/packages/"
-                sh "ssh root@${REPO_SERVER} 'cd ${REPO_PATH}/packages/ && rm -rf \$(ls ${REPO_PATH}/packages/ -1t | grep ${NAME}-${VERSION} | tail -n +4)'"
-                sh "ssh root@${REPO_SERVER} 'createrepo --update ${REPO_PATH}'"
+                ssh root@${REPO_SERVER} '\\
+                    cd ${REPO_PATH}/packages/ \\
+                    && rm -rf \$(ls ${REPO_PATH}/packages/ -1t | grep ${NAME}-${VERSION} | tail -n +4) \\
+                    && createrepo --update ${REPO_PATH}'
+                """
             }
         }
 
@@ -49,8 +52,8 @@ pipeline {
             steps {
                 sh """
                 ssh root@${REPO_SERVER} '\\
-                    yum -y install https://repo.youkebox.be/master/packages/${NAME}-${VERSION}-${env.BUILD_NUMBER}.${ARCH}.rpm && systemctl restart octaaf \\
-                '
+                    yum -y install https://repo.youkebox.be/master/packages/${NAME}-${VERSION}-${env.BUILD_NUMBER}.${ARCH}.rpm \\
+                    && systemctl restart octaaf'
                 """
             }
         }
