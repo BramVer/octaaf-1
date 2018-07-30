@@ -47,6 +47,7 @@ pipeline {
                 allOf {
                     expression { BRANCH_NAME == "master" }
                     expression { env.CHANGE_ID == null  }
+                    expression { tag != null }
                 }
             }
             steps {
