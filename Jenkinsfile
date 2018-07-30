@@ -6,7 +6,7 @@ pipeline {
         REPO_SERVER = 'repo.youkebox.be'
         REPO_PATH   = "/var/vhosts/repo/octaaf/packages"
         NAME        = 'octaaf'
-        VERSION     = "${tag}"
+        VERSION     = "${TAG_NAME}"
         DESCRIPTION = 'A Go Telegram bot'
         ARCH        = 'x86_64'
     }
@@ -21,7 +21,7 @@ pipeline {
         stage('Package') {
             when { buildingTag() }
             steps {
-                sh "make package --environment-overrides BUILD_NO=${env.BUILD_NUMBER} VERSION=${tag}"
+                sh "make package --environment-overrides BUILD_NO=${env.BUILD_NUMBER}"
             }
         }
 
