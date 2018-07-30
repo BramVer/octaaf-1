@@ -19,6 +19,9 @@ pipeline {
         }
 
         stage('Package') {
+            when { 
+                expression { tag ==~ /(beta|release)-*/ }
+            }
             steps {
                 sh "make package --environment-overrides BUILD_NO=${env.BUILD_NUMBER}"
             }
