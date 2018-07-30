@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         REPO_SERVER = 'repo.youkebox.be'
-        REPO_PATH   = "/var/vhosts/repo/octaaf/packages"
+        REPO_PATH   = "/var/vhosts/repo/octaaf/"
         NAME        = 'octaaf'
         VERSION     = "${TAG_NAME}"
         DESCRIPTION = 'A Go Telegram bot'
@@ -28,7 +28,7 @@ pipeline {
         stage('Upload') {
             when { buildingTag() }
             steps {
-                sh "scp octaaf-*.rpm root@${REPO_SERVER}:${REPO_PATH}/"
+                sh "scp octaaf-*.rpm root@${REPO_SERVER}:${REPO_PATH}/packages/"
                 sh "ssh root@${REPO_SERVER} 'createrepo --update ${REPO_PATH}'"
             }
         }
@@ -43,7 +43,7 @@ pipeline {
             steps {
                 sh """
                 ssh root@${REPO_SERVER} '\\
-                    yum -y install https://repo.youkebox.be/octaaf/packages/${NAME}-${VERSION}-${env.BUILD_NUMBER}.${ARCH}.rpm \\
+                    yum makecache; yum update octaaf -y \\
                     && systemctl restart octaaf'
                 """
             }
