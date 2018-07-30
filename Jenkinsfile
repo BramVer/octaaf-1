@@ -6,7 +6,7 @@ pipeline {
         REPO_SERVER = 'repo.youkebox.be'
         REPO_PATH   = "/var/vhosts/repo/${env.GIT_BRANCH}"
         NAME        = 'octaaf'
-        VERSION     = tag
+        VERSION     = ${tag}
         DESCRIPTION = 'A Go Telegram bot'
         ARCH        = 'x86_64'
     }
