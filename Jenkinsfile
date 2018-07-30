@@ -4,7 +4,7 @@ pipeline {
 
     environment {
         REPO_SERVER = 'repo.youkebox.be'
-        REPO_PATH   = "/var/vhosts/repo/${env.GIT_BRANCH}"
+        REPO_PATH   = "/var/vhosts/repo/octaaf/packages"
         NAME        = 'octaaf'
         VERSION     = "${tag}"
         DESCRIPTION = 'A Go Telegram bot'
@@ -21,14 +21,14 @@ pipeline {
         stage('Package') {
             when { buildingTag() }
             steps {
-                sh "make package --environment-overrides BUILD_NO=${env.BUILD_NUMBER}"
+                sh "make package --environment-overrides BUILD_NO=${env.BUILD_NUMBER} VERSION=${tag}"
             }
         }
 
         stage('Upload') {
             when { buildingTag() }
             steps {
-                sh "scp octaaf-*.rpm root@${REPO_SERVER}:${REPO_PATH}/packages/"
+                sh "scp octaaf-*.rpm root@${REPO_SERVER}:${REPO_PATH}/"
                 sh """
                 ssh root@${REPO_SERVER} '\\
                     cd ${REPO_PATH}/packages/ \\
@@ -48,7 +48,7 @@ pipeline {
             steps {
                 sh """
                 ssh root@${REPO_SERVER} '\\
-                    yum -y install https://repo.youkebox.be/master/packages/${NAME}-${VERSION}-${env.BUILD_NUMBER}.${ARCH}.rpm \\
+                    yum -y install https://repo.youkebox.be/octaaf/packages/${NAME}-${VERSION}-${env.BUILD_NUMBER}.${ARCH}.rpm \\
                     && systemctl restart octaaf'
                 """
             }
