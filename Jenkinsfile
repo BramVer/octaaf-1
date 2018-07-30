@@ -43,14 +43,7 @@ pipeline {
         }
 
         stage('Deploy') {
-            agent any
-            when {
-                allOf {
-                    expression { BRANCH_NAME == "master" }
-                    expression { env.CHANGE_ID == null  }
-                    expression { tag != null }
-                }
-            }
+            when { tag "release-*" }
             steps {
                 sh """
                 ssh root@${REPO_SERVER} '\\
