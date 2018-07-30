@@ -25,7 +25,9 @@ pipeline {
         }
 
         stage('Upload') {
-            when { tag /(beta|release)-*/ }
+            when { 
+                expression { tag ==~ /(beta|release)-*/ }
+            }
             steps {
                 sh "scp octaaf-*.rpm root@${REPO_SERVER}:${REPO_PATH}/packages/"
                 sh """
