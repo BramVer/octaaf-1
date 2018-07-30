@@ -6,7 +6,7 @@ pipeline {
         REPO_SERVER = 'repo.youkebox.be'
         REPO_PATH   = "/var/vhosts/repo/${env.GIT_BRANCH}"
         NAME        = 'octaaf'
-        VERSION     = ${tag}
+        VERSION     = "${tag}"
         DESCRIPTION = 'A Go Telegram bot'
         ARCH        = 'x86_64'
     }
@@ -25,7 +25,7 @@ pipeline {
         }
 
         stage('Upload') {
-            when { tag ==~ /(beta|release)-*/ }
+            when { tag /(beta|release)-*/ }
             steps {
                 sh "scp octaaf-*.rpm root@${REPO_SERVER}:${REPO_PATH}/packages/"
                 sh """
