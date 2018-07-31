@@ -23,7 +23,7 @@
   branch = "master"
   name = "github.com/araddon/dateparse"
   packages = ["."]
-  revision = "089f77b1d92b615cc77fde0d2fa528b5e85e832d"
+  revision = "cfd92a431d0efe36a1b81ca25d15b98aae4dbdb6"
 
 [[projects]]
   branch = "master"
@@ -88,8 +88,8 @@
     "internal/singleflight",
     "internal/util"
   ]
-  revision = "83fb42932f6145ce52df09860384a4653d2d332a"
-  version = "v6.12.0"
+  revision = "480db94d33e6088e08d628833b6c0705451d24bb"
+  version = "v6.13.2"
 
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
@@ -121,8 +121,8 @@
 [[projects]]
   name = "github.com/gobuffalo/packr"
   packages = ["."]
-  revision = "bd47f2894846e32edcf9aa37290fef76c327883f"
-  version = "v1.11.1"
+  revision = "9e76dbe10b00dd1fa8f29cfa4fac72297beb32a4"
+  version = "v1.12.1"
 
 [[projects]]
   name = "github.com/gobuffalo/plush"
@@ -133,8 +133,8 @@
     "parser",
     "token"
   ]
-  revision = "2ec029f415ed9a8a1448a5bb389d79084d606035"
-  version = "v3.7.7"
+  revision = "726a3d7f08d2665e95e495175ddb68da00868572"
+  version = "v3.7.9"
 
 [[projects]]
   name = "github.com/gobuffalo/pop"
@@ -145,8 +145,8 @@
     "fix",
     "nulls"
   ]
-  revision = "9936c00d4230dae87d8ac5cf73149d9de7b0e899"
-  version = "v4.6.1"
+  revision = "c0faa0f7edf8c0db4befe9abc41d135003a97d53"
+  version = "v4.6.2"
 
 [[projects]]
   name = "github.com/gobuffalo/tags"
@@ -391,7 +391,7 @@
     "html",
     "html/atom"
   ]
-  revision = "d0887baf81f4598189d4e12a37c6da86f0bba4d0"
+  revision = "a0f8a16cb08c06df97cbdf9c47f4731ba548c33c"
 
 [[projects]]
   branch = "master"
@@ -403,7 +403,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "ac767d655b305d4e9612f5f6e33120b9176c4ad4"
+  revision = "bd9dbc187b6e1dacfdd2722a87e83093c2d7bd6e"
 
 [[projects]]
   name = "google.golang.org/appengine"
