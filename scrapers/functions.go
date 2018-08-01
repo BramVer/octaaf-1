@@ -17,13 +17,14 @@ func loadImage(u string) ([]byte, error) {
 
 	client := &http.Client{}
 
+	// By default, the received uri is formatted like "//imgs.xkcd.com/comics/....png"
+	// This creates an error, that's why we parse it as "https://imgs.xkcd.com/comics...."
 	req, err := http.NewRequest(
 		"GET",
 		fmt.Sprintf("https://%v%v", imageURL.Host, imageURL.RequestURI()),
 		nil)
 
 	if err != nil {
-
 		return nil, err
 	}
 

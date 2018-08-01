@@ -25,6 +25,8 @@ func migrateDB() {
 		log.Panic(err)
 	}
 
+	fileMigrator.Status()
+
 	err = fileMigrator.Up()
 
 	if err != nil {
