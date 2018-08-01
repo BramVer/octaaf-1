@@ -83,9 +83,9 @@ func (Web) quote(c *gin.Context) {
 	quoteMap := structs.Map(quote)
 
 	if err != nil {
-		quoteMap["username"] = err
+		quoteMap["from"] = err
 	} else {
-		quoteMap["username"] = user
+		quoteMap["from"] = user
 	}
 
 	c.JSON(200, quoteMap)

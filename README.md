@@ -5,7 +5,6 @@ A telegram bot written in Go
 ## Commands
 
 * /bodegem - A place that is real and exists
-* /bol - Help someone out by subscribing them to the bol.com mailing lists!
 * /count - Get your current message count
 * /doubt - When in doubt...
 * /iasip - Get a random It's Always Sunny In Philadelphia quote

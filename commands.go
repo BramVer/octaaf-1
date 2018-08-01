@@ -137,39 +137,6 @@ func weather(message *tgbotapi.Message) {
 	}
 }
 
-func bol(message *tgbotapi.Message) {
-	bolURL := "https://www.bol.com/nl/nieuwsbrieven.html?country=BE"
-	cookieJar, _ := cookiejar.New(nil)
-	client := &http.Client{
-		Jar: cookieJar,
-	}
-
-	resp, _ := client.Get(bolURL)
-	doc, _ := goquery.NewDocumentFromReader(resp.Body)
-
-	token := "bogusTokenValue"
-
-	doc.Find(".newsletter_subscriptions input").Each(func(i int, node *goquery.Selection) {
-		name, found := node.Attr("name")
-		if found && name == "token" {
-			token, _ = node.Attr("value")
-		}
-	})
-
-	data := url.Values{
-		"emailAddress":          {message.CommandArguments()},
-		"subscribedNewsLetters": {"DAGAANBIEDINGEN", "SOFT_OPTIN", "HARD_OPTIN", "B2B"},
-		"token":                 {token},
-		"updateNewsletters":     {"Voorkeuren+opslaan"}}
-
-	req, _ := http.NewRequest("POST", bolURL, strings.NewReader(data.Encode()))
-	req.Header.Add("Content-Type", "application/x-www-form-urlencoded")
-	req.Header.Add("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36")
-	client.Do(req)
-
-	reply(message, fmt.Sprintf("Succesfully subscribed *%v* to the bol.com mailing lists!", message.CommandArguments()))
-}
-
 func search(message *tgbotapi.Message) {
 	if len(message.CommandArguments()) == 0 {
 		reply(message, "What do you expect me to do? 🤔🤔🤔🤔")

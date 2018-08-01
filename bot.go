@@ -78,8 +78,6 @@ func handle(message *tgbotapi.Message) {
 			weather(message)
 		case "what":
 			what(message)
-		case "bol":
-			bol(message)
 		case "xkcd":
 			xkcd(message)
 		case "quote":
