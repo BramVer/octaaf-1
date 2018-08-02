@@ -10,7 +10,6 @@ srcdir = .
 
 NAME 		= octaaf
 DESCRIPTION = A Go Telegram bot
-# VERSION 	= ${TAG_NAME}
 ARCH 		= x86_64
 
 all: build
@@ -40,6 +39,8 @@ package:
 		--version "$(VERSION)" \
 		--architecture "$(ARCH)" \
 		--iteration $(BUILD_NUMBER) \
+		--url 'https://gitlab.com/BartWillems/octaaf' \
+		--license 'MIT' \
 		--force \
 		--config-files /usr/lib/systemd/system/octaaf.service \
 		--config-files /opt/octaaf/config/.env \

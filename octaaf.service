@@ -3,6 +3,8 @@ Description=Octaaf, a Telegram bot
 Documentation=https://github.com/BartWillems/Octaaf
 Requires=postgresql.service
 After=postgresql.service
+Wants=network-online.target
+After=network-online.target<Paste>
 
 [Service]
 Type=simple
