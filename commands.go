@@ -18,6 +18,98 @@ import (
 	"gopkg.in/telegram-bot-api.v4"
 )
 
+func changelog(message *tgbotapi.Message) {
+	if OctaafVersion == "" {
+		reply(message, "Current version not found, check the changelog here: "+GitUri+"/tags")
+		return
+	}
+
+	reply(message, fmt.Sprintf("%v/tags/%v", GitUri, OctaafVersion))
+}
+
+func all(message *tgbotapi.Message) {
+	members := Redis.SMembers(fmt.Sprintf("members_%v", message.Chat.ID)).Val()
+
+	if len(members) == 0 {
+		reply(message, "I'm afraid I can't do that.")
+		return
+	}
+
+	var response string
+	// Get the members' usernames
+	for _, member := range members {
+		log.Printf(" MEMBER:    %v", member)
+		memberID, err := strconv.Atoi(member)
+
+		if err != nil {
+			continue
+		}
+
+		user, err := getUsername(memberID, message.Chat.ID)
+		if err == nil {
+			response += fmt.Sprintf("@%v ", user.User.UserName)
+		}
+	}
+
+	reply(message, MDEscape(fmt.Sprintf("%v %v", response, message.Text)))
+}
+
+// Work in progress, DB support needed perhaps?
+// Steps:
+//   Add pending job to DB
+//   Create a cronjob based on the DB entry's ID
+//   On start, load pending cronjobs
+func remind(message *tgbotapi.Message) {
+	errorMessage := "Malformed message, please send something like `/remind_me 1 hour het is de schuld van de sossen`"
+	arr := strings.Split(message.Text, " ")
+
+	if len(arr) < 4 {
+		reply(message, errorMessage)
+		return
+	}
+
+	delay, err := strconv.Atoi(arr[1])
+
+	if err != nil || delay < 1 {
+		reply(message, errorMessage)
+		return
+	}
+
+	var deadline time.Time
+
+	now := time.Now()
+
+	unit := arr[2]
+
+	switch unit {
+	case "minute", "minutes":
+		deadline = now.Add(time.Minute * time.Duration(delay)).UTC()
+	case "hour", "hours":
+		deadline = now.Add(time.Hour * time.Duration(delay)).UTC()
+	case "day", "days":
+		deadline = now.Add(time.Hour * time.Duration(delay) * 24).UTC()
+	default:
+		reply(message, "Unknown time format")
+		return
+	}
+
+	var remindMessage string
+
+	// Parse the alertmessage from the string array to 1 string, skip stuff like "/alert 1 hour"
+	for i := 3; i < len(arr); i++ {
+		remindMessage += arr[i]
+	}
+
+	reminder := models.Reminder{
+		ChatID:    message.Chat.ID,
+		MessageID: message.MessageID,
+		Message:   remindMessage,
+		Deadline:  deadline,
+		Executed:  false}
+
+	startReminder(reminder)
+}
+
 func sendRoll(message *tgbotapi.Message) {
 	rand.Seed(time.Now().UnixNano())
 	roll := strconv.Itoa(rand.Intn(9999999999-1000000000) + 1000000000)
@@ -280,12 +372,7 @@ func quote(message *tgbotapi.Message) {
 			return
 		}
 
-		config := tgbotapi.ChatConfigWithUser{
-			ChatID:             message.Chat.ID,
-			SuperGroupUsername: "",
-			UserID:             quote.UserID}
-
-		user, userErr := Octaaf.GetChatMember(config)
+		user, userErr := getUsername(quote.UserID, message.Chat.ID)
 
 		if userErr != nil {
 			reply(message, quote.Quote)

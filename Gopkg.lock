@@ -391,7 +391,7 @@
     "html",
     "html/atom"
   ]
-  revision = "a0f8a16cb08c06df97cbdf9c47f4731ba548c33c"
+  revision = "f4c29de78a2a91c00474a2e689954305c350adf9"
 
 [[projects]]
   branch = "master"
@@ -403,7 +403,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "bd9dbc187b6e1dacfdd2722a87e83093c2d7bd6e"
+  revision = "3dc4335d56c789b04b0ba99b7a37249d9b614314"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -449,6 +449,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "d12d1254274726ea84d7544c584b192d2432853a9b521525f6013cf73aa955b8"
+  inputs-digest = "5460555811b538789dd3ea91e26e5d677d9e0ecba7d353f818d0ed728cd674fe"
   solver-name = "gps-cdcl"
   solver-version = 1

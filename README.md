@@ -4,7 +4,9 @@ A telegram bot written in Go
 
 ## Commands
 
+* /all - Send a message to all active members in a group
 * /bodegem - A place that is real and exists
+* /changelog - View the Octaaf changelog
 * /count - Get your current message count
 * /doubt - When in doubt...
 * /iasip - Get a random It's Always Sunny In Philadelphia quote
@@ -16,6 +18,7 @@ A telegram bot written in Go
 * /more - MORE IMAGES
 * /next_launch - Show the next 5 rocket launches
 * /quote - Get or store random kali quotes
+* /remind_me - Remind me in a given time
 * /reported - Get the reported count
 * /roll - Praise kek
 * /search - Search stuff on DuckDuckGo with safe search on
@@ -37,6 +40,7 @@ A telegram bot written in Go
     * ```sudo -u postgres -i```
     * ```initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data'```
     * [Create your first DB user](https://wiki.archlinux.org/index.php/PostgreSQL#Create_your_first_database.2Fuser)
+1. Install and run Redis
 1. a google api key *(optional)*
 1. ```cp config/.env.dist config/.env```
 1. ```cp config/database.yml.dist config/database.yml```

@@ -26,6 +26,9 @@ package:
 	mkdir -p $(CONFIG)
 	mkdir -p $(SYSTEM)
 
+	# Write the version string for /changelog
+	echo "$(VERSION)" > ./assets/version
+	
 	cp ./octaaf $(TARGET)/
 	cp ./octaaf.service $(SYSTEM)/octaaf.service
 	cp ./config/.env.dist $(CONFIG)/.env

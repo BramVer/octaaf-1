@@ -58,12 +58,16 @@ func handle(message *tgbotapi.Message) {
 
 	if message.IsCommand() {
 		switch message.Command() {
+		case "all":
+			all(message)
 		case "roll":
 			sendRoll(message)
 		case "m8ball":
 			m8Ball(message)
 		case "bodegem":
 			sendBodegem(message)
+		case "changelog":
+			changelog(message)
 		case "img", "img_sfw", "more":
 			sendImage(message)
 		case "stallman":
@@ -94,6 +98,8 @@ func handle(message *tgbotapi.Message) {
 			iasip(message)
 		case "reported":
 			reported(message)
+		case "remind_me":
+			remind(message)
 		}
 	}
 
@@ -104,6 +110,8 @@ func handle(message *tgbotapi.Message) {
 		Octaaf.Send(msg)
 	}
 
+	// Maintain an array of chat members per group in Redis
+	Redis.SAdd(fmt.Sprintf("members_%v", message.Chat.ID), message.From.ID)
 }
 
 func sendGlobal(message string) {
@@ -131,4 +139,13 @@ func reply(message *tgbotapi.Message, text string, markdown ...bool) {
 	if err != nil {
 		log.Printf("Error while sending message with content: '%s'; Error: %s", text, err)
 	}
+}
+
+func getUsername(userID int, chatID int64) (tgbotapi.ChatMember, error) {
+	config := tgbotapi.ChatConfigWithUser{
+		ChatID:             chatID,
+		SuperGroupUsername: "",
+		UserID:             userID}
+
+	return Octaaf.GetChatMember(config)
 }
