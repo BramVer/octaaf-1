@@ -97,7 +97,7 @@ func remind(message *tgbotapi.Message) {
 
 	// Parse the alertmessage from the string array to 1 string, skip stuff like "/alert 1 hour"
 	for i := 3; i < len(arr); i++ {
-		remindMessage += arr[i]
+		remindMessage += fmt.Sprintf("%v ", arr[i])
 	}
 
 	reminder := models.Reminder{
