@@ -4,7 +4,9 @@ import (
 	"fmt"
 	"log"
 	"octaaf/models"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"gopkg.in/telegram-bot-api.v4"
@@ -55,25 +57,43 @@ func getLeetBlazers(event string) {
 	}
 
 	reply := "Today "
-
 	if len(participators) == 1 {
-		reply += fmt.Sprintf("only @%v participated in the %v.", participators[0], event)
-		sendGlobal(reply)
-		Redis.Del(event)
-		return
+		reply += "only "
 	}
 
+	// Loop through the participators
+	// Fetch their usernames assynchronously
+	var wg sync.WaitGroup
 	for index, participator := range participators {
-		if index == (len(participators) - 1) {
-			reply += fmt.Sprintf(" and @%v", participator)
-		} else {
-			if index == 0 {
-				reply += fmt.Sprintf("@%v", participator)
-			} else {
-				reply += fmt.Sprintf(", @%v", participator)
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			userID, _ := strconv.Atoi(participator)
+			log.Printf("UserID: %v", userID)
+			user, err := getUsername(userID, KaliID)
+
+			if err == nil {
+				username := user.User.UserName
+				if index == 0 {
+					reply += fmt.Sprintf("@%v", username)
+				} else {
+					if index == len(participators)-1 {
+						reply += fmt.Sprintf(" and @%v", username)
+					} else {
+						reply += fmt.Sprintf(", @%v", username)
+					}
+				}
 			}
-		}
+
+			// Store this absolute unit in the database
+			kali := models.Kalivent{
+				UserID: userID,
+				Date:   time.Now(),
+				Type:   event}
+			go DB.Save(&kali)
+		}()
 	}
+	wg.Wait()
 
 	reply += fmt.Sprintf(" participated in the %v.", event)
 	sendGlobal(reply)
@@ -83,7 +103,7 @@ func getLeetBlazers(event string) {
 func addLeetBlazer(message *tgbotapi.Message, event string) {
 	if strings.Contains(message.Text, event) {
 		log.Printf("Leetblazer found!")
-		Redis.SAdd(event, message.From.UserName)
+		Redis.SAdd(event, message.From.ID)
 	}
 }
 

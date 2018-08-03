@@ -10,6 +10,7 @@ import (
 	"octaaf/scrapers"
 	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	humanize "github.com/dustin/go-humanize"
@@ -35,6 +36,8 @@ func all(message *tgbotapi.Message) {
 		return
 	}
 
+	// used to load the usernames in goroutines
+	var wg sync.WaitGroup
 	var response string
 	// Get the members' usernames
 	for _, member := range members {
@@ -45,12 +48,17 @@ func all(message *tgbotapi.Message) {
 			continue
 		}
 
-		user, err := getUsername(memberID, message.Chat.ID)
-		if err == nil {
-			response += fmt.Sprintf("@%v ", user.User.UserName)
-		}
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			user, err := getUsername(memberID, message.Chat.ID)
+			if err == nil {
+				response += fmt.Sprintf("@%v ", user.User.UserName)
+			}
+		}()
 	}
 
+	wg.Wait()
 	reply(message, MDEscape(fmt.Sprintf("%v %v", response, message.Text)))
 }
 
