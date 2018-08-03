@@ -39,7 +39,8 @@ func initBot() {
 	}
 
 	if OctaafEnv == "production" {
-		sendGlobal("I'm up and running! 👌")
+		sendGlobal(fmt.Sprintf("I'm up and running! 👌\nRunning with version: %v", OctaafVersion))
+		sendGlobal(fmt.Sprintf("Check out the changelog over here: \n%v/tags/%v", GitUri, OctaafVersion))
 
 		c := make(chan os.Signal, 2)
 		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
