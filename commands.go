@@ -41,7 +41,6 @@ func all(message *tgbotapi.Message) {
 	var response string
 	// Get the members' usernames
 	for _, member := range members {
-		log.Printf(" MEMBER:    %v", member)
 		memberID, err := strconv.Atoi(member)
 
 		if err != nil {
@@ -96,6 +95,8 @@ func remind(message *tgbotapi.Message) {
 		deadline = now.Add(time.Hour * time.Duration(delay)).UTC()
 	case "day", "days":
 		deadline = now.Add(time.Hour * time.Duration(delay) * 24).UTC()
+	case "week", "weeks":
+		deadline = now.Add(time.Hour * time.Duration(delay) * 24 * 7).UTC()
 	default:
 		reply(message, "Unknown time format")
 		return
@@ -115,7 +116,8 @@ func remind(message *tgbotapi.Message) {
 		Deadline:  deadline,
 		Executed:  false}
 
-	startReminder(reminder)
+	go startReminder(reminder)
+	reply(message, "Reminder saved!")
 }
 
 func sendRoll(message *tgbotapi.Message) {
@@ -373,7 +375,7 @@ func quote(message *tgbotapi.Message) {
 			err = DB.Where("chat_id = ?", message.Chat.ID).Order("random()").Limit(1).First(&quote)
 		}
 
-		log.Printf("ERROR %s", err)
+		log.Printf("Quote fetch error: %s", err)
 
 		if err != nil {
 			reply(message, "No quote found boi")

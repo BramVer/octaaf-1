@@ -6,9 +6,9 @@ import (
 	"octaaf/models"
 	"strconv"
 	"strings"
-	"sync"
 	"time"
 
+	"github.com/dustin/go-humanize/english"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
@@ -56,44 +56,37 @@ func getLeetBlazers(event string) {
 		return
 	}
 
+	var usernames []string
+
+	// Loop through the participators
+	// Fetch their usernames
+	// Store the kalivent in the DB
+	for _, participator := range participators {
+		userID, _ := strconv.Atoi(participator)
+		log.Printf("UserID: %v", userID)
+		user, err := getUsername(userID, KaliID)
+
+		if err != nil {
+			log.Printf("Unable to fetch username for the kalivent %v; error: %v", event, err)
+			continue
+		}
+
+		usernames = append(usernames, fmt.Sprintf("@%v", user.User.UserName))
+
+		// Store this absolute unit in the database
+		kali := models.Kalivent{
+			UserID: userID,
+			Date:   time.Now(),
+			Type:   event}
+		DB.Save(&kali)
+	}
+
 	reply := "Today "
-	if len(participators) == 1 {
+	if len(usernames) == 1 {
 		reply += "only "
 	}
 
-	// Loop through the participators
-	// Fetch their usernames assynchronously
-	var wg sync.WaitGroup
-	for index, participator := range participators {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
-			userID, _ := strconv.Atoi(participator)
-			log.Printf("UserID: %v", userID)
-			user, err := getUsername(userID, KaliID)
-
-			if err == nil {
-				username := user.User.UserName
-				if index == 0 {
-					reply += fmt.Sprintf("@%v", username)
-				} else {
-					if index == len(participators)-1 {
-						reply += fmt.Sprintf(" and @%v", username)
-					} else {
-						reply += fmt.Sprintf(", @%v", username)
-					}
-				}
-			}
-
-			// Store this absolute unit in the database
-			kali := models.Kalivent{
-				UserID: userID,
-				Date:   time.Now(),
-				Type:   event}
-			go DB.Save(&kali)
-		}()
-	}
-	wg.Wait()
+	reply += english.WordSeries(usernames, "and")
 
 	reply += fmt.Sprintf(" participated in the %v.", event)
 	sendGlobal(reply)
@@ -102,7 +95,7 @@ func getLeetBlazers(event string) {
 
 func addLeetBlazer(message *tgbotapi.Message, event string) {
 	if strings.Contains(message.Text, event) {
-		log.Printf("Leetblazer found!")
+		log.Printf("Leetblazer found with id: %v!", message.From.ID)
 		Redis.SAdd(event, message.From.ID)
 	}
 }
