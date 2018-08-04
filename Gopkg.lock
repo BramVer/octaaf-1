@@ -34,7 +34,10 @@
 [[projects]]
   branch = "master"
   name = "github.com/dustin/go-humanize"
-  packages = ["."]
+  packages = [
+    ".",
+    "english"
+  ]
   revision = "9f541cc9db5d55bce703bd99987c9d5cb8eea45e"
 
 [[projects]]
@@ -449,6 +452,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "5460555811b538789dd3ea91e26e5d677d9e0ecba7d353f818d0ed728cd674fe"
+  inputs-digest = "61c08a7865be6bacdeba74e3f34ffe5fc4a5b39a63ec299e5674da150437d8b4"
   solver-name = "gps-cdcl"
   solver-version = 1
