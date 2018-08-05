@@ -58,7 +58,7 @@ func all(message *tgbotapi.Message) {
 	}
 
 	wg.Wait()
-	reply(message, MDEscape(fmt.Sprintf("%v %v", response, message.Text)))
+	reply(message, MDEscape(fmt.Sprintf("%v %v", response, message.CommandArguments())))
 }
 
 // Work in progress, DB support needed perhaps?
