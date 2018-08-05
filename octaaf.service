@@ -1,10 +1,9 @@
 [Unit]
 Description=Octaaf, a Telegram bot
 Documentation=https://github.com/BartWillems/Octaaf
-Requires=postgresql.service
-After=postgresql.service
+Requires=postgresql.service redis.service
 Wants=network-online.target
-After=network-online.target<Paste>
+After=network-online.target
 
 [Service]
 Type=simple

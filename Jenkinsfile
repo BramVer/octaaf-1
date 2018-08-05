@@ -44,6 +44,7 @@ pipeline {
                 sh """
                 ssh root@${REPO_SERVER} '\\
                     yum makecache; yum update octaaf -y \\
+                    && systemctl daemon-reload \\
                     && systemctl restart octaaf'
                 """
             }
