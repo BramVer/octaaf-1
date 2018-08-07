@@ -67,7 +67,7 @@
     "json",
     "render"
   ]
-  revision = "220e8d34538f5dfdcc299dda79bf83cf52e633f6"
+  revision = "647535cd9b780b6ccbeccfedfba36896e1a1da37"
 
 [[projects]]
   name = "github.com/go-redis/cache"
@@ -112,8 +112,8 @@
     ".",
     "translators"
   ]
-  revision = "a68affc47dc7145d791149e996c379a0f46ee507"
-  version = "v1.0.2"
+  revision = "54d7726bb158adcfe497efef76aad89fab037f2e"
+  version = "v1.0.4"
 
 [[projects]]
   name = "github.com/gobuffalo/makr"
@@ -164,8 +164,8 @@
 [[projects]]
   name = "github.com/gobuffalo/uuid"
   packages = ["."]
-  revision = "3a9fb6c5c481d4886f1e9323c61ad743fb955860"
-  version = "v2.0.0"
+  revision = "788767dde529e4b1c0e078569ebe51dc6b2ad6dc"
+  version = "v2.0.1"
 
 [[projects]]
   name = "github.com/gobuffalo/validate"
@@ -200,8 +200,8 @@
 [[projects]]
   name = "github.com/json-iterator/go"
   packages = ["."]
-  revision = "ab8a2e0c74be9d3be70b3184d9acc634935ded82"
-  version = "1.1.4"
+  revision = "1624edc4454b8682399def8740d46db5e4362ba4"
+  version = "1.1.5"
 
 [[projects]]
   branch = "master"
@@ -274,7 +274,7 @@
   branch = "master"
   name = "github.com/russross/blackfriday"
   packages = ["."]
-  revision = "11635eb403ff09dbc3a6b5a007ab5ab09151c229"
+  revision = "46c73eb196baff5bb07288f245b223bd1a30fba6"
 
 [[projects]]
   branch = "master"
@@ -362,8 +362,8 @@
 [[projects]]
   name = "github.com/tidwall/gjson"
   packages = ["."]
-  revision = "f123b340873a0084cb27267eddd8ff615115fbff"
-  version = "v1.1.2"
+  revision = "1e3f6aeaa5bad08d777ea7807b279a07885dd8b2"
+  version = "v1.1.3"
 
 [[projects]]
   branch = "master"
@@ -406,7 +406,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "3dc4335d56c789b04b0ba99b7a37249d9b614314"
+  revision = "34b17bdb430002e9db9ae7ddc8480b9fa05edc22"
 
 [[projects]]
   name = "google.golang.org/appengine"
