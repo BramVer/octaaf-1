@@ -38,7 +38,7 @@ func loadReminders() {
 	err := DB.Where("executed = false").Order("created_at").All(&reminders)
 
 	if err != nil {
-		log.Printf("Unable to load pending reminders: %v")
+		log.Printf("Unable to load pending reminders: %v", err)
 		return
 	}
 
