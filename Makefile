@@ -44,6 +44,8 @@ package:
 		--iteration $(BUILD_NUMBER) \
 		--url 'https://gitlab.com/BartWillems/octaaf' \
 		--license 'MIT' \
+		--depends 'postgresql' \
+		--depends 'redis' \
 		--force \
 		--config-files /usr/lib/systemd/system/octaaf.service \
 		--config-files /opt/octaaf/config/.env \
