@@ -1,0 +1,1 @@
+add_column("reminders", "user_id", "integer", {"null": true})

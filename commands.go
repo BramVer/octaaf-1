@@ -111,6 +111,7 @@ func remind(message *tgbotapi.Message) {
 
 	reminder := models.Reminder{
 		ChatID:    message.Chat.ID,
+		UserID:    message.From.ID,
 		MessageID: message.MessageID,
 		Message:   remindMessage,
 		Deadline:  deadline,

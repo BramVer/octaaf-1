@@ -1,1 +1,1 @@
-drop_column("table_name", "chat_id")
+drop_column("quotes", "chat_id")

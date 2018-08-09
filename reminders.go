@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"octaaf/models"
 	"time"
@@ -24,7 +25,13 @@ func startReminder(reminder models.Reminder) {
 		<-timer.C
 	}
 
-	msg := tgbotapi.NewMessage(reminder.ChatID, reminder.Message)
+	var username string
+	user, err := getUsername(reminder.UserID, reminder.ChatID)
+	if err == nil {
+		username = "@" + user.User.UserName + ": "
+	}
+
+	msg := tgbotapi.NewMessage(reminder.ChatID, fmt.Sprintf("%v%v", username, reminder.Message))
 	msg.ReplyToMessageID = reminder.MessageID
 	go Octaaf.Send(msg)
 

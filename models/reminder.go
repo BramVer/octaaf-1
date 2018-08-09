@@ -12,6 +12,7 @@ type Reminder struct {
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 	ChatID    int64     `json:"chat_id" db:"chat_id"`
+	UserID    int       `json:"user_id" db:"user_id"`
 	MessageID int       `json:"message_id" db:"message_id"`
 	Message   string    `json:"message" db:"message"`
 	Deadline  time.Time `json:"deadline" db:"deadline"`
