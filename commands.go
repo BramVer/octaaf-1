@@ -61,11 +61,6 @@ func all(message *tgbotapi.Message) {
 	reply(message, MDEscape(fmt.Sprintf("%v %v", response, message.CommandArguments())))
 }
 
-// Work in progress, DB support needed perhaps?
-// Steps:
-//   Add pending job to DB
-//   Create a cronjob based on the DB entry's ID
-//   On start, load pending cronjobs
 func remind(message *tgbotapi.Message) {
 	errorMessage := "Malformed message, please send something like `/remind_me 1 hour het is de schuld van de sossen`"
 	arr := strings.Split(message.Text, " ")

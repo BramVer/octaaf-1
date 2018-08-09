@@ -1,37 +1,47 @@
-package main
+package web
 
 import (
 	"octaaf/models"
 
 	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
+	"github.com/go-redis/redis"
+	"github.com/gobuffalo/envy"
+	"github.com/gobuffalo/pop"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
-type Web struct{}
+type Connections struct {
+	Octaaf   *tgbotapi.BotAPI
+	Postgres *pop.Connection
+	Redis    *redis.Client
+	KaliID   int64
+}
 
-func ginit() {
+var conn Connections
 
-	var web Web
+func New(c Connections) *gin.Engine {
+	conn = c
 
-	if OctaafEnv == "production" {
+	if envy.Get("GO_ENV", "development") == "production" {
 		gin.SetMode("release")
 	}
 
 	router := gin.Default()
 	api := router.Group("/api/v1")
 	{
-		api.GET("/health", web.health)
+		api.GET("/health", health)
 	}
 
 	kali := api.Group("/kali")
 	{
-		kali.GET("/quote", web.quote)
+		kali.GET("/quote", quote)
 	}
-	router.Run()
+
+	return router
 }
 
-func (Web) health(c *gin.Context) {
+func health(c *gin.Context) {
 	// HTTP status code, either 200 or 500
 	status := 200
 	// User facing status message, contains all services
@@ -42,21 +52,21 @@ func (Web) health(c *gin.Context) {
 	}
 
 	// Redis
-	redisErr := Redis.Ping().Err()
+	redisErr := conn.Redis.Ping().Err()
 	if redisErr != nil {
 		statusMessage["redis"] = redisErr
 		status = 500
 	}
 
 	// Postgres
-	postgresErr := DB.RawQuery("SELECT COUNT(pid) FROM pg_stat_activity;").Exec()
+	postgresErr := conn.Postgres.RawQuery("SELECT COUNT(pid) FROM pg_stat_activity;").Exec()
 	if postgresErr != nil {
 		statusMessage["postgres"] = postgresErr
 		status = 500
 	}
 
 	// Telegram
-	_, telegramErr := Octaaf.GetMe()
+	_, telegramErr := conn.Octaaf.GetMe()
 	if telegramErr != nil {
 		statusMessage["telegram"] = telegramErr
 		status = 500
@@ -65,20 +75,23 @@ func (Web) health(c *gin.Context) {
 	c.JSON(status, statusMessage)
 }
 
-func (Web) quote(c *gin.Context) {
+func quote(c *gin.Context) {
 	quote := models.Quote{}
-	err := DB.Where("chat_id = ?", KaliID).Order("random()").Limit(1).First(&quote)
+	err := conn.Postgres.Where("chat_id = ?", conn.KaliID).Order("random()").Limit(1).First(&quote)
 
 	if err != nil {
-		c.JSON(500, err)
+		c.JSON(500, gin.H{
+			"error": err.Error(),
+		})
+		return
 	}
 
 	config := tgbotapi.ChatConfigWithUser{
-		ChatID:             KaliID,
+		ChatID:             conn.KaliID,
 		SuperGroupUsername: "",
 		UserID:             quote.UserID}
 
-	user, err := Octaaf.GetChatMember(config)
+	user, err := conn.Octaaf.GetChatMember(config)
 
 	quoteMap := structs.Map(quote)
 

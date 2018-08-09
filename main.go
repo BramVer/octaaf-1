@@ -6,6 +6,7 @@ import (
 
 	"github.com/gobuffalo/envy"
 	"gopkg.in/telegram-bot-api.v4"
+	"octaaf/web"
 )
 
 // OctaafEnv is either development or production
@@ -30,7 +31,14 @@ func main() {
 
 	initCrons()
 
-	go ginit()
+	router := web.New(web.Connections{
+		Octaaf:   Octaaf,
+		Postgres: DB,
+		Redis:    Redis,
+		KaliID:   KaliID,
+	})
+
+	err := router.Run()
 
 	defer Cron.Stop()
 
