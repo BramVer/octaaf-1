@@ -67,7 +67,7 @@
     "json",
     "render"
   ]
-  revision = "647535cd9b780b6ccbeccfedfba36896e1a1da37"
+  revision = "8fc8ce047243dbbbc5eb3d01b9fd026fc3b08c82"
 
 [[projects]]
   name = "github.com/go-redis/cache"
@@ -112,8 +112,14 @@
     ".",
     "translators"
   ]
-  revision = "54d7726bb158adcfe497efef76aad89fab037f2e"
-  version = "v1.0.4"
+  revision = "a210f7878542ac427c2d50e183f53feb38dea1f7"
+  version = "v1.0.6"
+
+[[projects]]
+  name = "github.com/gobuffalo/github_flavored_markdown"
+  packages = ["."]
+  revision = "6af65dcbf5386db0b8da50e160ff0fdda7ef1459"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/gobuffalo/makr"
@@ -124,8 +130,8 @@
 [[projects]]
   name = "github.com/gobuffalo/packr"
   packages = ["."]
-  revision = "9e76dbe10b00dd1fa8f29cfa4fac72297beb32a4"
-  version = "v1.12.1"
+  revision = "4399355520ba52518a972ac16c24f6eb8a1610c1"
+  version = "v1.13.1"
 
 [[projects]]
   name = "github.com/gobuffalo/plush"
@@ -136,8 +142,8 @@
     "parser",
     "token"
   ]
-  revision = "726a3d7f08d2665e95e495175ddb68da00868572"
-  version = "v3.7.9"
+  revision = "8d37e0b25872764b4ff35a11eaaf1e8074251121"
+  version = "v3.7.11"
 
 [[projects]]
   name = "github.com/gobuffalo/pop"
@@ -148,8 +154,8 @@
     "fix",
     "nulls"
   ]
-  revision = "c0faa0f7edf8c0db4befe9abc41d135003a97d53"
-  version = "v4.6.2"
+  revision = "f7f4e882bd509b48db850bdff8dde6f86c82404d"
+  version = "v4.6.3"
 
 [[projects]]
   name = "github.com/gobuffalo/tags"
@@ -220,7 +226,7 @@
     "wait"
   ]
   revision = "0576708c56cea02331f864fe6e157ac7841923e4"
-  version = "v1.0.0"
+  version = "v1.0.1"
 
 [[projects]]
   name = "github.com/markbates/inflect"
@@ -272,12 +278,6 @@
 
 [[projects]]
   branch = "master"
-  name = "github.com/russross/blackfriday"
-  packages = ["."]
-  revision = "46c73eb196baff5bb07288f245b223bd1a30fba6"
-
-[[projects]]
-  branch = "master"
   name = "github.com/serenize/snaker"
   packages = ["."]
   revision = "a683aaf2d516deecd70cad0c72e3ca773ecfcef0"
@@ -287,12 +287,6 @@
   packages = ["diffmatchpatch"]
   revision = "1744e2970ca51c86172c8190fadad617561ed6e7"
   version = "v1.0.0"
-
-[[projects]]
-  branch = "master"
-  name = "github.com/shurcooL/github_flavored_markdown"
-  packages = ["."]
-  revision = "8913699a52e3aa02aa96387098e0004bb84aacf0"
 
 [[projects]]
   branch = "master"
@@ -394,7 +388,7 @@
     "html",
     "html/atom"
   ]
-  revision = "f4c29de78a2a91c00474a2e689954305c350adf9"
+  revision = "f9ce57c11b242f0f1599cf25c89d8cb02c45295a"
 
 [[projects]]
   branch = "master"
@@ -406,7 +400,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "34b17bdb430002e9db9ae7ddc8480b9fa05edc22"
+  revision = "f0d5e33068cb57c22a181f5df0ffda885309eb5a"
 
 [[projects]]
   name = "google.golang.org/appengine"
@@ -436,6 +430,12 @@
   name = "gopkg.in/robfig/cron.v2"
   packages = ["."]
   revision = "be2e0b0deed5a68ffee390b4583a13aff8321535"
+
+[[projects]]
+  name = "gopkg.in/russross/blackfriday.v1"
+  packages = ["."]
+  revision = "55d61fa8aa702f59229e6cff85793c22e580eaf5"
+  version = "v1.5.1"
 
 [[projects]]
   name = "gopkg.in/telegram-bot-api.v4"
