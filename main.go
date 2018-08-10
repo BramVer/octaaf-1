@@ -30,6 +30,7 @@ func main() {
 	loadReminders()
 
 	initCrons()
+	defer Cron.Stop()
 
 	router := web.New(web.Connections{
 		Octaaf:   Octaaf,
@@ -38,9 +39,12 @@ func main() {
 		KaliID:   KaliID,
 	})
 
-	err := router.Run()
-
-	defer Cron.Stop()
+	go func() {
+		err := router.Run()
+		if err != nil {
+			log.Printf("Gin creation error: %v", err)
+		}
+	}()
 
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
