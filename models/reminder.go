@@ -1,7 +1,6 @@
 package models
 
 import (
-	"encoding/json"
 	"time"
 
 	"github.com/gobuffalo/uuid"
@@ -19,11 +18,14 @@ type Reminder struct {
 	Executed  bool      `json:"executed" db:"executed"`
 }
 
-// Alerts is not required by pop and may be deleted
 type Reminders []Reminder
 
-// String is not required by pop and may be deleted
-func (r Reminders) String() string {
-	jr, _ := json.Marshal(r)
-	return string(jr)
+// Block the routine until the deadline is reached
+func (r *Reminder) Wait() {
+	if r.Deadline.After(time.Now()) {
+		delay := r.Deadline.UnixNano() - time.Now().UnixNano()
+
+		timer := time.NewTimer(time.Duration(delay))
+		<-timer.C
+	}
 }

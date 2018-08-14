@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"log"
 	"octaaf/models"
-	"time"
 
 	"gopkg.in/telegram-bot-api.v4"
 )
@@ -17,13 +16,7 @@ func startReminder(reminder models.Reminder) {
 		return
 	}
 
-	// Only wait for the deadline if it's actually in the future
-	if reminder.Deadline.After(time.Now()) {
-		delay := reminder.Deadline.UnixNano() - time.Now().UnixNano()
-
-		timer := time.NewTimer(time.Duration(delay))
-		<-timer.C
-	}
+	reminder.Wait()
 
 	var username string
 	user, err := getUsername(reminder.UserID, reminder.ChatID)

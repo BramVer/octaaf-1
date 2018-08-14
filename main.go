@@ -23,14 +23,14 @@ func main() {
 	OctaafEnv = envy.Get("GO_ENV", "development")
 
 	loadVersion()
-	connectDB()
-	migrateDB()
+	initDB()
 	initRedis()
 	initBot()
 	loadReminders()
 
-	initCrons()
-	defer Cron.Stop()
+	cron := initCrons()
+	cron.Start()
+	defer cron.Stop()
 
 	router := web.New(web.Connections{
 		Octaaf:   Octaaf,

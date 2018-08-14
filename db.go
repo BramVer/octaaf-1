@@ -9,13 +9,15 @@ import (
 // DB Global Connection
 var DB *pop.Connection
 
-func connectDB() {
+func initDB() {
 	var err error
 	DB, err = pop.Connect(OctaafEnv)
 	if err != nil {
 		log.Fatal(err)
 	}
 	pop.Debug = OctaafEnv == "development"
+
+	migrateDB()
 }
 
 func migrateDB() {

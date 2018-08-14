@@ -59,7 +59,6 @@
   revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
 
 [[projects]]
-  branch = "master"
   name = "github.com/gin-gonic/gin"
   packages = [
     ".",
@@ -67,7 +66,8 @@
     "json",
     "render"
   ]
-  revision = "8fc8ce047243dbbbc5eb3d01b9fd026fc3b08c82"
+  revision = "b869fe1415e4b9eb52f247441830d502aece2d4d"
+  version = "v1.3.0"
 
 [[projects]]
   name = "github.com/go-redis/cache"
@@ -112,8 +112,8 @@
     ".",
     "translators"
   ]
-  revision = "a210f7878542ac427c2d50e183f53feb38dea1f7"
-  version = "v1.0.6"
+  revision = "ed3c04cc6ea58c498108d301e884f1d801815676"
+  version = "v1.0.7"
 
 [[projects]]
   name = "github.com/gobuffalo/github_flavored_markdown"
@@ -124,8 +124,8 @@
 [[projects]]
   name = "github.com/gobuffalo/makr"
   packages = ["."]
-  revision = "2f752af1831478b8c496635cb46b947811097061"
-  version = "v1.1.0"
+  revision = "78203949514e95285d997d2028cb7972f3be780c"
+  version = "v1.1.1"
 
 [[projects]]
   name = "github.com/gobuffalo/packr"
@@ -142,8 +142,8 @@
     "parser",
     "token"
   ]
-  revision = "8d37e0b25872764b4ff35a11eaaf1e8074251121"
-  version = "v3.7.11"
+  revision = "2745528122561ce3fa4a6b01e0608a8b3264a4f5"
+  version = "v3.7.13"
 
 [[projects]]
   name = "github.com/gobuffalo/pop"
@@ -154,8 +154,8 @@
     "fix",
     "nulls"
   ]
-  revision = "f7f4e882bd509b48db850bdff8dde6f86c82404d"
-  version = "v4.6.3"
+  revision = "9f8bf0c119201fa7e839f2f02d9ccc8f81b021d1"
+  version = "v4.6.4"
 
 [[projects]]
   name = "github.com/gobuffalo/tags"
@@ -164,14 +164,14 @@
     "form",
     "form/bootstrap"
   ]
-  revision = "96c7cdfcadcb28eb1b42b9080ba7f93936ffc5c5"
-  version = "v2.0.7"
+  revision = "4c0ef4ed8a981af92b651d7b9b13668253fc970e"
+  version = "v2.0.8"
 
 [[projects]]
   name = "github.com/gobuffalo/uuid"
   packages = ["."]
-  revision = "788767dde529e4b1c0e078569ebe51dc6b2ad6dc"
-  version = "v2.0.1"
+  revision = "82924465e062db2a6540bd943e8dfbb87f875d43"
+  version = "v2.0.2"
 
 [[projects]]
   name = "github.com/gobuffalo/validate"
@@ -388,7 +388,7 @@
     "html",
     "html/atom"
   ]
-  revision = "f9ce57c11b242f0f1599cf25c89d8cb02c45295a"
+  revision = "c39426892332e1bb5ec0a434a079bf82f5d30c54"
 
 [[projects]]
   branch = "master"
@@ -400,7 +400,7 @@
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix"]
-  revision = "f0d5e33068cb57c22a181f5df0ffda885309eb5a"
+  revision = "4e1fef5609515ec7a2cee7b5de30ba6d9b438cbf"
 
 [[projects]]
   name = "google.golang.org/appengine"

@@ -41,7 +41,9 @@ A telegram bot written in Go
     * ```initdb --locale en_US.UTF-8 -E UTF8 -D '/var/lib/postgres/data'```
     * [Create your first DB user](https://wiki.archlinux.org/index.php/PostgreSQL#Create_your_first_database.2Fuser)
 1. Install and run Redis
+1. [Soda](https://gobuffalo.io/en/docs/db/toolbox)
 1. a google api key *(optional)*
 1. ```cp config/.env.dist config/.env```
 1. ```cp config/database.yml.dist config/database.yml```
 1. Enter the correct values in both config files
+1. _(Optional)_ <https://github.com/tools/godep>
