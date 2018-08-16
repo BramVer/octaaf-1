@@ -112,8 +112,8 @@
     ".",
     "translators"
   ]
-  revision = "ed3c04cc6ea58c498108d301e884f1d801815676"
-  version = "v1.0.7"
+  revision = "f57f22e853fa196e6e0048979cedba8219fa41d1"
+  version = "v1.0.8"
 
 [[projects]]
   name = "github.com/gobuffalo/github_flavored_markdown"
@@ -124,14 +124,14 @@
 [[projects]]
   name = "github.com/gobuffalo/makr"
   packages = ["."]
-  revision = "78203949514e95285d997d2028cb7972f3be780c"
-  version = "v1.1.1"
+  revision = "47230b587ca04538db13185ef76cf0147f1c1f0f"
+  version = "v1.1.2"
 
 [[projects]]
   name = "github.com/gobuffalo/packr"
   packages = ["."]
-  revision = "4399355520ba52518a972ac16c24f6eb8a1610c1"
-  version = "v1.13.1"
+  revision = "1aab5672bd385f2a7da18bffa961912e7642ea79"
+  version = "v1.13.2"
 
 [[projects]]
   name = "github.com/gobuffalo/plush"
@@ -142,8 +142,8 @@
     "parser",
     "token"
   ]
-  revision = "2745528122561ce3fa4a6b01e0608a8b3264a4f5"
-  version = "v3.7.13"
+  revision = "f080797c159c8511388e2294c73960fdd4a4d075"
+  version = "v3.7.14"
 
 [[projects]]
   name = "github.com/gobuffalo/pop"
@@ -179,8 +179,8 @@
     ".",
     "validators"
   ]
-  revision = "42d8db6e06e617cdedcc7a849d6690a2cb5a8d28"
-  version = "v2.0.0"
+  revision = "5599425b8e56ecfbbccd9939a746f7cc5ccd28a2"
+  version = "v2.0.1"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -400,7 +400,7 @@
     "html",
     "html/atom"
   ]
-  revision = "c39426892332e1bb5ec0a434a079bf82f5d30c54"
+  revision = "aaf60122140d3fcf75376d319f0554393160eb50"
 
 [[projects]]
   branch = "master"
@@ -415,7 +415,7 @@
     "unix",
     "windows"
   ]
-  revision = "4e1fef5609515ec7a2cee7b5de30ba6d9b438cbf"
+  revision = "1c9583448a9c3aa0f9a6a5241bf73c0bd8aafded"
 
 [[projects]]
   name = "google.golang.org/appengine"
