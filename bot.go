@@ -40,7 +40,7 @@ func initBot() {
 
 	if state.Environment == "production" {
 		sendGlobal(fmt.Sprintf("I'm up and running! 👌\nRunning with version: %v", state.Version))
-		sendGlobal(fmt.Sprintf("Check out the changelog over here: \n%v/tags/%v", state.Environment, state.Version))
+		sendGlobal(fmt.Sprintf("Check out the changelog over here: \n%v/tags/%v", state.GitUri, state.Version))
 
 		c := make(chan os.Signal, 2)
 		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
