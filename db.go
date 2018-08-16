@@ -13,7 +13,7 @@ func getDB() *pop.Connection {
 		log.Fatal(err)
 	}
 	log.Info("Established DB connection.")
-	pop.Debug = state.Environment == "development"
+	pop.Debug = envy.Get("GO_ENV", "development") == "development"
 	return db
 }
 
