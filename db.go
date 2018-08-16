@@ -6,19 +6,21 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func getDB() *pop.Connection {
+var DB *pop.Connection
+
+func initDB() {
 	// Don't refer to state.Environment as this function is called before it's available
-	db, err := pop.Connect(envy.Get("GO_ENV", "development"))
+	var err error
+	DB, err = pop.Connect(envy.Get("GO_ENV", "development"))
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Info("Established DB connection.")
-	pop.Debug = envy.Get("GO_ENV", "development") == "development"
-	return db
+	pop.Debug = state.Environment == "development"
 }
 
 func migrateDB() {
-	fileMigrator, err := pop.NewFileMigrator("./migrations", state.DB)
+	fileMigrator, err := pop.NewFileMigrator("./migrations", DB)
 
 	if err != nil {
 		log.Panic(err)

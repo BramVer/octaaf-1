@@ -5,10 +5,7 @@ import (
 
 	"octaaf/web"
 
-	"github.com/go-redis/cache"
-	"github.com/go-redis/redis"
 	"github.com/gobuffalo/envy"
-	"github.com/gobuffalo/pop"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 )
@@ -17,9 +14,6 @@ type State struct {
 	Environment string
 	Version     string
 	GitUri      string
-	DB          *pop.Connection
-	Redis       *redis.Client
-	Codec       *cache.Codec
 }
 
 var state *State
@@ -31,28 +25,28 @@ func main() {
 		Environment: envy.Get("GO_ENV", "development"),
 		Version:     loadVersion(),
 		GitUri:      "https://gitlab.com/BartWillems/octaaf",
-		DB:          getDB(),
-		Redis:       getRedis(),
-		Codec:       getCodec(),
 	}
 
+	initRedis()
+
+	initDB()
 	migrateDB()
 
 	initBot()
+
 	go loadReminders()
 
 	cron := initCrons()
 	cron.Start()
 	defer cron.Stop()
 
-	router := web.New(web.Connections{
-		Octaaf:   Octaaf,
-		Postgres: state.DB,
-		Redis:    state.Redis,
-		KaliID:   KaliID,
-	})
-
 	go func() {
+		router := web.New(web.Connections{
+			Octaaf:   Octaaf,
+			Postgres: DB,
+			Redis:    Redis,
+			KaliID:   KaliID,
+		})
 		err := router.Run()
 		if err != nil {
 			log.Errorf("Gin creation error: %v", err)

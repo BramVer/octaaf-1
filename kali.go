@@ -42,14 +42,14 @@ func kaliReport(message *tgbotapi.Message) {
 	if message.From.ID == ReporterID {
 		log.Debug("Reporter found")
 		if strings.ToLower(message.Text) == "reported" || (message.Sticker != nil && message.Sticker.FileID == "CAADBAAD5gEAAreTBA3s5qVy8bxHfAI") {
-			state.DB.Save(&models.Report{})
+			DB.Save(&models.Report{})
 		}
 	}
 }
 
 func getLeetBlazers(event string) {
 	log.Info("Getting blazers")
-	participators := state.Redis.SMembers(event).Val()
+	participators := Redis.SMembers(event).Val()
 
 	log.Info("Blazers count: %v", len(participators))
 
@@ -79,7 +79,7 @@ func getLeetBlazers(event string) {
 			UserID: userID,
 			Date:   time.Now(),
 			Type:   event}
-		state.DB.Save(&kali)
+		DB.Save(&kali)
 	}
 
 	reply := "Today "
@@ -91,20 +91,20 @@ func getLeetBlazers(event string) {
 
 	reply += fmt.Sprintf(" participated in the %v.", event)
 	sendGlobal(reply)
-	state.Redis.Del(event)
+	Redis.Del(event)
 }
 
 func addLeetBlazer(message *tgbotapi.Message, event string) {
 	if strings.Contains(message.Text, event) {
 		log.Infof("Leetblazer found with id: %v!", message.From.ID)
-		state.Redis.SAdd(event, message.From.ID)
+		Redis.SAdd(event, message.From.ID)
 	}
 }
 
 func setKaliCount() {
 	lastCount := models.MessageCount{}
 
-	err := state.DB.Last(&lastCount)
+	err := DB.Last(&lastCount)
 
 	count := models.MessageCount{
 		Count: KaliCount,
@@ -115,5 +115,5 @@ func setKaliCount() {
 		count.Diff = (KaliCount - lastCount.Count)
 	}
 
-	state.DB.Save(&count)
+	DB.Save(&count)
 }

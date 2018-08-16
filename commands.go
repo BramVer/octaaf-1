@@ -29,7 +29,7 @@ func changelog(message *tgbotapi.Message) {
 }
 
 func all(message *tgbotapi.Message) {
-	members := state.Redis.SMembers(fmt.Sprintf("members_%v", message.Chat.ID)).Val()
+	members := Redis.SMembers(fmt.Sprintf("members_%v", message.Chat.ID)).Val()
 
 	if len(members) == 0 {
 		reply(message, "I'm afraid I can't do that.")
@@ -281,13 +281,13 @@ func sendImage(message *tgbotapi.Message) {
 			return
 		}
 
-		state.Codec.Set(&cache.Item{
+		Cache.Set(&cache.Item{
 			Key:        key,
 			Object:     images,
 			Expiration: 0,
 		})
 	} else {
-		if err := state.Codec.Get(key, &images); err != nil {
+		if err := Cache.Get(key, &images); err != nil {
 			reply(message, "I can't fetch them for you right now.")
 			return
 		}
@@ -366,10 +366,10 @@ func quote(message *tgbotapi.Message) {
 		var err error
 
 		if len(message.CommandArguments()) > 0 {
-			query := state.DB.Where("chat_id = ? AND quote ilike '%' || ? || '%'", message.Chat.ID, message.CommandArguments())
+			query := DB.Where("chat_id = ? AND quote ilike '%' || ? || '%'", message.Chat.ID, message.CommandArguments())
 			err = query.Order("random()").Limit(1).First(&quote)
 		} else {
-			err = state.DB.Where("chat_id = ?", message.Chat.ID).Order("random()").Limit(1).First(&quote)
+			err = DB.Where("chat_id = ?", message.Chat.ID).Order("random()").Limit(1).First(&quote)
 		}
 
 		log.Errorf("Quote fetch error: %v", err)
@@ -398,7 +398,7 @@ func quote(message *tgbotapi.Message) {
 		return
 	}
 
-	err := state.DB.Save(&models.Quote{
+	err := DB.Save(&models.Quote{
 		Quote:  message.ReplyToMessage.Text,
 		UserID: message.ReplyToMessage.From.ID,
 		ChatID: message.Chat.ID})
@@ -498,7 +498,7 @@ func kaliRank(message *tgbotapi.Message) {
 	}
 
 	kaliRank := []models.MessageCount{}
-	err := state.DB.Order("diff DESC").Limit(5).All(&kaliRank)
+	err := DB.Order("diff DESC").Limit(5).All(&kaliRank)
 
 	if err != nil {
 		log.Error("Unable to fetch kali rankings: ", err)
@@ -542,7 +542,7 @@ func reported(message *tgbotapi.Message) {
 		return
 	}
 
-	reportCount, err := state.DB.Count(models.Report{})
+	reportCount, err := DB.Count(models.Report{})
 
 	if err != nil {
 		reply(message, "I can't seem to be able to count the reports.")

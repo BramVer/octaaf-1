@@ -47,7 +47,7 @@ func initBot() {
 		go func() {
 			<-c
 			sendGlobal("I'm going to sleep! 💤💤")
-			state.DB.Close()
+			DB.Close()
 			os.Exit(0)
 		}()
 	}
@@ -113,7 +113,7 @@ func handle(message *tgbotapi.Message) {
 	}
 
 	// Maintain an array of chat members per group in Redis
-	state.Redis.SAdd(fmt.Sprintf("members_%v", message.Chat.ID), message.From.ID)
+	Redis.SAdd(fmt.Sprintf("members_%v", message.Chat.ID), message.From.ID)
 }
 
 func sendGlobal(message string) {

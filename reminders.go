@@ -10,7 +10,7 @@ import (
 
 func startReminder(reminder models.Reminder) {
 	log.Debugf("New reminder (%v) added for %v", reminder.Message, reminder.Deadline.String())
-	err := state.DB.Save(&reminder)
+	err := DB.Save(&reminder)
 
 	if err != nil {
 		log.Errorf("reminder save error: %v", err)
@@ -31,12 +31,12 @@ func startReminder(reminder models.Reminder) {
 
 	// Mark this reminder as completed
 	reminder.Executed = true
-	state.DB.Save(&reminder)
+	DB.Save(&reminder)
 }
 
 func loadReminders() {
 	var reminders models.Reminders
-	err := state.DB.Where("executed = false").Order("created_at").All(&reminders)
+	err := DB.Where("executed = false").Order("created_at").All(&reminders)
 
 	if err != nil {
 		log.Errorf("Unable to load pending reminders: %v", err)

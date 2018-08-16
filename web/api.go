@@ -52,7 +52,7 @@ func health(c *gin.Context) {
 	}
 
 	// Redis
-	redisErr := conn.Redis.Ping().Err()
+	_, redisErr := conn.Redis.Ping().Result()
 	if redisErr != nil {
 		statusMessage["redis"] = redisErr
 		status = 500
