@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"octaaf/models"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/dustin/go-humanize/english"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
@@ -23,6 +23,7 @@ var KaliID int64
 
 func kaliHandler(message *tgbotapi.Message) {
 	if message.Chat.ID == KaliID {
+		log.Debug("Kalimember found")
 		KaliCount = message.MessageID
 
 		go kaliReport(message)
@@ -39,6 +40,7 @@ func kaliHandler(message *tgbotapi.Message) {
 
 func kaliReport(message *tgbotapi.Message) {
 	if message.From.ID == ReporterID {
+		log.Debug("Reporter found")
 		if strings.ToLower(message.Text) == "reported" || (message.Sticker != nil && message.Sticker.FileID == "CAADBAAD5gEAAreTBA3s5qVy8bxHfAI") {
 			DB.Save(&models.Report{})
 		}
@@ -46,10 +48,10 @@ func kaliReport(message *tgbotapi.Message) {
 }
 
 func getLeetBlazers(event string) {
-	log.Print("Getting blazers")
+	log.Info("Getting blazers")
 	participators := Redis.SMembers(event).Val()
 
-	log.Printf("Blazers count: %v", len(participators))
+	log.Info("Blazers count: %v", len(participators))
 
 	if len(participators) == 0 {
 		sendGlobal(fmt.Sprintf("Nobody participated in today's %v", event))
@@ -63,11 +65,10 @@ func getLeetBlazers(event string) {
 	// Store the kalivent in the DB
 	for _, participator := range participators {
 		userID, _ := strconv.Atoi(participator)
-		log.Printf("UserID: %v", userID)
 		user, err := getUsername(userID, KaliID)
 
 		if err != nil {
-			log.Printf("Unable to fetch username for the kalivent %v; error: %v", event, err)
+			log.Error("Unable to fetch username for the kalivent %v; error: %v", event, err)
 			continue
 		}
 
@@ -95,7 +96,7 @@ func getLeetBlazers(event string) {
 
 func addLeetBlazer(message *tgbotapi.Message, event string) {
 	if strings.Contains(message.Text, event) {
-		log.Printf("Leetblazer found with id: %v!", message.From.ID)
+		log.Infof("Leetblazer found with id: %v!", message.From.ID)
 		Redis.SAdd(event, message.From.ID)
 	}
 }

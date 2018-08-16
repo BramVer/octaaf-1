@@ -2,13 +2,13 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"os/signal"
 	"strconv"
 	"syscall"
 
 	"github.com/gobuffalo/envy"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
@@ -20,12 +20,12 @@ func initBot() {
 	Octaaf, err = tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_API_TOKEN"))
 
 	if err != nil {
-		log.Panic(err)
+		log.Panicf("Telegram connection error: %v", err)
 	}
 
 	Octaaf.Debug = OctaafEnv == "development"
 
-	log.Printf("Authorized on account %s", Octaaf.Self.UserName)
+	log.Info("Authorized on account ", Octaaf.Self.UserName)
 
 	KaliID, err = strconv.ParseInt(os.Getenv("TELEGRAM_ROOM_ID"), 10, 64)
 
@@ -58,6 +58,7 @@ func handle(message *tgbotapi.Message) {
 	go kaliHandler(message)
 
 	if message.IsCommand() {
+		log.Debugf("Command received: %v", message.Command())
 		switch message.Command() {
 		case "all":
 			all(message)
@@ -120,7 +121,7 @@ func sendGlobal(message string) {
 	_, err := Octaaf.Send(msg)
 
 	if err != nil {
-		log.Printf("Error while sending '%s': %s", message, err)
+		log.Errorf("Error while sending global '%v': %v", message, err)
 	}
 }
 
@@ -138,7 +139,7 @@ func reply(message *tgbotapi.Message, text string, markdown ...bool) {
 
 	_, err := Octaaf.Send(msg)
 	if err != nil {
-		log.Printf("Error while sending message with content: '%s'; Error: %s", text, err)
+		log.Errorf("Error while sending message with content: '%v'; Error: %v", text, err)
 	}
 }
 

@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"net/http"
 	"octaaf/models"
@@ -15,6 +14,7 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/go-redis/cache"
+	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	"gopkg.in/telegram-bot-api.v4"
 )
@@ -371,7 +371,7 @@ func quote(message *tgbotapi.Message) {
 			err = DB.Where("chat_id = ?", message.Chat.ID).Order("random()").Limit(1).First(&quote)
 		}
 
-		log.Printf("Quote fetch error: %s", err)
+		log.Errorf("Quote fetch error: %v", err)
 
 		if err != nil {
 			reply(message, "No quote found boi")

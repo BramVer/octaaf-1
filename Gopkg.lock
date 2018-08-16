@@ -59,6 +59,7 @@
   revision = "22d885f9ecc78bf4ee5d72b937e4bbcdc58e8cae"
 
 [[projects]]
+  branch = "master"
   name = "github.com/gin-gonic/gin"
   packages = [
     ".",
@@ -66,8 +67,7 @@
     "json",
     "render"
   ]
-  revision = "b869fe1415e4b9eb52f247441830d502aece2d4d"
-  version = "v1.3.0"
+  revision = "bef6c56c8928cfe1d96a9fdefe29fcfdeb2b2f89"
 
 [[projects]]
   name = "github.com/go-redis/cache"
@@ -336,6 +336,12 @@
   revision = "86672fcb3f950f35f2e675df2240550f2a50762f"
 
 [[projects]]
+  name = "github.com/sirupsen/logrus"
+  packages = ["."]
+  revision = "3e01752db0189b9157070a0e1668a620f9a85da2"
+  version = "v1.0.6"
+
+[[projects]]
   branch = "master"
   name = "github.com/sourcegraph/annotate"
   packages = ["."]
@@ -382,6 +388,12 @@
 
 [[projects]]
   branch = "master"
+  name = "golang.org/x/crypto"
+  packages = ["ssh/terminal"]
+  revision = "de0752318171da717af4ce24d0a2e8626afaeb11"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/net"
   packages = [
     "context",
@@ -399,7 +411,10 @@
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix"]
+  packages = [
+    "unix",
+    "windows"
+  ]
   revision = "4e1fef5609515ec7a2cee7b5de30ba6d9b438cbf"
 
 [[projects]]
@@ -452,6 +467,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "61c08a7865be6bacdeba74e3f34ffe5fc4a5b39a63ec299e5674da150437d8b4"
+  inputs-digest = "5b86db9cc63cfe4698606d894a37b9526864eaf2d7e585b1b6571f1bcc98fb13"
   solver-name = "gps-cdcl"
   solver-version = 1

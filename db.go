@@ -1,9 +1,8 @@
 package main
 
 import (
-	"log"
-
 	"github.com/gobuffalo/pop"
+	log "github.com/sirupsen/logrus"
 )
 
 // DB Global Connection
@@ -15,6 +14,7 @@ func initDB() {
 	if err != nil {
 		log.Fatal(err)
 	}
+	log.Info("Established DB connection.")
 	pop.Debug = OctaafEnv == "development"
 
 	migrateDB()
@@ -34,4 +34,5 @@ func migrateDB() {
 	if err != nil {
 		log.Panic(err)
 	}
+	log.Info("Finished DB migrations")
 }

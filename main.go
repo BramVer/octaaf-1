@@ -2,9 +2,9 @@ package main
 
 import (
 	"io/ioutil"
-	"log"
 
 	"github.com/gobuffalo/envy"
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 	"octaaf/web"
 )
@@ -26,7 +26,7 @@ func main() {
 	initDB()
 	initRedis()
 	initBot()
-	loadReminders()
+	go loadReminders()
 
 	cron := initCrons()
 	cron.Start()
@@ -42,7 +42,7 @@ func main() {
 	go func() {
 		err := router.Run()
 		if err != nil {
-			log.Printf("Gin creation error: %v", err)
+			log.Errorf("Gin creation error: %v", err)
 		}
 	}()
 
@@ -51,7 +51,7 @@ func main() {
 	updates, err := Octaaf.GetUpdatesChan(u)
 
 	if err != nil {
-		log.Panicf("Failed to fetch updates: %v", err)
+		log.Fatalf("Failed to fetch updates: %v", err)
 	}
 
 	for update := range updates {
@@ -68,9 +68,10 @@ func loadVersion() {
 	bytes, err := ioutil.ReadFile("assets/version")
 
 	if err != nil {
-		log.Printf("Error while loading version string: %v", err)
+		log.Errorf("Error while loading version string: %v", err)
 		return
 	}
 
 	OctaafVersion = string(bytes)
+	log.Infof("Loaded version %v", OctaafVersion)
 }

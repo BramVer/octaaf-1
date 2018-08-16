@@ -5,6 +5,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"time"
 )
 
 func loadImage(u string) ([]byte, error) {
@@ -15,7 +16,8 @@ func loadImage(u string) ([]byte, error) {
 		return nil, err
 	}
 
-	client := &http.Client{}
+	client := &http.Client{
+		Timeout: time.Duration(5 * time.Second)}
 
 	// By default, the received uri is formatted like "//imgs.xkcd.com/comics/....png"
 	// This creates an error, that's why we parse it as "https://imgs.xkcd.com/comics...."
@@ -38,4 +40,16 @@ func loadImage(u string) ([]byte, error) {
 	defer res.Body.Close()
 
 	return ioutil.ReadAll(res.Body)
+}
+
+func fetch(url string) (*http.Response, error) {
+	client := &http.Client{}
+	req, err := http.NewRequest("GET", url, nil)
+
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36")
+	return client.Do(req)
 }

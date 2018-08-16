@@ -4,6 +4,7 @@ import (
 	"github.com/go-redis/cache"
 	"github.com/go-redis/redis"
 	"github.com/gobuffalo/envy"
+	log "github.com/sirupsen/logrus"
 	"github.com/vmihailenco/msgpack"
 )
 
@@ -20,6 +21,8 @@ func initRedis() {
 		DB:       0,  // use default DB
 	})
 
+	log.Info("Established Redis connection")
+
 	Codec = &cache.Codec{
 		Redis: Redis,
 		Marshal: func(v interface{}) ([]byte, error) {
@@ -29,4 +32,5 @@ func initRedis() {
 			return msgpack.Unmarshal(b, v)
 		},
 	}
+	log.Info("Established Redis cache")
 }

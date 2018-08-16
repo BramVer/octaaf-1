@@ -6,23 +6,26 @@ import (
 	"github.com/PuerkitoBio/goquery"
 )
 
+const ddgo_uri = "https://duckduckgo.com/lite?k1=-1&q="
+
 // Search searches on duckduck go & returns the first url
 func Search(query string, nsfw bool) (string, bool) {
-	url := "https://duckduckgo.com/lite?k1=-1&q=" + query
+	if len(query) == 0 {
+		return "", false
+	}
+
+	bang_uri, is_bang := bang(query)
+	if is_bang {
+		return bang_uri, true
+	}
+
+	url := ddgo_uri + query
 
 	if nsfw {
 		url += "&kp=-2"
 	}
 
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", url, nil)
-
-	if err != nil {
-		return "", false
-	}
-
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36")
-	res, err := client.Do(req)
+	res, err := fetch(url)
 
 	if err != nil {
 		return "", false
@@ -37,4 +40,20 @@ func Search(query string, nsfw bool) (string, bool) {
 	}
 
 	return doc.Find(".result-link").First().Attr("href")
+}
+
+// Detect if the query is a bang query, return the duckduckgo redirect
+// Eg: !arch amdgpu
+func bang(query string) (string, bool) {
+	if len(query) > 1 && query[0] == '!' {
+		resp, err := http.Get(ddgo_uri + query)
+		if err != nil {
+			return "", false
+		}
+
+		uri := resp.Request.URL.String()
+		defer resp.Body.Close()
+		return uri, true
+	}
+	return "", false
 }

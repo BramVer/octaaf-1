@@ -2,17 +2,18 @@ package main
 
 import (
 	"fmt"
-	"log"
 	"octaaf/models"
 
+	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
 func startReminder(reminder models.Reminder) {
+	log.Debugf("New reminder (%v) added for %v", reminder.Message, reminder.Deadline.String())
 	err := DB.Save(&reminder)
 
 	if err != nil {
-		log.Printf("reminder save error: %v", err)
+		log.Errorf("reminder save error: %v", err)
 		return
 	}
 
@@ -38,11 +39,12 @@ func loadReminders() {
 	err := DB.Where("executed = false").Order("created_at").All(&reminders)
 
 	if err != nil {
-		log.Printf("Unable to load pending reminders: %v", err)
+		log.Errorf("Unable to load pending reminders: %v", err)
 		return
 	}
 
 	for _, reminder := range reminders {
+		log.Debugf("Loaded reminder %v with message: %v", reminder.ID, reminder.Message)
 		go startReminder(reminder)
 	}
 }
