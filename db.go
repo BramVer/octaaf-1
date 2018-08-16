@@ -6,7 +6,8 @@ import (
 )
 
 func getDB() *pop.Connection {
-	db, err := pop.Connect(state.Environment)
+	// Don't refer to state.Environment as this function is called before it's available
+	db, err := pop.Connect(envy.Get("GO_ENV", "development"))
 	if err != nil {
 		log.Fatal(err)
 	}
