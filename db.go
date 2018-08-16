@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/pop"
 	log "github.com/sirupsen/logrus"
 )
