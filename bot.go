@@ -23,7 +23,7 @@ func initBot() {
 		log.Panicf("Telegram connection error: %v", err)
 	}
 
-	Octaaf.Debug = OctaafEnv == "development"
+	Octaaf.Debug = state.Environment == "development"
 
 	log.Info("Authorized on account ", Octaaf.Self.UserName)
 
@@ -38,16 +38,16 @@ func initBot() {
 		log.Panic(err)
 	}
 
-	if OctaafEnv == "production" {
-		sendGlobal(fmt.Sprintf("I'm up and running! 👌\nRunning with version: %v", OctaafVersion))
-		sendGlobal(fmt.Sprintf("Check out the changelog over here: \n%v/tags/%v", GitUri, OctaafVersion))
+	if state.Environment == "production" {
+		sendGlobal(fmt.Sprintf("I'm up and running! 👌\nRunning with version: %v", state.Version))
+		sendGlobal(fmt.Sprintf("Check out the changelog over here: \n%v/tags/%v", state.Environment, state.Version))
 
 		c := make(chan os.Signal, 2)
 		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
 		go func() {
 			<-c
 			sendGlobal("I'm going to sleep! 💤💤")
-			DB.Close()
+			state.DB.Close()
 			os.Exit(0)
 		}()
 	}
@@ -113,7 +113,7 @@ func handle(message *tgbotapi.Message) {
 	}
 
 	// Maintain an array of chat members per group in Redis
-	Redis.SAdd(fmt.Sprintf("members_%v", message.Chat.ID), message.From.ID)
+	state.Redis.SAdd(fmt.Sprintf("members_%v", message.Chat.ID), message.From.ID)
 }
 
 func sendGlobal(message string) {

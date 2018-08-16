@@ -5,23 +5,18 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-// DB Global Connection
-var DB *pop.Connection
-
-func initDB() {
-	var err error
-	DB, err = pop.Connect(OctaafEnv)
+func getDB() *pop.Connection {
+	db, err := pop.Connect(state.Environment)
 	if err != nil {
 		log.Fatal(err)
 	}
 	log.Info("Established DB connection.")
-	pop.Debug = OctaafEnv == "development"
-
-	migrateDB()
+	pop.Debug = state.Environment == "development"
+	return db
 }
 
 func migrateDB() {
-	fileMigrator, err := pop.NewFileMigrator("./migrations", DB)
+	fileMigrator, err := pop.NewFileMigrator("./migrations", state.DB)
 
 	if err != nil {
 		log.Panic(err)

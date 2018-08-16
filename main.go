@@ -3,28 +3,41 @@ package main
 import (
 	"io/ioutil"
 
+	"octaaf/web"
+
+	"github.com/go-redis/cache"
+	"github.com/go-redis/redis"
 	"github.com/gobuffalo/envy"
+	"github.com/gobuffalo/pop"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
-	"octaaf/web"
 )
 
-// OctaafEnv is either development or production
-var OctaafEnv string
+type State struct {
+	Environment string
+	Version     string
+	GitUri      string
+	DB          *pop.Connection
+	Redis       *redis.Client
+	Codec       *cache.Codec
+}
 
-// GitUri is the upstream development URL
-const GitUri = "https://gitlab.com/BartWillems/octaaf"
-
-var OctaafVersion string
+var state *State
 
 func main() {
 	envy.Load("config/.env")
 
-	OctaafEnv = envy.Get("GO_ENV", "development")
+	state = &State{
+		Environment: envy.Get("GO_ENV", "development"),
+		Version:     loadVersion(),
+		GitUri:      "https://gitlab.com/BartWillems/octaaf",
+		DB:          getDB(),
+		Redis:       getRedis(),
+		Codec:       getCodec(),
+	}
 
-	loadVersion()
-	initDB()
-	initRedis()
+	migrateDB()
+
 	initBot()
 	go loadReminders()
 
@@ -34,8 +47,8 @@ func main() {
 
 	router := web.New(web.Connections{
 		Octaaf:   Octaaf,
-		Postgres: DB,
-		Redis:    Redis,
+		Postgres: state.DB,
+		Redis:    state.Redis,
 		KaliID:   KaliID,
 	})
 
@@ -64,14 +77,13 @@ func main() {
 	}
 }
 
-func loadVersion() {
+func loadVersion() string {
 	bytes, err := ioutil.ReadFile("assets/version")
 
 	if err != nil {
 		log.Errorf("Error while loading version string: %v", err)
-		return
+		return ""
 	}
-
-	OctaafVersion = string(bytes)
-	log.Infof("Loaded version %v", OctaafVersion)
+	log.Infof("Loaded version %v", string(bytes))
+	return string(bytes)
 }

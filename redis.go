@@ -8,23 +8,19 @@ import (
 	"github.com/vmihailenco/msgpack"
 )
 
-// Redis client
-var Redis *redis.Client
-
-// Codec is the redis caching client
-var Codec *cache.Codec
-
-func initRedis() {
-	Redis = redis.NewClient(&redis.Options{
+func getRedis() *redis.Client {
+	defer log.Info("Established Redis connection")
+	return redis.NewClient(&redis.Options{
 		Addr:     envy.Get("REDIS_URI", "localhost:6379"),
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
+}
 
-	log.Info("Established Redis connection")
-
-	Codec = &cache.Codec{
-		Redis: Redis,
+func getCodec() *cache.Codec {
+	defer log.Info("Established Redis cache")
+	return &cache.Codec{
+		Redis: state.Redis,
 		Marshal: func(v interface{}) ([]byte, error) {
 			return msgpack.Marshal(v)
 		},
@@ -32,5 +28,4 @@ func initRedis() {
 			return msgpack.Unmarshal(b, v)
 		},
 	}
-	log.Info("Established Redis cache")
 }
