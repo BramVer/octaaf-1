@@ -11,7 +11,7 @@ import (
 // Redis is is the redis client struct
 var Redis *redis.Client
 
-// Codec is the fast redis cacher
+// Cache is the fast redis cacher, it serializes & unserializes objects on save/load
 var Cache *cache.Codec
 
 func initRedis() {
