@@ -28,10 +28,8 @@ func main() {
 	}
 
 	initRedis()
-
 	initDB()
 	migrateDB()
-
 	initBot()
 
 	go loadReminders()

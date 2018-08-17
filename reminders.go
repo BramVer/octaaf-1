@@ -30,13 +30,15 @@ func startReminder(reminder models.Reminder) {
 	go Octaaf.Send(msg)
 
 	// Mark this reminder as completed
-	reminder.Executed = true
-	DB.Save(&reminder)
+	err = reminder.Complete(DB)
+	if err != nil {
+		log.Errorf("Unable to mark the reminder {%v} as completed: %v", reminder.ID, err)
+	}
 }
 
 func loadReminders() {
 	var reminders models.Reminders
-	err := DB.Where("executed = false").Order("created_at").All(&reminders)
+	err := reminders.Pending(DB)
 
 	if err != nil {
 		log.Errorf("Unable to load pending reminders: %v", err)

@@ -54,3 +54,14 @@ func (q *Quote) ValidateCreate(tx *pop.Connection) (*validate.Errors, error) {
 func (q *Quote) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
 }
+
+func (q *Quote) Search(tx *pop.Connection, chatID int64, filter ...string) error {
+	if len(filter) > 0 && filter[0] != "" {
+		return tx.
+			Where("chat_id = ?", chatID).
+			Where("quote ilike '%' || ? || '%'", filter[0]).
+			Order("random()").Limit(1).First(q)
+	} else {
+		return tx.Where("chat_id = ?", chatID).Order("random()").Limit(1).First(q)
+	}
+}

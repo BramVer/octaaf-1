@@ -363,18 +363,10 @@ func quote(message *tgbotapi.Message) {
 	if message.ReplyToMessage == nil {
 		quote := models.Quote{}
 
-		var err error
-
-		if len(message.CommandArguments()) > 0 {
-			query := DB.Where("chat_id = ? AND quote ilike '%' || ? || '%'", message.Chat.ID, message.CommandArguments())
-			err = query.Order("random()").Limit(1).First(&quote)
-		} else {
-			err = DB.Where("chat_id = ?", message.Chat.ID).Order("random()").Limit(1).First(&quote)
-		}
-
-		log.Errorf("Quote fetch error: %v", err)
+		err := quote.Search(DB, message.Chat.ID, message.CommandArguments())
 
 		if err != nil {
+			log.Errorf("Quote fetch error: %v", err)
 			reply(message, "No quote found boi")
 			return
 		}

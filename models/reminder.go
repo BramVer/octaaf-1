@@ -3,6 +3,7 @@ package models
 import (
 	"time"
 
+	"github.com/gobuffalo/pop"
 	"github.com/gobuffalo/uuid"
 )
 
@@ -28,4 +29,13 @@ func (r *Reminder) Wait() {
 		timer := time.NewTimer(time.Duration(delay))
 		<-timer.C
 	}
+}
+
+func (r *Reminder) Complete(tx *pop.Connection) error {
+	r.Executed = true
+	return tx.Save(r)
+}
+
+func (r *Reminders) Pending(tx *pop.Connection) error {
+	return tx.Where("executed = false").Order("created_at").All(r)
 }

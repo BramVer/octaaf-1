@@ -1,0 +1,29 @@
+version: "2.1"
+
+services:
+    octaaf:
+      image: golang:1.10
+      volumes:
+          - .:/go/src/octaaf
+      working_dir: /go/src/octaaf
+      command: ./init.sh
+      environment:
+        GO_ENV: "development"
+      ports:
+        - "8080:8080"
+      links:
+        - redis
+        - postgres
+
+    redis:
+      image: redis:4.0
+      ports:
+        - "6379:6379"
+
+    postgres:
+      image: postgres:10.5
+      ports:
+        - "5432:5432"
+      environment:
+        POSTGRES_DB: "octaaf_development"
+        POSTGRES_USER: "octaaf"
