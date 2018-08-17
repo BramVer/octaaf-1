@@ -48,6 +48,7 @@ func initBot() {
 			<-c
 			sendGlobal("I'm going to sleep! 💤💤")
 			DB.Close()
+			Redis.Close()
 			os.Exit(0)
 		}()
 	}
