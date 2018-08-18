@@ -8,6 +8,12 @@
   revision = "40e40b42552a9cb37d6e98f4ad31f63ae53ea43a"
 
 [[projects]]
+  name = "github.com/AlekSi/pointer"
+  packages = ["."]
+  revision = "08a25bac605b3fcb6cc27f3917b2c2c87451963d"
+  version = "v1.0.0"
+
+[[projects]]
   name = "github.com/BurntSushi/toml"
   packages = ["."]
   revision = "b26d9c308763d68093482582cea63d69be07a0f0"
@@ -277,6 +283,18 @@
   version = "1.0.1"
 
 [[projects]]
+  branch = "master"
+  name = "github.com/olebedev/when"
+  packages = [
+    ".",
+    "rules",
+    "rules/common",
+    "rules/en",
+    "rules/ru"
+  ]
+  revision = "53693fbb59a88d8eb5a214820c5ec1ea76d2460c"
+
+[[projects]]
   name = "github.com/pkg/errors"
   packages = ["."]
   revision = "645ef00459ed84a119197bfb8d8205042c6df63d"
@@ -473,6 +491,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "02ba07cf6ab5adecbf30e238458035b24d574fa06bfb11d54e86a5720bf4bdb4"
+  inputs-digest = "ff8f81fcbb139a50e22ed4b8a32f988fb82db7dfc833e1f0c39d7175d4af90f3"
   solver-name = "gps-cdcl"
   solver-version = 1

@@ -14,6 +14,9 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/go-redis/cache"
+	"github.com/olebedev/when"
+	"github.com/olebedev/when/rules/common"
+	"github.com/olebedev/when/rules/en"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 	"gopkg.in/telegram-bot-api.v4"
@@ -60,51 +63,28 @@ func all(message *tgbotapi.Message) error {
 }
 
 func remind(message *tgbotapi.Message) error {
-	errorMessage := "Malformed message, please send something like `/remind_me 1 hour het is de schuld van de sossen`"
-	arr := strings.Split(message.Text, " ")
+	w := when.New(nil)
+	w.Add(en.All...)
+	w.Add(common.All...)
 
-	if len(arr) < 4 {
-		return reply(message, errorMessage)
+	r, err := w.Parse(message.CommandArguments(), time.Now())
+
+	if err != nil {
+		log.Error("Reminder parser error: ", err)
+		return reply(message, "Unable to parse")
 	}
 
-	delay, err := strconv.Atoi(arr[1])
-
-	if err != nil || delay < 1 {
-		return reply(message, errorMessage)
-	}
-
-	var deadline time.Time
-
-	now := time.Now()
-
-	unit := arr[2]
-
-	switch unit {
-	case "minute", "minutes":
-		deadline = now.Add(time.Minute * time.Duration(delay)).UTC()
-	case "hour", "hours":
-		deadline = now.Add(time.Hour * time.Duration(delay)).UTC()
-	case "day", "days":
-		deadline = now.Add(time.Hour * time.Duration(delay) * 24).UTC()
-	case "week", "weeks":
-		deadline = now.Add(time.Hour * time.Duration(delay) * 24 * 7).UTC()
-	default:
-		return reply(message, "Unknown time format")
-	}
-
-	var remindMessage string
-
-	// Parse the alertmessage from the string array to 1 string, skip stuff like "/alert 1 hour"
-	for i := 3; i < len(arr); i++ {
-		remindMessage += fmt.Sprintf("%v ", arr[i])
+	if r == nil {
+		log.Error("No reminder found")
+		return reply(message, "No reminder found")
 	}
 
 	reminder := models.Reminder{
 		ChatID:    message.Chat.ID,
 		UserID:    message.From.ID,
 		MessageID: message.MessageID,
-		Message:   remindMessage,
-		Deadline:  deadline,
+		Message:   message.CommandArguments(),
+		Deadline:  r.Time,
 		Executed:  false}
 
 	go startReminder(reminder)
