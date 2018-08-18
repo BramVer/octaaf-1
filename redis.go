@@ -2,23 +2,22 @@ package main
 
 import (
 	"github.com/go-redis/cache"
-	"github.com/go-redis/redis"
-	"github.com/gobuffalo/envy"
+	goRedis "github.com/go-redis/redis"
 	log "github.com/sirupsen/logrus"
 	"github.com/vmihailenco/msgpack"
 )
 
 // Redis is is the redis client struct
-var Redis *redis.Client
+var Redis *goRedis.Client
 
 // Cache is the fast redis cacher, it serializes & unserializes objects on save/load
 var Cache *cache.Codec
 
 func initRedis() {
-	Redis = redis.NewClient(&redis.Options{
-		Addr:     envy.Get("REDIS_URI", "localhost:6379"),
-		Password: "", // no password set
-		DB:       0,  // use default DB
+	Redis = goRedis.NewClient(&goRedis.Options{
+		Addr:     settings.Redis.Uri,
+		Password: settings.Redis.Password,
+		DB:       settings.Redis.DB,
 	})
 
 	log.Info("Established Redis connection")

@@ -1,13 +1,12 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"os"
 	"os/signal"
-	"strconv"
 	"syscall"
 
-	"github.com/gobuffalo/envy"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 )
@@ -16,31 +15,21 @@ import (
 var Octaaf *tgbotapi.BotAPI
 
 func initBot() {
+	// Explicitly create this err var, or else Octaaf will be shadowed
 	var err error
-	Octaaf, err = tgbotapi.NewBotAPI(os.Getenv("TELEGRAM_API_TOKEN"))
+	Octaaf, err = tgbotapi.NewBotAPI(settings.Telegram.ApiKey)
 
 	if err != nil {
-		log.Panicf("Telegram connection error: %v", err)
+		log.Fatal("Telegram connection error: ", err)
 	}
 
-	Octaaf.Debug = state.Environment == "development"
+	Octaaf.Debug = settings.Environment == "development"
 
 	log.Info("Authorized on account ", Octaaf.Self.UserName)
 
-	KaliID, err = strconv.ParseInt(os.Getenv("TELEGRAM_ROOM_ID"), 10, 64)
-
-	if err != nil {
-		log.Panic(err)
-	}
-
-	ReporterID, err = strconv.Atoi(envy.Get("REPORTER_ID", "-1"))
-	if err != nil {
-		log.Panic(err)
-	}
-
-	if state.Environment == "production" {
-		sendGlobal(fmt.Sprintf("I'm up and running! 👌\nRunning with version: %v", state.Version))
-		sendGlobal(fmt.Sprintf("Check out the changelog over here: \n%v/tags/%v", state.GitUri, state.Version))
+	if settings.Environment == "production" {
+		sendGlobal(fmt.Sprintf("I'm up and running! 👌\nRunning with version: %v", settings.Version))
+		sendGlobal(fmt.Sprintf("Check out the changelog over here: \n%v/tags/%v", GitUri, settings.Version))
 
 		c := make(chan os.Signal, 2)
 		signal.Notify(c, os.Interrupt, syscall.SIGTERM)
@@ -118,7 +107,7 @@ func handle(message *tgbotapi.Message) {
 }
 
 func sendGlobal(message string) {
-	msg := tgbotapi.NewMessage(KaliID, message)
+	msg := tgbotapi.NewMessage(settings.Telegram.KaliID, message)
 	_, err := Octaaf.Send(msg)
 
 	if err != nil {
@@ -126,21 +115,23 @@ func sendGlobal(message string) {
 	}
 }
 
-func reply(message *tgbotapi.Message, text string, markdown ...bool) {
-	msg := tgbotapi.NewMessage(message.Chat.ID, text)
-	msg.ReplyToMessageID = message.MessageID
-
-	if len(markdown) > 0 {
-		if markdown[0] {
-			msg.ParseMode = "markdown"
-		}
-	} else {
+func reply(message *tgbotapi.Message, r interface{}) error {
+	switch resp := r.(type) {
+	default:
+		return errors.New("Unkown response type given")
+	case string:
+		msg := tgbotapi.NewMessage(message.Chat.ID, resp)
+		msg.ReplyToMessageID = message.MessageID
 		msg.ParseMode = "markdown"
-	}
-
-	_, err := Octaaf.Send(msg)
-	if err != nil {
-		log.Errorf("Error while sending message with content: '%v'; Error: %v", text, err)
+		_, err := Octaaf.Send(msg)
+		return err
+	case []byte:
+		bytes := tgbotapi.FileBytes{Name: "image.jpg", Bytes: resp}
+		msg := tgbotapi.NewPhotoUpload(message.Chat.ID, bytes)
+		msg.Caption = message.CommandArguments()
+		msg.ReplyToMessageID = message.MessageID
+		_, err := Octaaf.Send(msg)
+		return err
 	}
 }
 

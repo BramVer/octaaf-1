@@ -12,17 +12,11 @@ import (
 	"gopkg.in/telegram-bot-api.v4"
 )
 
-// ReporterID is the id of the user who reports everyone
-var ReporterID int
-
 // KaliCount is an integer that holds the ID of the last sent message in the Kali group
 var KaliCount int
 
-// KaliID is the ID of the kali group
-var KaliID int64
-
 func kaliHandler(message *tgbotapi.Message) {
-	if message.Chat.ID == KaliID {
+	if message.Chat.ID == settings.Telegram.KaliID {
 		log.Debug("Kalimember found")
 		KaliCount = message.MessageID
 
@@ -39,9 +33,10 @@ func kaliHandler(message *tgbotapi.Message) {
 }
 
 func kaliReport(message *tgbotapi.Message) {
-	if message.From.ID == ReporterID {
+	if message.From.ID == settings.Telegram.ReporterID {
 		log.Debug("Reporter found")
-		if strings.ToLower(message.Text) == "reported" || (message.Sticker != nil && message.Sticker.FileID == "CAADBAAD5gEAAreTBA3s5qVy8bxHfAI") {
+		if strings.ToLower(message.Text) == "reported" ||
+			(message.Sticker != nil && message.Sticker.FileID == "CAADBAAD5gEAAreTBA3s5qVy8bxHfAI") {
 			DB.Save(&models.Report{})
 		}
 	}
@@ -65,7 +60,7 @@ func getLeetBlazers(event string) {
 	// Store the kalivent in the DB
 	for _, participator := range participators {
 		userID, _ := strconv.Atoi(participator)
-		user, err := getUsername(userID, KaliID)
+		user, err := getUsername(userID, settings.Telegram.KaliID)
 
 		if err != nil {
 			log.Error("Unable to fetch username for the kalivent %v; error: %v", event, err)

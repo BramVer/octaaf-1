@@ -6,16 +6,16 @@ import (
 	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
-	"github.com/gobuffalo/envy"
 	"github.com/gobuffalo/pop"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
 type Connections struct {
-	Octaaf   *tgbotapi.BotAPI
-	Postgres *pop.Connection
-	Redis    *redis.Client
-	KaliID   int64
+	Octaaf      *tgbotapi.BotAPI
+	Postgres    *pop.Connection
+	Redis       *redis.Client
+	KaliID      int64
+	Environment string
 }
 
 var conn Connections
@@ -23,7 +23,7 @@ var conn Connections
 func New(c Connections) *gin.Engine {
 	conn = c
 
-	if envy.Get("GO_ENV", "development") == "production" {
+	if conn.Environment == "production" {
 		gin.SetMode("release")
 	}
 

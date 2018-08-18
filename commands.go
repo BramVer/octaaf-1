@@ -19,21 +19,19 @@ import (
 	"gopkg.in/telegram-bot-api.v4"
 )
 
-func changelog(message *tgbotapi.Message) {
-	if state.Version == "" {
-		reply(message, "Current version not found, check the changelog here: "+state.GitUri+"/tags")
-		return
+func changelog(message *tgbotapi.Message) error {
+	if settings.Version == "" {
+		return reply(message, "Current version not found, check the changelog here: "+GitUri+"/tags")
 	}
 
-	reply(message, fmt.Sprintf("%v/tags/%v", state.GitUri, state.Version))
+	return reply(message, fmt.Sprintf("%v/tags/%v", GitUri, settings.Version))
 }
 
-func all(message *tgbotapi.Message) {
+func all(message *tgbotapi.Message) error {
 	members := Redis.SMembers(fmt.Sprintf("members_%v", message.Chat.ID)).Val()
 
 	if len(members) == 0 {
-		reply(message, "I'm afraid I can't do that.")
-		return
+		return reply(message, "I'm afraid I can't do that.")
 	}
 
 	// used to load the usernames in goroutines
@@ -58,23 +56,21 @@ func all(message *tgbotapi.Message) {
 	}
 
 	wg.Wait()
-	reply(message, MDEscape(fmt.Sprintf("%v %v", response, message.CommandArguments())))
+	return reply(message, MDEscape(fmt.Sprintf("%v %v", response, message.CommandArguments())))
 }
 
-func remind(message *tgbotapi.Message) {
+func remind(message *tgbotapi.Message) error {
 	errorMessage := "Malformed message, please send something like `/remind_me 1 hour het is de schuld van de sossen`"
 	arr := strings.Split(message.Text, " ")
 
 	if len(arr) < 4 {
-		reply(message, errorMessage)
-		return
+		return reply(message, errorMessage)
 	}
 
 	delay, err := strconv.Atoi(arr[1])
 
 	if err != nil || delay < 1 {
-		reply(message, errorMessage)
-		return
+		return reply(message, errorMessage)
 	}
 
 	var deadline time.Time
@@ -93,8 +89,7 @@ func remind(message *tgbotapi.Message) {
 	case "week", "weeks":
 		deadline = now.Add(time.Hour * time.Duration(delay) * 24 * 7).UTC()
 	default:
-		reply(message, "Unknown time format")
-		return
+		return reply(message, "Unknown time format")
 	}
 
 	var remindMessage string
@@ -113,10 +108,10 @@ func remind(message *tgbotapi.Message) {
 		Executed:  false}
 
 	go startReminder(reminder)
-	reply(message, "Reminder saved!")
+	return reply(message, "Reminder saved!")
 }
 
-func sendRoll(message *tgbotapi.Message) {
+func sendRoll(message *tgbotapi.Message) error {
 	rand.Seed(time.Now().UnixNano())
 	roll := strconv.Itoa(rand.Intn(9999999999-1000000000) + 1000000000)
 	points := [9]string{"👌 Dubs", "🙈 Trips", "😱 Quads", "🤣😂 Penta", "👌👌🤔🤔😂😂 Hexa", "🙊🙉🙈🐵 Septa", "🅱️Octa", "💯💯💯 El Niño"}
@@ -133,22 +128,21 @@ func sendRoll(message *tgbotapi.Message) {
 	if dubscount > -1 {
 		roll = points[dubscount] + " " + roll
 	}
-	reply(message, roll)
+	return reply(message, roll)
 }
 
-func count(message *tgbotapi.Message) {
-	reply(message, fmt.Sprintf("%v", message.MessageID))
+func count(message *tgbotapi.Message) error {
+	return reply(message, fmt.Sprintf("%v", message.MessageID))
 }
 
-func whoami(message *tgbotapi.Message) {
-	reply(message, fmt.Sprintf("%v", message.From.ID))
+func whoami(message *tgbotapi.Message) error {
+	return reply(message, fmt.Sprintf("%v", message.From.ID))
 }
 
-func m8Ball(message *tgbotapi.Message) {
+func m8Ball(message *tgbotapi.Message) error {
 
 	if len(message.CommandArguments()) == 0 {
-		reply(message, "Oi! You have to ask question hé 🖕")
-		return
+		return reply(message, "Oi! You have to ask question hé 🖕")
 	}
 
 	answers := [20]string{"👌 It is certain",
@@ -173,112 +167,98 @@ func m8Ball(message *tgbotapi.Message) {
 		"🖕 Very doubtful"}
 	rand.Seed(time.Now().UnixNano())
 	roll := rand.Intn(19)
-	msg := tgbotapi.NewMessage(message.Chat.ID, answers[roll])
-	msg.ReplyToMessageID = message.MessageID
-	Octaaf.Send(msg)
+	return reply(message, answers[roll])
 }
 
-func sendBodegem(message *tgbotapi.Message) {
+func sendBodegem(message *tgbotapi.Message) error {
 	msg := tgbotapi.NewLocation(message.Chat.ID, 50.8614773, 4.211304)
 	msg.ReplyToMessageID = message.MessageID
-	Octaaf.Send(msg)
+	_, err := Octaaf.Send(msg)
+	return err
 }
 
-func where(message *tgbotapi.Message) {
+func where(message *tgbotapi.Message) error {
 	argument := strings.Replace(message.CommandArguments(), " ", "+", -1)
 
 	location, found := scrapers.GetLocation(argument)
 
 	if !found {
-		reply(message, "This place does not exist 🙈🙈🙈🤔🤔�")
-		return
+		return reply(message, "This place does not exist 🙈🙈🙈🤔🤔�")
 	}
 
 	msg := tgbotapi.NewLocation(message.Chat.ID, location.Lat, location.Lng)
 	msg.ReplyToMessageID = message.MessageID
-	Octaaf.Send(msg)
+	_, err := Octaaf.Send(msg)
+	return err
 }
 
-func what(message *tgbotapi.Message) {
+func what(message *tgbotapi.Message) error {
 	query := message.CommandArguments()
 	resp, err := http.Get(fmt.Sprintf("https://api.duckduckgo.com/?q=%v&format=json&no_html=1&skip_disambig=1", query))
 	if err != nil {
-		reply(message, "Just what is this? 🤔")
-		return
+		return reply(message, "Just what is this? 🤔")
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		reply(message, "Just what is this? 🤔")
-		return
+		return reply(message, "Just what is this? 🤔")
 	}
 
 	result := gjson.Get(string(body), "AbstractText").String()
 
 	if len(result) == 0 {
-		reply(message, fmt.Sprintf("What is this %v you speak of? 🤔", Markdown(query, mdbold)))
-		return
+		return reply(message, fmt.Sprintf("What is this %v you speak of? 🤔", Markdown(query, mdbold)))
 	}
 
-	reply(message, fmt.Sprintf("%v: %v", Markdown(query, mdbold), result))
+	return reply(message, fmt.Sprintf("%v: %v", Markdown(query, mdbold), result))
 }
 
-func weather(message *tgbotapi.Message) {
+func weather(message *tgbotapi.Message) error {
 	weather, found := scrapers.GetWeatherStatus(message.CommandArguments())
 	if !found {
-		reply(message, "No data found 🙈🙈🙈🤔🤔🤔")
+		return reply(message, "No data found 🙈🙈🙈🤔🤔🤔")
 	} else {
-		reply(message, "*Weather:* "+weather)
+		return reply(message, "*Weather:* "+weather)
 	}
 }
 
-func search(message *tgbotapi.Message) {
+func search(message *tgbotapi.Message) error {
 	if len(message.CommandArguments()) == 0 {
-		reply(message, "What do you expect me to do? 🤔🤔🤔🤔")
-		return
+		return reply(message, "What do you expect me to do? 🤔🤔🤔🤔")
 	}
 
 	url, found := scrapers.Search(message.CommandArguments(), message.Command() == "search_nsfw")
 
 	if found {
-		reply(message, MDEscape(url))
-		return
+		return reply(message, MDEscape(url))
 	}
 
-	reply(message, "I found nothing 😱😱😱")
+	return reply(message, "I found nothing 😱😱😱")
 }
 
-func sendStallman(message *tgbotapi.Message) {
+func sendStallman(message *tgbotapi.Message) error {
 
 	image, err := scrapers.GetStallman()
 
 	if err != nil {
-		reply(message, "Stallman went bork? 🤔🤔🤔🤔")
-		return
+		return reply(message, "Stallman went bork? 🤔🤔🤔🤔")
 	}
 
-	bytes := tgbotapi.FileBytes{Name: "stally.jpg", Bytes: image}
-	msg := tgbotapi.NewPhotoUpload(message.Chat.ID, bytes)
-
-	msg.Caption = message.CommandArguments()
-	msg.ReplyToMessageID = message.MessageID
-	Octaaf.Send(msg)
+	return reply(message, image)
 }
 
-func sendImage(message *tgbotapi.Message) {
+func sendImage(message *tgbotapi.Message) error {
 	var images []string
 	var err error
 	key := fmt.Sprintf("images_%v", message.Chat.ID)
 	if message.Command() != "more" {
 		if len(message.CommandArguments()) == 0 {
-			reply(message, fmt.Sprintf("What am I to do, @%v? 🤔🤔🤔🤔", message.From.UserName))
-			return
+			return reply(message, fmt.Sprintf("What am I to do, @%v? 🤔🤔🤔🤔", message.From.UserName))
 		}
 
 		images, err = scrapers.GetImages(message.CommandArguments(), message.Command() == "img_sfw")
 		if err != nil {
-			reply(message, "Something went wrong!")
-			return
+			return reply(message, "Something went wrong!")
 		}
 
 		Cache.Set(&cache.Item{
@@ -288,8 +268,7 @@ func sendImage(message *tgbotapi.Message) {
 		})
 	} else {
 		if err := Cache.Get(key, &images); err != nil {
-			reply(message, "I can't fetch them for you right now.")
-			return
+			return reply(message, "I can't fetch them for you right now.")
 		}
 
 		// Randomly order images for a different /more
@@ -314,51 +293,44 @@ func sendImage(message *tgbotapi.Message) {
 
 		defer res.Body.Close()
 
-		content, err := ioutil.ReadAll(res.Body)
+		img, err := ioutil.ReadAll(res.Body)
 
 		if err != nil {
 			log.Errorf("Unable to load image %v; error: ", url, err)
 			continue
 		}
 
-		bytes := tgbotapi.FileBytes{Name: "image.jpg", Bytes: content}
-		msg := tgbotapi.NewPhotoUpload(message.Chat.ID, bytes)
+		err = reply(message, img)
 
-		msg.Caption = message.CommandArguments()
-		msg.ReplyToMessageID = message.MessageID
-		_, e := Octaaf.Send(msg)
-
-		if e == nil {
-			return
+		if err == nil {
+			return nil
 		}
 	}
 
-	reply(message, "I did not find images for the query: `"+message.CommandArguments()+"`")
+	return reply(message, "I did not find images for the query: `"+message.CommandArguments()+"`")
 }
 
-func xkcd(message *tgbotapi.Message) {
+func xkcd(message *tgbotapi.Message) error {
 	image, err := scrapers.GetXKCD()
 
 	if err != nil {
-		reply(message, "Failed to parse XKCD image")
-		return
+		return reply(message, "Failed to parse XKCD image")
 	}
 
-	bytes := tgbotapi.FileBytes{Name: "image.jpg", Bytes: image}
-	msg := tgbotapi.NewPhotoUpload(message.Chat.ID, bytes)
-
-	msg.Caption = message.CommandArguments()
-	msg.ReplyToMessageID = message.MessageID
-	Octaaf.Send(msg)
+	return reply(message, image)
 }
 
-func doubt(message *tgbotapi.Message) {
+func doubt(message *tgbotapi.Message) error {
 	msg := tgbotapi.NewPhotoUpload(message.Chat.ID, "assets/doubt.jpg")
 	msg.ReplyToMessageID = message.MessageID
-	Octaaf.Send(msg)
+	_, err := Octaaf.Send(msg)
+	if err != nil {
+		log.Error("Unable to send /doubt: ", err)
+	}
+	return err
 }
 
-func quote(message *tgbotapi.Message) {
+func quote(message *tgbotapi.Message) error {
 	// Fetch a random quote
 	if message.ReplyToMessage == nil {
 		quote := models.Quote{}
@@ -367,27 +339,24 @@ func quote(message *tgbotapi.Message) {
 
 		if err != nil {
 			log.Errorf("Quote fetch error: %v", err)
-			reply(message, "No quote found boi")
-			return
+			return reply(message, "No quote found boi")
 		}
 
 		user, userErr := getUsername(quote.UserID, message.Chat.ID)
 
 		if userErr != nil {
-			reply(message, quote.Quote)
+			log.Errorf("Unable to find the username for id '%v' : %v", quote.UserID, userErr)
+			return reply(message, quote.Quote)
 		} else {
 			msg := fmt.Sprintf("\"%v\"", Markdown(quote.Quote, mdquote))
 			msg += fmt.Sprintf(" \n    ~@%v", MDEscape(user.User.UserName))
-			reply(message, msg)
+			return reply(message, msg)
 		}
-
-		return
 	}
 
 	// Unable to store this quote
 	if message.ReplyToMessage.Text == "" {
-		reply(message, "No text found in the comment. Not saving the quote!")
-		return
+		return reply(message, "No text found in the comment. Not saving the quote!")
 	}
 
 	err := DB.Save(&models.Quote{
@@ -397,19 +366,17 @@ func quote(message *tgbotapi.Message) {
 
 	if err != nil {
 		log.Errorf("Unable to save quote '%v', error: %v", message.ReplyToMessage.Text, err)
-		reply(message, "Unable to save the quote...")
-		return
+		return reply(message, "Unable to save the quote...")
 	}
 
-	reply(message, "Quote successfully saved!")
+	return reply(message, "Quote successfully saved!")
 }
 
-func nextLaunch(message *tgbotapi.Message) {
+func nextLaunch(message *tgbotapi.Message) error {
 	res, err := http.Get("https://launchlibrary.net/1.3/launch?next=5&mode=verbose")
 
 	if err != nil {
-		reply(message, "Unable to fetch launch data")
-		return
+		return reply(message, "Unable to fetch launch data")
 	}
 
 	defer res.Body.Close()
@@ -417,8 +384,7 @@ func nextLaunch(message *tgbotapi.Message) {
 	launchJSON, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
-		reply(message, "Unable to fetch launch data")
-		return
+		return reply(message, "Unable to fetch launch data")
 	}
 
 	launches := gjson.Get(string(launchJSON), "launches").Array()
@@ -446,15 +412,14 @@ func nextLaunch(message *tgbotapi.Message) {
 		}
 	}
 
-	reply(message, msg)
+	return reply(message, msg)
 }
 
-func issues(message *tgbotapi.Message) {
+func issues(message *tgbotapi.Message) error {
 	res, err := http.Get("https://api.github.com/repos/bartwillems/Octaaf/issues?state=open")
 
 	if err != nil {
-		reply(message, "Unable to fetch open issues")
-		return
+		return reply(message, "Unable to fetch open issues")
 	}
 
 	defer res.Body.Close()
@@ -462,8 +427,7 @@ func issues(message *tgbotapi.Message) {
 	issuesJSON, err := ioutil.ReadAll(res.Body)
 
 	if err != nil {
-		reply(message, "Unable to fetch open issues")
-		return
+		return reply(message, "Unable to fetch open issues")
 	}
 
 	issues := gjson.ParseBytes(issuesJSON)
@@ -480,13 +444,12 @@ func issues(message *tgbotapi.Message) {
 		return true
 	})
 
-	reply(message, msg)
+	return reply(message, msg)
 }
 
-func kaliRank(message *tgbotapi.Message) {
-	if message.Chat.ID != KaliID {
-		reply(message, "You are not allowed!")
-		return
+func kaliRank(message *tgbotapi.Message) error {
+	if message.Chat.ID != settings.Telegram.KaliID {
+		return reply(message, "You are not allowed!")
 	}
 
 	kaliRank := []models.MessageCount{}
@@ -494,8 +457,7 @@ func kaliRank(message *tgbotapi.Message) {
 
 	if err != nil {
 		log.Error("Unable to fetch kali rankings: ", err)
-		reply(message, "Unable to fetch the kali rankings")
-		return
+		return reply(message, "Unable to fetch the kali rankings")
 	}
 
 	var msg = "*Kali rankings:*"
@@ -503,17 +465,16 @@ func kaliRank(message *tgbotapi.Message) {
 		msg += fmt.Sprintf("\n`#%v:` *%v messages*   _~%v_", index+1, rank.Diff, rank.CreatedAt.Format("Monday, 2 January 2006"))
 	}
 
-	reply(message, msg)
+	return reply(message, msg)
 }
 
-func iasip(message *tgbotapi.Message) {
+func iasip(message *tgbotapi.Message) error {
 	server := "http://159.89.14.97:6969"
 
 	res, err := http.Get(server)
 	if err != nil {
 		log.Error("Unable to fetch IASIP quote: ", err)
-		reply(message, "Unable to fetch iasip quote...you goddamn bitch you..")
-		return
+		return reply(message, "Unable to fetch iasip quote...you goddamn bitch you..")
 	}
 
 	defer res.Body.Close()
@@ -521,37 +482,34 @@ func iasip(message *tgbotapi.Message) {
 	body, err := ioutil.ReadAll(res.Body)
 	if err != nil {
 		log.Error("Unable to fetch IASIP quote: ", err)
-		reply(message, "Unable to fetch iasip quote...you goddamn bitch you..")
-		return
+		return reply(message, "Unable to fetch iasip quote...you goddamn bitch you..")
 	}
 
-	reply(message, string(body))
+	return reply(message, string(body))
 }
 
-func reported(message *tgbotapi.Message) {
-	if message.Chat.ID != KaliID {
-		reply(message, "Yeah well, you need to update to Strontbot Enterprise edition for Workgroups to use this feature.")
-		return
+func reported(message *tgbotapi.Message) error {
+	if message.Chat.ID != settings.Telegram.KaliID {
+		return reply(message, "Yeah well, you need to update to Strontbot Enterprise edition for Workgroups to use this feature.")
 	}
 
 	reportCount, err := DB.Count(models.Report{})
 
 	if err != nil {
-		reply(message, "I can't seem to be able to count the reports.")
 		log.Error("Report fetch error: ", err)
-		return
+		return reply(message, "I can't seem to be able to count the reports.")
 	}
 
 	config := tgbotapi.ChatConfigWithUser{
 		ChatID:             message.Chat.ID,
 		SuperGroupUsername: "",
-		UserID:             ReporterID}
+		UserID:             settings.Telegram.ReporterID}
 
 	reporter, err := Octaaf.GetChatMember(config)
 
 	if err != nil {
-		reply(message, fmt.Sprintf("So far, %v people have been reported by Dieter", reportCount))
+		return reply(message, fmt.Sprintf("So far, %v people have been reported by Dieter", reportCount))
 	} else {
-		reply(message, MDEscape(fmt.Sprintf("So far, %v people have been reported by: @%v", reportCount, reporter.User.UserName)))
+		return reply(message, MDEscape(fmt.Sprintf("So far, %v people have been reported by: @%v", reportCount, reporter.User.UserName)))
 	}
 }

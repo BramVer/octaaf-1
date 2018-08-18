@@ -5,26 +5,24 @@ import (
 
 	"octaaf/web"
 
-	"github.com/gobuffalo/envy"
 	log "github.com/sirupsen/logrus"
 	"gopkg.in/telegram-bot-api.v4"
 )
 
-type State struct {
-	Environment string
-	Version     string
-	GitUri      string
-}
+var settings Settings
 
-var state *State
+const GitUri = "https://gitlab.com/BartWillems/octaaf"
 
 func main() {
-	envy.Load("config/.env")
 
-	state = &State{
-		Environment: envy.Get("GO_ENV", "development"),
-		Version:     loadVersion(),
-		GitUri:      "https://gitlab.com/BartWillems/octaaf",
+	if _, err := settings.Load(); err != nil {
+		log.Fatal("Unable to load/parse the settings file: ", err)
+	}
+
+	settings.Version = loadVersion()
+
+	if settings.Environment != "production" {
+		log.SetLevel(log.DebugLevel)
 	}
 
 	initRedis()
@@ -40,10 +38,11 @@ func main() {
 
 	go func() {
 		router := web.New(web.Connections{
-			Octaaf:   Octaaf,
-			Postgres: DB,
-			Redis:    Redis,
-			KaliID:   KaliID,
+			Octaaf:      Octaaf,
+			Postgres:    DB,
+			Redis:       Redis,
+			KaliID:      settings.Telegram.KaliID,
+			Environment: settings.Environment,
 		})
 		err := router.Run()
 		if err != nil {

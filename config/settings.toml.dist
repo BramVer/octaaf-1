@@ -1,0 +1,17 @@
+environment = "development"
+
+[telegram]
+api_key = ""
+kali_id = 0
+reporter_id = 0
+
+[database]
+uri = "postgres://postgres:postgres@127.0.0.1:5432/octaaf_development?sslmode=disable"
+
+[redis]
+uri = "localhost:6379"
+password = ""
+db = 0
+
+[google]
+api_key = ""

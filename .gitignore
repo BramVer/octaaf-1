@@ -14,8 +14,7 @@
 .glide/
 
 # Config
-config/.env
-config/database.yml
+config/settings.toml
 migrations/schema.sql
 
 # Octaaf binary

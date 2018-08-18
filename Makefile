@@ -31,8 +31,8 @@ package:
 	
 	cp ./octaaf $(TARGET)/
 	cp ./octaaf.service $(SYSTEM)/octaaf.service
-	cp ./config/.env.dist $(CONFIG)/.env
-	cp ./config/database.yml.dist $(CONFIG)/database.yml
+	cp ./config/settings.toml.dist $(CONFIG)/settings.toml
+	cp ./config/database.yml $(CONFIG)/database.yml
 	cp -r ./assets $(TARGET)/
 	cp -r ./migrations $(TARGET)/
 	
@@ -48,8 +48,7 @@ package:
 		--depends 'redis' \
 		--force \
 		--config-files /usr/lib/systemd/system/octaaf.service \
-		--config-files /opt/octaaf/config/.env \
-		--config-files /opt/octaaf/config/database.yml \
+		--config-files /opt/octaaf/config/settings.toml \
 		--chdir $(TMPDIR) \
 		.; \
 	
