@@ -75,7 +75,7 @@ func remind(message *tgbotapi.Message) error {
 	}
 
 	if r == nil {
-		log.Error("No reminder found")
+		log.Error("No reminder found for message: ", message.CommandArguments())
 		return reply(message, "No reminder found")
 	}
 
