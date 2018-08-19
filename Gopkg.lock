@@ -79,7 +79,7 @@
     "json",
     "render"
   ]
-  revision = "bef6c56c8928cfe1d96a9fdefe29fcfdeb2b2f89"
+  revision = "b7bb9baa642d2b9d5918a5bcd3829dae64c65257"
 
 [[projects]]
   name = "github.com/go-redis/cache"
@@ -115,8 +115,8 @@
 [[projects]]
   name = "github.com/gobuffalo/envy"
   packages = ["."]
-  revision = "2d0f467653f3d961ce9ada4d32a230bdcb3bfe11"
-  version = "v1.6.3"
+  revision = "3c96536452167a705ca5a70b831d3810e1e10452"
+  version = "v1.6.4"
 
 [[projects]]
   name = "github.com/gobuffalo/fizz"
@@ -136,8 +136,8 @@
 [[projects]]
   name = "github.com/gobuffalo/makr"
   packages = ["."]
-  revision = "47230b587ca04538db13185ef76cf0147f1c1f0f"
-  version = "v1.1.2"
+  revision = "e49ce02a5624694f76d243abdad76d7d95fe1909"
+  version = "v1.1.4"
 
 [[projects]]
   name = "github.com/gobuffalo/packr"
@@ -154,8 +154,8 @@
     "parser",
     "token"
   ]
-  revision = "f080797c159c8511388e2294c73960fdd4a4d075"
-  version = "v3.7.14"
+  revision = "621b4e90d1ccbbbcb80e1c6c6e01453121973055"
+  version = "v3.7.16"
 
 [[projects]]
   name = "github.com/gobuffalo/pop"
@@ -166,8 +166,8 @@
     "fix",
     "nulls"
   ]
-  revision = "9f8bf0c119201fa7e839f2f02d9ccc8f81b021d1"
-  version = "v4.6.4"
+  revision = "97cff086dceb9022215125efd32320e4e9581137"
+  version = "v4.6.6"
 
 [[projects]]
   name = "github.com/gobuffalo/tags"
@@ -176,14 +176,14 @@
     "form",
     "form/bootstrap"
   ]
-  revision = "4c0ef4ed8a981af92b651d7b9b13668253fc970e"
-  version = "v2.0.8"
+  revision = "0e9ca016e3c1b995c9b4119e7d14acb4fa8139e6"
+  version = "v2.0.9"
 
 [[projects]]
   name = "github.com/gobuffalo/uuid"
   packages = ["."]
-  revision = "82924465e062db2a6540bd943e8dfbb87f875d43"
-  version = "v2.0.2"
+  revision = "7652001f1b1ff3d69aa899943b668e9be27284a0"
+  version = "v2.0.3"
 
 [[projects]]
   name = "github.com/gobuffalo/validate"
@@ -191,8 +191,8 @@
     ".",
     "validators"
   ]
-  revision = "5599425b8e56ecfbbccd9939a746f7cc5ccd28a2"
-  version = "v2.0.1"
+  revision = "f6f3be4568c1ac31b364193100816d272e36ddc5"
+  version = "v2.0.3"
 
 [[projects]]
   name = "github.com/golang/protobuf"
@@ -234,11 +234,10 @@
   name = "github.com/markbates/going"
   packages = [
     "defaults",
-    "randx",
-    "wait"
+    "randx"
   ]
-  revision = "0576708c56cea02331f864fe6e157ac7841923e4"
-  version = "v1.0.1"
+  revision = "e6789dc391e3308d92d2f9131990b7426e5e3066"
+  version = "v1.0.2"
 
 [[projects]]
   name = "github.com/markbates/inflect"
@@ -267,8 +266,8 @@
 [[projects]]
   name = "github.com/microcosm-cc/bluemonday"
   packages = ["."]
-  revision = "dafebb5b6ff2861a0d69af64991e10866c19be85"
-  version = "v1.0.0"
+  revision = "82c7118e8ccf7403d4860175d97bb635e8e28239"
+  version = "v1.0.1"
 
 [[projects]]
   name = "github.com/modern-go/concurrent"
@@ -414,7 +413,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "de0752318171da717af4ce24d0a2e8626afaeb11"
+  revision = "aabede6cba87e37f413b3e60ebfc214f8eeca1b0"
 
 [[projects]]
   branch = "master"

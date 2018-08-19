@@ -511,6 +511,11 @@ func (c *Context) BindJSON(obj interface{}) error {
 	return c.MustBindWith(obj, binding.JSON)
 }
 
+// BindXML is a shortcut for c.MustBindWith(obj, binding.BindXML).
+func (c *Context) BindXML(obj interface{}) error {
+	return c.MustBindWith(obj, binding.XML)
+}
+
 // BindQuery is a shortcut for c.MustBindWith(obj, binding.Query).
 func (c *Context) BindQuery(obj interface{}) error {
 	return c.MustBindWith(obj, binding.Query)
@@ -543,6 +548,11 @@ func (c *Context) ShouldBind(obj interface{}) error {
 // ShouldBindJSON is a shortcut for c.ShouldBindWith(obj, binding.JSON).
 func (c *Context) ShouldBindJSON(obj interface{}) error {
 	return c.ShouldBindWith(obj, binding.JSON)
+}
+
+// ShouldBindXML is a shortcut for c.ShouldBindWith(obj, binding.XML).
+func (c *Context) ShouldBindXML(obj interface{}) error {
+	return c.ShouldBindWith(obj, binding.XML)
 }
 
 // ShouldBindQuery is a shortcut for c.ShouldBindWith(obj, binding.Query).
@@ -771,6 +781,11 @@ func (c *Context) XML(code int, obj interface{}) {
 // YAML serializes the given struct as YAML into the response body.
 func (c *Context) YAML(code int, obj interface{}) {
 	c.Render(code, render.YAML{Data: obj})
+}
+
+// ProtoBuf serializes the given struct as ProtoBuf into the response body.
+func (c *Context) ProtoBuf(code int, obj interface{}) {
+	c.Render(code, render.ProtoBuf{Data: obj})
 }
 
 // String writes the given string into the response body.
