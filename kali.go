@@ -46,7 +46,7 @@ func getLeetBlazers(event string) {
 	log.Info("Getting blazers")
 	participators := Redis.SMembers(event).Val()
 
-	log.Info("Blazers count: %v", len(participators))
+	log.Info("Blazers count: ", len(participators))
 
 	if len(participators) == 0 {
 		sendGlobal(fmt.Sprintf("Nobody participated in today's %v", event))

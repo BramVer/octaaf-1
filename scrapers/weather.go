@@ -12,9 +12,9 @@ import (
 )
 
 // GetWeatherStatus reports when it's raining somewhere
-func GetWeatherStatus(query string) (string, bool) {
+func GetWeatherStatus(query string, apiKey string) (string, bool) {
 	argument := strings.Replace(query, " ", "+", -1)
-	location, found := GetLocation(argument)
+	location, found := GetLocation(argument, apiKey)
 
 	if !found {
 		return "", false

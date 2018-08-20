@@ -3,7 +3,6 @@ package scrapers
 import (
 	"io/ioutil"
 	"net/http"
-	"os"
 	"strings"
 
 	"github.com/PuerkitoBio/goquery"
@@ -27,15 +26,7 @@ func GetImages(query string, safe bool) ([]string, error) {
 		url += "&safe=on"
 	}
 
-	client := &http.Client{}
-	req, err := http.NewRequest("GET", url, nil)
-
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header.Set("User-Agent", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.89 Safari/537.36")
-	res, err := client.Do(req)
+	res, err := fetch(url)
 
 	if err != nil {
 		return nil, err
@@ -64,8 +55,8 @@ func GetImages(query string, safe bool) ([]string, error) {
 }
 
 // GetLocation returns a location based on the google maps API
-func GetLocation(query string) (Location, bool) {
-	res, err := http.Get("https://maps.google.com/maps/api/geocode/json?address=" + query + "&key=" + os.Getenv("GOOGLE_API_KEY"))
+func GetLocation(query string, apiKey string) (Location, bool) {
+	res, err := http.Get("https://maps.google.com/maps/api/geocode/json?address=" + query + "&key=" + apiKey)
 
 	if err != nil {
 		return Location{0, 0}, false

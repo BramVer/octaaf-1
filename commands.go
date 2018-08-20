@@ -160,7 +160,7 @@ func sendBodegem(message *tgbotapi.Message) error {
 func where(message *tgbotapi.Message) error {
 	argument := strings.Replace(message.CommandArguments(), " ", "+", -1)
 
-	location, found := scrapers.GetLocation(argument)
+	location, found := scrapers.GetLocation(argument, settings.Google.ApiKey)
 
 	if !found {
 		return reply(message, "This place does not exist 🙈🙈🙈🤔🤔�")
@@ -194,7 +194,7 @@ func what(message *tgbotapi.Message) error {
 }
 
 func weather(message *tgbotapi.Message) error {
-	weather, found := scrapers.GetWeatherStatus(message.CommandArguments())
+	weather, found := scrapers.GetWeatherStatus(message.CommandArguments(), settings.Google.ApiKey)
 	if !found {
 		return reply(message, "No data found 🙈🙈🙈🤔🤔🤔")
 	} else {
