@@ -97,18 +97,13 @@ func addLeetBlazer(message *tgbotapi.Message, event string) {
 }
 
 func setKaliCount() {
-	lastCount := models.MessageCount{}
-
-	err := DB.Last(&lastCount)
-
 	count := models.MessageCount{
 		Count: KaliCount,
 		Diff:  0,
 	}
 
-	if err == nil && lastCount.Count > 0 {
-		count.Diff = (KaliCount - lastCount.Count)
+	err := DB.Save(&count)
+	if err != nil {
+		log.Error("Unable to save today's kalicount: ", err)
 	}
-
-	DB.Save(&count)
 }

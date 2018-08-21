@@ -53,3 +53,17 @@ func (m *MessageCount) ValidateCreate(tx *pop.Connection) (*validate.Errors, err
 func (m *MessageCount) ValidateUpdate(tx *pop.Connection) (*validate.Errors, error) {
 	return validate.NewErrors(), nil
 }
+
+func (m *MessageCount) BeforeCreate(tx *pop.Connection) {
+	prevMC := MessageCount{}
+	err := tx.Last(prevMC)
+
+	m.Diff = 0
+
+	if err == nil && prevMC.Count > 0 {
+		m.Diff = (m.Count - prevMC.Count)
+	} else {
+		// This is the first message
+		m.Diff = m.Count
+	}
+}
