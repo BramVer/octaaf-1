@@ -79,7 +79,7 @@
     "json",
     "render"
   ]
-  revision = "b7bb9baa642d2b9d5918a5bcd3829dae64c65257"
+  revision = "0da5b0c85ac2539e775a7e63aebf3e0b5808dab4"
 
 [[projects]]
   name = "github.com/go-redis/cache"
@@ -124,8 +124,8 @@
     ".",
     "translators"
   ]
-  revision = "f57f22e853fa196e6e0048979cedba8219fa41d1"
-  version = "v1.0.8"
+  revision = "cfb4532f6efef6bb213c5616f5847922b596645f"
+  version = "v1.0.10"
 
 [[projects]]
   name = "github.com/gobuffalo/github_flavored_markdown"
@@ -166,8 +166,8 @@
     "fix",
     "nulls"
   ]
-  revision = "97cff086dceb9022215125efd32320e4e9581137"
-  version = "v4.6.6"
+  revision = "982204fcc3b822cd0db0ea2d0269813ede85d8a2"
+  version = "v4.6.8"
 
 [[projects]]
   name = "github.com/gobuffalo/tags"
@@ -197,8 +197,8 @@
 [[projects]]
   name = "github.com/golang/protobuf"
   packages = ["proto"]
-  revision = "b4deda0973fb4c70b50d226b1af49f3da59f5265"
-  version = "v1.1.0"
+  revision = "aa810b61a9c79d51363740d207bb46cf8e620ed5"
+  version = "v1.2.0"
 
 [[projects]]
   branch = "master"
@@ -228,7 +228,7 @@
     ".",
     "oid"
   ]
-  revision = "90697d60dd844d5ef6ff15135d0203f65d2f53b8"
+  revision = "55f6f2718ccb74a33366eb78dac69fa02124b91f"
 
 [[projects]]
   name = "github.com/markbates/going"
@@ -413,7 +413,7 @@
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "aabede6cba87e37f413b3e60ebfc214f8eeca1b0"
+  revision = "614d502a4dac94afa3a6ce146bd1736da82514c6"
 
 [[projects]]
   branch = "master"
@@ -423,7 +423,7 @@
     "html",
     "html/atom"
   ]
-  revision = "aaf60122140d3fcf75376d319f0554393160eb50"
+  revision = "922f4815f713f213882e8ef45e0d315b164d705c"
 
 [[projects]]
   branch = "master"
@@ -438,7 +438,7 @@
     "unix",
     "windows"
   ]
-  revision = "1c9583448a9c3aa0f9a6a5241bf73c0bd8aafded"
+  revision = "3b58ed4ad3395d483fc92d5d14123ce2c3581fec"
 
 [[projects]]
   name = "google.golang.org/appengine"
