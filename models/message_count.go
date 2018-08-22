@@ -8,6 +8,7 @@ import (
 	"github.com/gobuffalo/uuid"
 	"github.com/gobuffalo/validate"
 	"github.com/gobuffalo/validate/validators"
+	log "github.com/sirupsen/logrus"
 )
 
 type MessageCount struct {
@@ -54,16 +55,20 @@ func (m *MessageCount) ValidateUpdate(tx *pop.Connection) (*validate.Errors, err
 	return validate.NewErrors(), nil
 }
 
-func (m *MessageCount) BeforeCreate(tx *pop.Connection) {
+func (m *MessageCount) BeforeSave(tx *pop.Connection) error {
 	prevMC := MessageCount{}
-	err := tx.Last(prevMC)
+	err := tx.Last(&prevMC)
 
 	m.Diff = 0
 
 	if err == nil && prevMC.Count > 0 {
 		m.Diff = (m.Count - prevMC.Count)
+		log.Debug("Previous message count: ", prevMC.Count)
 	} else {
+		log.Error("Unable to load previous error count: ", err)
 		// This is the first message
 		m.Diff = m.Count
 	}
+	log.Debug("Setting MessageCount with diff ", m.Diff)
+	return nil
 }
