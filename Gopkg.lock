@@ -103,8 +103,8 @@
     "internal/singleflight",
     "internal/util"
   ]
-  revision = "480db94d33e6088e08d628833b6c0705451d24bb"
-  version = "v6.13.2"
+  revision = "1614e579ed966441b8e0c3ccea1dd0fbbd93a6ae"
+  version = "v6.14.0"
 
 [[projects]]
   name = "github.com/go-sql-driver/mysql"
@@ -142,8 +142,8 @@
 [[projects]]
   name = "github.com/gobuffalo/packr"
   packages = ["."]
-  revision = "1aab5672bd385f2a7da18bffa961912e7642ea79"
-  version = "v1.13.2"
+  revision = "ee1318b82b25993be2f7161d48315e1f14697528"
+  version = "v1.13.3"
 
 [[projects]]
   name = "github.com/gobuffalo/plush"
@@ -164,10 +164,11 @@
     "associations",
     "columns",
     "fix",
+    "logging",
     "nulls"
   ]
-  revision = "982204fcc3b822cd0db0ea2d0269813ede85d8a2"
-  version = "v4.6.8"
+  revision = "2b6e2a4c979e204a9e61b95ed419780493940079"
+  version = "v4.7.0"
 
 [[projects]]
   name = "github.com/gobuffalo/tags"
@@ -176,8 +177,8 @@
     "form",
     "form/bootstrap"
   ]
-  revision = "0e9ca016e3c1b995c9b4119e7d14acb4fa8139e6"
-  version = "v2.0.9"
+  revision = "f854d1cc58aceb5665eb0c94440c3c1be273c5d2"
+  version = "v2.0.10"
 
 [[projects]]
   name = "github.com/gobuffalo/uuid"
@@ -219,16 +220,16 @@
   name = "github.com/json-iterator/go"
   packages = ["."]
   revision = "1624edc4454b8682399def8740d46db5e4362ba4"
-  version = "1.1.5"
+  version = "v1.1.5"
 
 [[projects]]
-  branch = "master"
   name = "github.com/lib/pq"
   packages = [
     ".",
     "oid"
   ]
-  revision = "55f6f2718ccb74a33366eb78dac69fa02124b91f"
+  revision = "4ded0e9383f75c197b3a2aaa6d590ac52df6fd79"
+  version = "v1.0.0"
 
 [[projects]]
   name = "github.com/markbates/going"
@@ -406,8 +407,8 @@
     ".",
     "codes"
   ]
-  revision = "b5e691b1eb52a28c05e67ab9df303626c095c23b"
-  version = "v3.3.3"
+  revision = "935c5b540faab4d4922ae6f1fddcf77a726f259c"
+  version = "v3.4.0"
 
 [[projects]]
   branch = "master"
@@ -423,7 +424,7 @@
     "html",
     "html/atom"
   ]
-  revision = "922f4815f713f213882e8ef45e0d315b164d705c"
+  revision = "8a410e7b638dca158bf9e766925842f6651ff828"
 
 [[projects]]
   branch = "master"
@@ -438,7 +439,7 @@
     "unix",
     "windows"
   ]
-  revision = "3b58ed4ad3395d483fc92d5d14123ce2c3581fec"
+  revision = "4910a1d54f876d7b22162a85f4d066d3ee649450"
 
 [[projects]]
   name = "google.golang.org/appengine"
