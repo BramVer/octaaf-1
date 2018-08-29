@@ -93,7 +93,7 @@ func remind(message *tgbotapi.Message) error {
 
 func sendRoll(message *tgbotapi.Message) error {
 	rand.Seed(time.Now().UnixNano())
-	roll := strconv.Itoa(rand.Intn(9999999999-1000000000) + 1000000000)
+	roll := strconv.Itoa(rand.Intn(9999999999-1e9) + 1e9)
 	points := [9]string{"👌 Dubs", "🙈 Trips", "😱 Quads", "🤣😂 Penta", "👌👌🤔🤔😂😂 Hexa", "🙊🙉🙈🐵 Septa", "🅱️Octa", "💯💯💯 El Niño"}
 	var dubscount int8 = -1
 

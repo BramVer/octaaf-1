@@ -167,8 +167,8 @@
     "logging",
     "nulls"
   ]
-  revision = "2b6e2a4c979e204a9e61b95ed419780493940079"
-  version = "v4.7.0"
+  revision = "acce47969958bf42ac31829205ec6445e6aec9bd"
+  version = "v4.7.1"
 
 [[projects]]
   name = "github.com/gobuffalo/tags"
@@ -408,7 +408,7 @@
     "codes"
   ]
   revision = "935c5b540faab4d4922ae6f1fddcf77a726f259c"
-  version = "v3.4.0"
+  version = "v4.0.0"
 
 [[projects]]
   branch = "master"
@@ -439,7 +439,7 @@
     "unix",
     "windows"
   ]
-  revision = "4910a1d54f876d7b22162a85f4d066d3ee649450"
+  revision = "d99a578cf41bfccdeaf48b0845c823a4b8b0ad5e"
 
 [[projects]]
   name = "google.golang.org/appengine"
