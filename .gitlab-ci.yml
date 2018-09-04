@@ -1,0 +1,76 @@
+stages:
+  - build
+  - package
+  - release
+  - deploy
+
+build:
+  stage: build
+  image: golang:1.11
+  script:
+    - go build -ldflags "-s -w"
+
+package:
+  stage: package
+  image: ruby:latest
+  script:
+    # Install rpmbuild & fpm to build the package
+    - apt update && apt install rpm -y
+    - gem install fpm
+    
+    # Create FPM buil directories
+    - TMPDIR=$(mktemp -d)
+    - TARGET="${TMPDIR}/opt/octaaf"
+    - CONFIG="${TARGET}/config"
+    - SYSTEM="${TMPDIR}/usr/lib/systemd/system/"
+    - mkdir -p "$CONFIG"
+    - mkdir -p "$SYSTEM"
+
+    # Ensure the files are on the correct location
+    - echo "${CI_COMMIT_TAG}" > ./assets/version
+    - cp ./octaaf $TARGET/
+    - cp ./octaaf.service ${SYSTEM}/octaaf.service
+    - cp ./config/settings.toml.dist ${CONFIG}/settings.toml
+    - cp ./config/database.yml ${CONFIG}/database.yml
+    - cp -r ./assets $TARGET/
+    - cp -r ./migrations $TARGET/
+    
+    # Finally build the rpm package
+    - |
+        fpm -s dir -t rpm \
+          --name "octaaf" \
+          --description "A Go Telegram bot" \
+          --version "${CI_COMMIT_TAG}" \
+          --architecture "x86_64" \
+          --url "${CI_REPOSITORY_URL}" \
+          --license 'MIT' \
+          --depends 'postgresql' \
+          --depends 'redis' \
+          --force \
+          --config-files /usr/lib/systemd/system/octaaf.service \
+          --config-files /opt/octaaf/config/settings.toml \
+          --chdir $TMPDIR \
+          .
+  artifacts:
+    paths:
+      - ./*.rpm
+
+release:
+  stage: release
+  script:
+    - echo "Not implemented yet!"
+  only:
+    variables:
+      - $CI_COMMIT_TAG =~ /^release-.*$/
+    refs:
+      - master
+
+deploy:
+  stage: deploy
+  script:
+    - echo "Not implemented yet!"
+  only:
+    variables:
+      - $CI_COMMIT_TAG =~ /^release-.*$/
+    refs:
+      - master

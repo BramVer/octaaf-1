@@ -2,6 +2,8 @@
 
 A telegram bot written in Go
 
+[![pipeline status](https://gitlab.com/BartWillems/octaaf/badges/master/pipeline.svg)](https://gitlab.com/BartWillems/octaaf/commits/master)
+
 ## Commands
 
 * /all - Send a message to all active members in a group
