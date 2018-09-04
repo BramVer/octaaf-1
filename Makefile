@@ -15,7 +15,7 @@ ARCH 		= x86_64
 all: build
 
 build:
-	docker run --rm -v "$$PWD":/go/src/octaaf -w /go/src/octaaf golang:1.10 go build -ldflags "-s -w"
+	docker run --rm -v "$$PWD":/go/src/octaaf -w /go/src/octaaf golang:1.11 go build -ldflags "-s -w"
 
 TMPDIR := $(shell mktemp -d)
 TARGET := $(TMPDIR)/opt/octaaf
