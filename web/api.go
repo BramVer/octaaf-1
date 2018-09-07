@@ -6,8 +6,8 @@ import (
 	"github.com/fatih/structs"
 	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/gobuffalo/pop"
-	"gopkg.in/telegram-bot-api.v4"
 )
 
 type Connections struct {

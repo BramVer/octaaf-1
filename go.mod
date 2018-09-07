@@ -11,10 +11,10 @@ require (
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/fatih/structs v1.0.0
 	github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7 // indirect
-	github.com/gin-gonic/gin v0.0.0-20180831203816-500ebd9ea866
+	github.com/gin-gonic/gin v1.3.0
 	github.com/go-redis/cache v6.3.5+incompatible
 	github.com/go-redis/redis v6.14.1+incompatible
-	github.com/go-telegram-bot-api/telegram-bot-api v4.6.2+incompatible // indirect
+	github.com/go-telegram-bot-api/telegram-bot-api v4.6.2+incompatible
 	github.com/gobuffalo/envy v1.6.4
 	github.com/gobuffalo/fizz v1.0.10 // indirect
 	github.com/gobuffalo/github_flavored_markdown v1.0.0 // indirect
@@ -33,6 +33,7 @@ require (
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/mattn/go-sqlite3 v1.9.0 // indirect
+	github.com/mdempsky/gocode v0.0.0-20180727200127-00e7f5ac290a // indirect
 	github.com/microcosm-cc/bluemonday v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
@@ -55,5 +56,4 @@ require (
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce // indirect
 	gopkg.in/robfig/cron.v2 v2.0.0-20150107220207-be2e0b0deed5
-	gopkg.in/telegram-bot-api.v4 v4.6.2
 )

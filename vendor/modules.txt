@@ -19,11 +19,11 @@ github.com/fatih/color
 github.com/fatih/structs
 # github.com/gin-contrib/sse v0.0.0-20170109093832-22d885f9ecc7
 github.com/gin-contrib/sse
-# github.com/gin-gonic/gin v0.0.0-20180831203816-500ebd9ea866
-github.com/gin-gonic/gin/binding
-github.com/gin-gonic/gin/internal/json
-github.com/gin-gonic/gin/render
+# github.com/gin-gonic/gin v1.3.0
 github.com/gin-gonic/gin
+github.com/gin-gonic/gin/binding
+github.com/gin-gonic/gin/json
+github.com/gin-gonic/gin/render
 # github.com/go-redis/cache v6.3.5+incompatible
 github.com/go-redis/cache
 github.com/go-redis/cache/internal/lrucache
@@ -39,6 +39,8 @@ github.com/go-redis/redis/internal/singleflight
 github.com/go-redis/redis/internal/util
 # github.com/go-sql-driver/mysql v1.4.0
 github.com/go-sql-driver/mysql
+# github.com/go-telegram-bot-api/telegram-bot-api v4.6.2+incompatible
+github.com/go-telegram-bot-api/telegram-bot-api
 # github.com/gobuffalo/envy v1.6.4
 github.com/gobuffalo/envy
 # github.com/gobuffalo/fizz v1.0.10
@@ -51,11 +53,11 @@ github.com/gobuffalo/makr
 # github.com/gobuffalo/packr v1.13.3
 github.com/gobuffalo/packr
 # github.com/gobuffalo/plush v3.7.16+incompatible
+github.com/gobuffalo/plush
 github.com/gobuffalo/plush/ast
 github.com/gobuffalo/plush/parser
 github.com/gobuffalo/plush/token
 github.com/gobuffalo/plush/lexer
-github.com/gobuffalo/plush
 # github.com/gobuffalo/pop v4.7.2+incompatible
 github.com/gobuffalo/pop
 github.com/gobuffalo/pop/associations
@@ -113,13 +115,6 @@ github.com/pkg/errors
 github.com/serenize/snaker
 # github.com/sergi/go-diff v1.0.0
 github.com/sergi/go-diff/diffmatchpatch
-# github.com/shurcooL/go v0.0.0-20180423040247-9e1955d9fb6e
-github.com/shurcooL/go/parserutil
-github.com/shurcooL/go/printerutil
-github.com/shurcooL/go/reflectfind
-github.com/shurcooL/go/reflectsource
-# github.com/shurcooL/graphql v0.0.0-20180514000029-62c9ce094e75
-github.com/shurcooL/graphql/ident
 # github.com/shurcooL/highlight_diff v0.0.0-20170515013008-09bb4053de1b
 github.com/shurcooL/highlight_diff
 # github.com/shurcooL/highlight_go v0.0.0-20170515013102-78fb10f4a5f8
@@ -149,21 +144,21 @@ github.com/vmihailenco/msgpack/codes
 golang.org/x/crypto/ssh/terminal
 # golang.org/x/net v0.0.0-20180826012351-8a410e7b638d
 golang.org/x/net/html
-golang.org/x/net/html/atom
 golang.org/x/net/context
+golang.org/x/net/html/atom
 # golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f
 golang.org/x/sync/errgroup
 # golang.org/x/sys v0.0.0-20180903190138-2b024373dcd9
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 # google.golang.org/appengine v1.1.0
-google.golang.org/appengine/cloudsql
 google.golang.org/appengine/datastore
+google.golang.org/appengine/cloudsql
+google.golang.org/appengine
 google.golang.org/appengine/internal
+google.golang.org/appengine/internal/datastore
 google.golang.org/appengine/internal/app_identity
 google.golang.org/appengine/internal/modules
-google.golang.org/appengine
-google.golang.org/appengine/internal/datastore
 google.golang.org/appengine/internal/base
 google.golang.org/appengine/internal/log
 google.golang.org/appengine/internal/remote_api
@@ -173,7 +168,5 @@ gopkg.in/go-playground/validator.v8
 gopkg.in/robfig/cron.v2
 # gopkg.in/russross/blackfriday.v1 v1.5.1
 gopkg.in/russross/blackfriday.v1
-# gopkg.in/telegram-bot-api.v4 v4.6.2
-gopkg.in/telegram-bot-api.v4
 # gopkg.in/yaml.v2 v2.2.1
 gopkg.in/yaml.v2

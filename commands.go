@@ -14,12 +14,12 @@ import (
 
 	humanize "github.com/dustin/go-humanize"
 	"github.com/go-redis/cache"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	"github.com/olebedev/when"
 	"github.com/olebedev/when/rules/common"
 	"github.com/olebedev/when/rules/en"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
-	"gopkg.in/telegram-bot-api.v4"
 )
 
 func changelog(message *tgbotapi.Message) error {
@@ -197,9 +197,8 @@ func weather(message *tgbotapi.Message) error {
 	weather, found := scrapers.GetWeatherStatus(message.CommandArguments(), settings.Google.ApiKey)
 	if !found {
 		return reply(message, "No data found 🙈🙈🙈🤔🤔🤔")
-	} else {
-		return reply(message, "*Weather:* "+weather)
 	}
+	return reply(message, "*Weather:* "+weather)
 }
 
 func search(message *tgbotapi.Message) error {
@@ -276,7 +275,7 @@ func sendImage(message *tgbotapi.Message) error {
 		img, err := ioutil.ReadAll(res.Body)
 
 		if err != nil {
-			log.Errorf("Unable to load image %v; error: ", url, err)
+			log.Errorf("Unable to load image %v; error: %v", url, err)
 			continue
 		}
 
@@ -327,11 +326,10 @@ func quote(message *tgbotapi.Message) error {
 		if userErr != nil {
 			log.Errorf("Unable to find the username for id '%v' : %v", quote.UserID, userErr)
 			return reply(message, quote.Quote)
-		} else {
-			msg := fmt.Sprintf("\"%v\"", Markdown(quote.Quote, mdquote))
-			msg += fmt.Sprintf(" \n    ~@%v", MDEscape(user.User.UserName))
-			return reply(message, msg)
 		}
+		msg := fmt.Sprintf("\"%v\"", Markdown(quote.Quote, mdquote))
+		msg += fmt.Sprintf(" \n    ~@%v", MDEscape(user.User.UserName))
+		return reply(message, msg)
 	}
 
 	// Unable to store this quote
@@ -489,7 +487,6 @@ func reported(message *tgbotapi.Message) error {
 
 	if err != nil {
 		return reply(message, fmt.Sprintf("So far, %v people have been reported by Dieter", reportCount))
-	} else {
-		return reply(message, MDEscape(fmt.Sprintf("So far, %v people have been reported by: @%v", reportCount, reporter.User.UserName)))
 	}
+	return reply(message, MDEscape(fmt.Sprintf("So far, %v people have been reported by: @%v", reportCount, reporter.User.UserName)))
 }

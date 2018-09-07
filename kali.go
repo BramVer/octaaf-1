@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize/english"
+	"github.com/go-telegram-bot-api/telegram-bot-api"
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/telegram-bot-api.v4"
 )
 
 // KaliCount is an integer that holds the ID of the last sent message in the Kali group
@@ -63,7 +63,7 @@ func getLeetBlazers(event string) {
 		user, err := getUsername(userID, settings.Telegram.KaliID)
 
 		if err != nil {
-			log.Error("Unable to fetch username for the kalivent %v; error: %v", event, err)
+			log.Errorf("Unable to fetch username for the kalivent %v; error: %v", event, err)
 			continue
 		}
 

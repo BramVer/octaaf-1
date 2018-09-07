@@ -6,6 +6,7 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+// DB is the shared database connection pool
 var DB *pop.Connection
 
 func initDB() {
