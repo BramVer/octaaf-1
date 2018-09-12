@@ -50,7 +50,7 @@ github.com/gobuffalo/fizz/translators
 github.com/gobuffalo/github_flavored_markdown
 # github.com/gobuffalo/makr v1.1.5
 github.com/gobuffalo/makr
-# github.com/gobuffalo/packr v1.13.3
+# github.com/gobuffalo/packr v1.13.5
 github.com/gobuffalo/packr
 # github.com/gobuffalo/plush v3.7.16+incompatible
 github.com/gobuffalo/plush
@@ -65,7 +65,7 @@ github.com/gobuffalo/pop/columns
 github.com/gobuffalo/pop/fix
 github.com/gobuffalo/pop/logging
 github.com/gobuffalo/pop/nulls
-# github.com/gobuffalo/tags v2.0.10+incompatible
+# github.com/gobuffalo/tags v2.0.11+incompatible
 github.com/gobuffalo/tags
 github.com/gobuffalo/tags/form
 github.com/gobuffalo/tags/form/bootstrap
@@ -79,7 +79,7 @@ github.com/golang/protobuf/proto
 # github.com/jmoiron/sqlx v0.0.0-20180614180643-0dae4fefe7c0
 github.com/jmoiron/sqlx
 github.com/jmoiron/sqlx/reflectx
-# github.com/joho/godotenv v1.2.0
+# github.com/joho/godotenv v1.3.0
 github.com/joho/godotenv
 # github.com/json-iterator/go v1.1.5
 github.com/json-iterator/go
@@ -101,7 +101,7 @@ github.com/mattn/go-sqlite3
 github.com/microcosm-cc/bluemonday
 # github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd
 github.com/modern-go/concurrent
-# github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742
+# github.com/modern-go/reflect2 v1.0.1
 github.com/modern-go/reflect2
 # github.com/olebedev/when v0.0.0-20171024044931-53693fbb59a8
 github.com/olebedev/when
@@ -140,15 +140,15 @@ github.com/ugorji/go/codec
 # github.com/vmihailenco/msgpack v4.0.0+incompatible
 github.com/vmihailenco/msgpack
 github.com/vmihailenco/msgpack/codes
-# golang.org/x/crypto v0.0.0-20180830192347-182538f80094
+# golang.org/x/crypto v0.0.0-20180910181607-0e37d006457b
 golang.org/x/crypto/ssh/terminal
-# golang.org/x/net v0.0.0-20180826012351-8a410e7b638d
+# golang.org/x/net v0.0.0-20180911220305-26e67e76b6c3
 golang.org/x/net/html
 golang.org/x/net/context
 golang.org/x/net/html/atom
 # golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f
 golang.org/x/sync/errgroup
-# golang.org/x/sys v0.0.0-20180903190138-2b024373dcd9
+# golang.org/x/sys v0.0.0-20180909124046-d0be0721c37e
 golang.org/x/sys/unix
 golang.org/x/sys/windows
 # google.golang.org/appengine v1.1.0

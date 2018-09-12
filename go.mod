@@ -17,29 +17,25 @@ require (
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.2+incompatible
 	github.com/gobuffalo/envy v1.6.4
 	github.com/gobuffalo/fizz v1.0.10 // indirect
-	github.com/gobuffalo/github_flavored_markdown v1.0.0 // indirect
+	github.com/gobuffalo/genny v0.0.0-20180911185118-5ca23a895a78 // indirect
 	github.com/gobuffalo/makr v1.1.5 // indirect
-	github.com/gobuffalo/packr v1.13.3 // indirect
-	github.com/gobuffalo/plush v3.7.16+incompatible // indirect
 	github.com/gobuffalo/pop v4.7.2+incompatible
-	github.com/gobuffalo/tags v2.0.10+incompatible // indirect
+	github.com/gobuffalo/release v1.0.15 // indirect
 	github.com/gobuffalo/uuid v2.0.3+incompatible
 	github.com/gobuffalo/validate v2.0.3+incompatible
-	github.com/golang/protobuf v1.2.0 // indirect
+	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/json-iterator/go v1.1.5 // indirect
-	github.com/kr/pretty v0.1.0 // indirect
+	github.com/kr/pty v1.1.2 // indirect
 	github.com/lib/pq v1.0.0 // indirect
 	github.com/markbates/going v1.0.2 // indirect
+	github.com/markbates/grift v1.0.2 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/mattn/go-sqlite3 v1.9.0 // indirect
-	github.com/mdempsky/gocode v0.0.0-20180727200127-00e7f5ac290a // indirect
-	github.com/microcosm-cc/bluemonday v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
-	github.com/modern-go/reflect2 v0.0.0-20180701023420-4b7aa43c6742 // indirect
+	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/olebedev/when v0.0.0-20171024044931-53693fbb59a8
-	github.com/shurcooL/go v0.0.0-20180423040247-9e1955d9fb6e // indirect
-	github.com/shurcooL/go-goon v0.0.0-20170922171312-37c2f522c041 // indirect
+	github.com/onsi/gomega v1.4.2 // indirect
 	github.com/simplereach/timeutils v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.0.6
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
@@ -47,11 +43,8 @@ require (
 	github.com/tidwall/match v0.0.0-20171002075945-1731857f09b1 // indirect
 	github.com/ugorji/go v1.1.1 // indirect
 	github.com/vmihailenco/msgpack v4.0.0+incompatible
-	golang.org/x/crypto v0.0.0-20180830192347-182538f80094 // indirect
-	golang.org/x/net v0.0.0-20180826012351-8a410e7b638d // indirect
-	golang.org/x/sys v0.0.0-20180903190138-2b024373dcd9 // indirect
-	gopkg.in/airbrake/gobrake.v2 v2.0.9 // indirect
-	gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2 // indirect
+	golang.org/x/crypto v0.0.0-20180910181607-0e37d006457b // indirect
+	golang.org/x/net v0.0.0-20180911220305-26e67e76b6c3 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 	gopkg.in/go-playground/validator.v8 v8.18.2 // indirect
 	gopkg.in/mgo.v2 v2.0.0-20180705113604-9856a29383ce // indirect
