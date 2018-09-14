@@ -17,18 +17,16 @@ require (
 	github.com/go-telegram-bot-api/telegram-bot-api v4.6.2+incompatible
 	github.com/gobuffalo/envy v1.6.4
 	github.com/gobuffalo/fizz v1.0.10 // indirect
-	github.com/gobuffalo/genny v0.0.0-20180911185118-5ca23a895a78 // indirect
 	github.com/gobuffalo/makr v1.1.5 // indirect
+	github.com/gobuffalo/packr v1.13.5 // indirect
 	github.com/gobuffalo/pop v4.7.2+incompatible
-	github.com/gobuffalo/release v1.0.15 // indirect
+	github.com/gobuffalo/tags v2.0.11+incompatible // indirect
 	github.com/gobuffalo/uuid v2.0.3+incompatible
 	github.com/gobuffalo/validate v2.0.3+incompatible
 	github.com/joho/godotenv v1.3.0 // indirect
 	github.com/json-iterator/go v1.1.5 // indirect
-	github.com/kr/pty v1.1.2 // indirect
 	github.com/lib/pq v1.0.0 // indirect
 	github.com/markbates/going v1.0.2 // indirect
-	github.com/markbates/grift v1.0.2 // indirect
 	github.com/mattn/go-colorable v0.0.9 // indirect
 	github.com/mattn/go-isatty v0.0.4 // indirect
 	github.com/mattn/go-sqlite3 v1.9.0 // indirect
