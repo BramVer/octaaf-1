@@ -495,3 +495,8 @@ func care(message *tgbotapi.Message) {
 	msg := "¯\\_(ツ)_/¯"
 	reply(message, MDEscape(msg))
 }
+
+func care(message *tgbotapi.Message) {
+	msg := "¯\\_(ツ)_/¯"
+	reply(message, MDEscape(msg))
+}
