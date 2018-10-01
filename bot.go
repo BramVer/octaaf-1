@@ -92,6 +92,8 @@ func handle(message *tgbotapi.Message) {
 			reported(message)
 		case "remind_me":
 			remind(message)
+		case "care":
+			care(message)
 		}
 	}
 
