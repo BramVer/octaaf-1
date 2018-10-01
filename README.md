@@ -6,8 +6,9 @@ A telegram bot written in Go
 
 * /all - Send a message to all active members in a group
 * /bodegem - A place that is real and exists
+* /care - Notify the participants that you don't give a hecky.
 * /changelog - View the Octaaf changelog
-* /count - Get your current message count
+* /count - Get your room's current message count
 * /doubt - When in doubt...
 * /iasip - Get a random It's Always Sunny In Philadelphia quote
 * /img - Search possible NSFW images
