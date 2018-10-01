@@ -8,7 +8,8 @@ A telegram bot written in Go
 * /avatar - Create an avatar
 * /bodegem - A place that is real and exists
 * /bol - Help someone out by subscribing them to the bol.com mailing lists!
-* /count - Get your current message count
+* /care - Notify the participants that you don't give a hecky.
+* /count - Get your room's current message count
 * /doubt - When in doubt...
 * /iasip - Get a random It's Always Sunny In Philadelphia quote
 * /img - Search possible NSFW images

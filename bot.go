@@ -113,6 +113,8 @@ func handle(message *tgbotapi.Message) {
 			iasip(message)
 		case "aldi":
 			aldi(message)
+		case "care":
+			care(message)
 		}
 	}
 
