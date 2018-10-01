@@ -502,6 +502,5 @@ func iasip(message *tgbotapi.Message) {
 
 func care(message *tgbotapi.Message) {
 	msg := "¯\\_(ツ)_/¯"
-	msg.ReplyToMessageID = message.MessageID
-	Octaaf.Send(msg)
+	reply(message, MDEscape(msg))
 }
