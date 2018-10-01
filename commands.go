@@ -493,6 +493,5 @@ func reported(message *tgbotapi.Message) error {
 
 func care(message *tgbotapi.Message) {
 	msg := "¯\\_(ツ)_/¯"
-	msg.ReplyToMessageID = message.MessageID
-	Octaaf.Send(msg)
+	reply(message, MDEscape(msg))
 }
