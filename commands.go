@@ -494,5 +494,5 @@ func reported(message *tgbotapi.Message) error {
 func care(message *tgbotapi.Message) error {
 	msg := "¯\\_(ツ)_/¯"
 
-	reply(message, MDEscape(msg))
+	return reply(message, MDEscape(msg))
 }
