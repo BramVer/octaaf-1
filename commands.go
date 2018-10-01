@@ -491,7 +491,8 @@ func reported(message *tgbotapi.Message) error {
 	return reply(message, MDEscape(fmt.Sprintf("So far, %v people have been reported by: @%v", reportCount, reporter.User.UserName)))
 }
 
-func care(message *tgbotapi.Message) {
+func care(message *tgbotapi.Message) error {
 	msg := "¯\\_(ツ)_/¯"
+
 	reply(message, MDEscape(msg))
 }
