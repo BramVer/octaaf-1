@@ -50,6 +50,9 @@ func main() {
 		}
 	}()
 
+	closer := initJaeger("octaaf")
+	defer closer.Close()
+
 	u := tgbotapi.NewUpdate(0)
 	u.Timeout = 60
 	updates, err := Octaaf.GetUpdatesChan(u)

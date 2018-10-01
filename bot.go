@@ -8,6 +8,7 @@ import (
 	"syscall"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api"
+	opentracing "github.com/opentracing/opentracing-go"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -44,10 +45,18 @@ func initBot() {
 }
 
 func handle(message *tgbotapi.Message) {
+	rootSpan := Tracer.StartSpan("Message Received")
+	defer rootSpan.Finish()
+	rootSpan.SetTag("telegram-group-id", message.Chat.ID)
+	rootSpan.SetTag("telegram-group-name", message.Chat.UserName)
+	rootSpan.SetTag("telegram-message-id", message.MessageID)
+	rootSpan.SetTag("telegram-from-id", message.From.ID)
+	rootSpan.SetTag("telegram-from-username", message.From.UserName)
 
 	go kaliHandler(message)
 
 	if message.IsCommand() {
+		rootSpan.SetTag("telegram-command", message.Command())
 		log.Debugf("Command received: %v", message.Command())
 		switch message.Command() {
 		case "all":
@@ -57,17 +66,17 @@ func handle(message *tgbotapi.Message) {
 		case "m8ball":
 			m8Ball(message)
 		case "bodegem":
-			sendBodegem(message)
+			sendBodegem(rootSpan, message)
 		case "changelog":
 			changelog(message)
 		case "img", "img_sfw", "more":
-			sendImage(message)
+			sendImage(rootSpan, message)
 		case "stallman":
 			sendStallman(message)
 		case "search", "search_nsfw":
 			search(message)
 		case "where":
-			where(message)
+			where(rootSpan, message)
 		case "count":
 			count(message)
 		case "weather":
@@ -105,7 +114,13 @@ func handle(message *tgbotapi.Message) {
 	}
 
 	// Maintain an array of chat members per group in Redis
+	span := rootSpan.Tracer().StartSpan(
+		"redis /all array",
+		opentracing.ChildOf(rootSpan.Context()),
+	)
+	// span := Tracer.StartSpan("redis /all array", rootSpan.Context())
 	Redis.SAdd(fmt.Sprintf("members_%v", message.Chat.ID), message.From.ID)
+	span.Finish()
 }
 
 func sendGlobal(message string) {

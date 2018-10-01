@@ -7,6 +7,7 @@ require (
 	github.com/andybalholm/cascadia v1.0.0 // indirect
 	github.com/araddon/dateparse v0.0.0-20180729174819-cfd92a431d0e
 	github.com/cockroachdb/cockroach-go v0.0.0-20180212155653-59c0560478b7 // indirect
+	github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd // indirect
 	github.com/dustin/go-humanize v0.0.0-20180713052910-9f541cc9db5d
 	github.com/fatih/color v1.7.0 // indirect
 	github.com/fatih/structs v1.0.0
@@ -34,11 +35,14 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/olebedev/when v0.0.0-20171024044931-53693fbb59a8
 	github.com/onsi/gomega v1.4.2 // indirect
+	github.com/opentracing/opentracing-go v1.0.2
 	github.com/simplereach/timeutils v1.2.0 // indirect
 	github.com/sirupsen/logrus v1.0.6
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	github.com/tidwall/gjson v1.1.3
 	github.com/tidwall/match v0.0.0-20171002075945-1731857f09b1 // indirect
+	github.com/uber/jaeger-client-go v2.14.0+incompatible
+	github.com/uber/jaeger-lib v1.5.0
 	github.com/ugorji/go v1.1.1 // indirect
 	github.com/vmihailenco/msgpack v4.0.0+incompatible
 	golang.org/x/crypto v0.0.0-20180910181607-0e37d006457b // indirect

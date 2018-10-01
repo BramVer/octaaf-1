@@ -15,3 +15,6 @@ db = 0
 
 [google]
 api_key = ""
+
+[jaeger]
+service_name = "octaaf"

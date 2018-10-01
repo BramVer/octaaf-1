@@ -18,6 +18,8 @@ import (
 	"github.com/olebedev/when"
 	"github.com/olebedev/when/rules/common"
 	"github.com/olebedev/when/rules/en"
+	opentracing "github.com/opentracing/opentracing-go"
+	"github.com/opentracing/opentracing-go/ext"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 )
@@ -150,17 +152,27 @@ func m8Ball(message *tgbotapi.Message) error {
 	return reply(message, answers[roll])
 }
 
-func sendBodegem(message *tgbotapi.Message) error {
+func sendBodegem(rootSpan opentracing.Span, message *tgbotapi.Message) error {
+	span := rootSpan.Tracer().StartSpan(
+		"/bodegem",
+		opentracing.ChildOf(rootSpan.Context()),
+	)
 	msg := tgbotapi.NewLocation(message.Chat.ID, 50.8614773, 4.211304)
+	span.Finish()
 	msg.ReplyToMessageID = message.MessageID
 	_, err := Octaaf.Send(msg)
 	return err
 }
 
-func where(message *tgbotapi.Message) error {
+func where(rootSpan opentracing.Span, message *tgbotapi.Message) error {
 	argument := strings.Replace(message.CommandArguments(), " ", "+", -1)
 
+	span := rootSpan.Tracer().StartSpan(
+		"/where",
+		opentracing.ChildOf(rootSpan.Context()),
+	)
 	location, found := scrapers.GetLocation(argument, settings.Google.ApiKey)
+	span.Finish()
 
 	if !found {
 		return reply(message, "This place does not exist 🙈🙈🙈🤔🤔�")
@@ -226,14 +238,28 @@ func sendStallman(message *tgbotapi.Message) error {
 	return reply(message, image)
 }
 
-func sendImage(message *tgbotapi.Message) error {
+func sendImage(rootSpan opentracing.Span, message *tgbotapi.Message) error {
+	span := rootSpan.Tracer().StartSpan(
+		"/img request",
+		opentracing.ChildOf(rootSpan.Context()),
+	)
+	defer span.Finish()
+
 	var images []string
 	var err error
+	more := message.Command() == "more"
+	span.SetTag("more", more)
 	key := fmt.Sprintf("images_%v", message.Chat.ID)
-	if message.Command() != "more" {
+	if !more {
 		if len(message.CommandArguments()) == 0 {
 			return reply(message, fmt.Sprintf("What am I to do, @%v? 🤔🤔🤔🤔", message.From.UserName))
 		}
+
+		fetchSpan := span.Tracer().StartSpan(
+			"fetch from google",
+			opentracing.ChildOf(span.Context()),
+		)
+		defer fetchSpan.Finish()
 
 		images, err = scrapers.GetImages(message.CommandArguments(), message.Command() == "img_sfw")
 		if err != nil {
@@ -262,11 +288,22 @@ func sendImage(message *tgbotapi.Message) error {
 		Timeout: timeout,
 	}
 
-	for _, url := range images {
+	for attempt, url := range images {
+
+		imgSpan := span.Tracer().StartSpan(
+			"Image Download",
+			opentracing.ChildOf(span.Context()),
+		)
+		defer imgSpan.Finish()
+
+		imgSpan.SetTag("url", url)
+		imgSpan.SetTag("attempt", attempt)
 
 		res, err := client.Get(url)
 
 		if err != nil {
+			ext.Error.Set(imgSpan, true)
+			imgSpan.SetTag("error", err)
 			continue
 		}
 
@@ -275,6 +312,8 @@ func sendImage(message *tgbotapi.Message) error {
 		img, err := ioutil.ReadAll(res.Body)
 
 		if err != nil {
+			ext.Error.Set(imgSpan, true)
+			imgSpan.SetTag("error", err)
 			log.Errorf("Unable to load image %v; error: %v", url, err)
 			continue
 		}
@@ -284,6 +323,7 @@ func sendImage(message *tgbotapi.Message) error {
 		if err == nil {
 			return nil
 		}
+		imgSpan.SetTag("error", err)
 	}
 
 	return reply(message, "I did not find images for the query: `"+message.CommandArguments()+"`")

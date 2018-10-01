@@ -10,6 +10,7 @@ type Settings struct {
 	Database database
 	Redis    redis
 	Google   google
+	Jaeger   jaeger
 }
 
 type telegram struct {
@@ -30,6 +31,10 @@ type redis struct {
 
 type google struct {
 	ApiKey string `toml:"api_key"`
+}
+
+type jaeger struct {
+	ServiceName string `toml:"service_name"`
 }
 
 func (c *Settings) Load() (toml.MetaData, error) {

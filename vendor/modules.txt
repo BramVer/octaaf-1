@@ -10,6 +10,8 @@ github.com/andybalholm/cascadia
 github.com/araddon/dateparse
 # github.com/cockroachdb/cockroach-go v0.0.0-20180212155653-59c0560478b7
 github.com/cockroachdb/cockroach-go/crdb
+# github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd
+github.com/codahale/hdrhistogram
 # github.com/dustin/go-humanize v0.0.0-20180713052910-9f541cc9db5d
 github.com/dustin/go-humanize
 github.com/dustin/go-humanize/english
@@ -109,6 +111,10 @@ github.com/olebedev/when/rules/common
 github.com/olebedev/when/rules/en
 github.com/olebedev/when/rules
 github.com/olebedev/when/rules/ru
+# github.com/opentracing/opentracing-go v1.0.2
+github.com/opentracing/opentracing-go
+github.com/opentracing/opentracing-go/log
+github.com/opentracing/opentracing-go/ext
 # github.com/pkg/errors v0.8.0
 github.com/pkg/errors
 # github.com/serenize/snaker v0.0.0-20171204205717-a683aaf2d516
@@ -135,6 +141,25 @@ github.com/technoweenie/multipartstreamer
 github.com/tidwall/gjson
 # github.com/tidwall/match v0.0.0-20171002075945-1731857f09b1
 github.com/tidwall/match
+# github.com/uber/jaeger-client-go v2.14.0+incompatible
+github.com/uber/jaeger-client-go/config
+github.com/uber/jaeger-client-go/log
+github.com/uber/jaeger-client-go
+github.com/uber/jaeger-client-go/internal/baggage/remote
+github.com/uber/jaeger-client-go/internal/throttler/remote
+github.com/uber/jaeger-client-go/rpcmetrics
+github.com/uber/jaeger-client-go/internal/baggage
+github.com/uber/jaeger-client-go/internal/spanlog
+github.com/uber/jaeger-client-go/internal/throttler
+github.com/uber/jaeger-client-go/thrift
+github.com/uber/jaeger-client-go/thrift-gen/jaeger
+github.com/uber/jaeger-client-go/thrift-gen/sampling
+github.com/uber/jaeger-client-go/thrift-gen/zipkincore
+github.com/uber/jaeger-client-go/utils
+github.com/uber/jaeger-client-go/thrift-gen/baggage
+github.com/uber/jaeger-client-go/thrift-gen/agent
+# github.com/uber/jaeger-lib v1.5.0
+github.com/uber/jaeger-lib/metrics
 # github.com/ugorji/go v1.1.1
 github.com/ugorji/go/codec
 # github.com/vmihailenco/msgpack v4.0.0+incompatible
