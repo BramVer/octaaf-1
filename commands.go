@@ -24,7 +24,7 @@ import (
 	"github.com/tidwall/gjson"
 )
 
-func changelog(message *tgbotapi.Message) error {
+func changelog(message *OctaafMessage) error {
 	if settings.Version == "" {
 		return reply(message, "Current version not found, check the changelog here: "+GitUri+"/tags")
 	}
@@ -32,7 +32,7 @@ func changelog(message *tgbotapi.Message) error {
 	return reply(message, fmt.Sprintf("%v/tags/%v", GitUri, settings.Version))
 }
 
-func all(message *tgbotapi.Message) error {
+func all(message *OctaafMessage) error {
 	members := Redis.SMembers(fmt.Sprintf("members_%v", message.Chat.ID)).Val()
 
 	if len(members) == 0 {
@@ -64,7 +64,7 @@ func all(message *tgbotapi.Message) error {
 	return reply(message, MDEscape(fmt.Sprintf("%v %v", response, message.CommandArguments())))
 }
 
-func remind(message *tgbotapi.Message) error {
+func remind(message *OctaafMessage) error {
 	w := when.New(nil)
 	w.Add(en.All...)
 	w.Add(common.All...)
@@ -93,7 +93,7 @@ func remind(message *tgbotapi.Message) error {
 	return reply(message, "Reminder saved!")
 }
 
-func sendRoll(message *tgbotapi.Message) error {
+func sendRoll(message *OctaafMessage) error {
 	rand.Seed(time.Now().UnixNano())
 	roll := strconv.Itoa(rand.Intn(9999999999-1e9) + 1e9)
 	points := [9]string{"👌 Dubs", "🙈 Trips", "😱 Quads", "🤣😂 Penta", "👌👌🤔🤔😂😂 Hexa", "🙊🙉🙈🐵 Septa", "🅱️Octa", "💯💯💯 El Niño"}
@@ -113,15 +113,15 @@ func sendRoll(message *tgbotapi.Message) error {
 	return reply(message, roll)
 }
 
-func count(message *tgbotapi.Message) error {
+func count(message *OctaafMessage) error {
 	return reply(message, fmt.Sprintf("%v", message.MessageID))
 }
 
-func whoami(message *tgbotapi.Message) error {
+func whoami(message *OctaafMessage) error {
 	return reply(message, fmt.Sprintf("%v", message.From.ID))
 }
 
-func m8Ball(message *tgbotapi.Message) error {
+func m8Ball(message *OctaafMessage) error {
 
 	if len(message.CommandArguments()) == 0 {
 		return reply(message, "Oi! You have to ask question hé 🖕")
@@ -152,10 +152,10 @@ func m8Ball(message *tgbotapi.Message) error {
 	return reply(message, answers[roll])
 }
 
-func sendBodegem(rootSpan opentracing.Span, message *tgbotapi.Message) error {
-	span := rootSpan.Tracer().StartSpan(
+func sendBodegem(message *OctaafMessage) error {
+	span := message.Span.Tracer().StartSpan(
 		"/bodegem",
-		opentracing.ChildOf(rootSpan.Context()),
+		opentracing.ChildOf(message.Span.Context()),
 	)
 	msg := tgbotapi.NewLocation(message.Chat.ID, 50.8614773, 4.211304)
 	span.Finish()
@@ -164,12 +164,12 @@ func sendBodegem(rootSpan opentracing.Span, message *tgbotapi.Message) error {
 	return err
 }
 
-func where(rootSpan opentracing.Span, message *tgbotapi.Message) error {
+func where(message *OctaafMessage) error {
 	argument := strings.Replace(message.CommandArguments(), " ", "+", -1)
 
-	span := rootSpan.Tracer().StartSpan(
+	span := message.Span.Tracer().StartSpan(
 		"/where",
-		opentracing.ChildOf(rootSpan.Context()),
+		opentracing.ChildOf(message.Span.Context()),
 	)
 	location, found := scrapers.GetLocation(argument, settings.Google.ApiKey)
 	span.Finish()
@@ -184,7 +184,7 @@ func where(rootSpan opentracing.Span, message *tgbotapi.Message) error {
 	return err
 }
 
-func what(message *tgbotapi.Message) error {
+func what(message *OctaafMessage) error {
 	query := message.CommandArguments()
 	resp, err := http.Get(fmt.Sprintf("https://api.duckduckgo.com/?q=%v&format=json&no_html=1&skip_disambig=1", query))
 	if err != nil {
@@ -205,7 +205,7 @@ func what(message *tgbotapi.Message) error {
 	return reply(message, fmt.Sprintf("%v: %v", Markdown(query, mdbold), result))
 }
 
-func weather(message *tgbotapi.Message) error {
+func weather(message *OctaafMessage) error {
 	weather, found := scrapers.GetWeatherStatus(message.CommandArguments(), settings.Google.ApiKey)
 	if !found {
 		return reply(message, "No data found 🙈🙈🙈🤔🤔🤔")
@@ -213,7 +213,7 @@ func weather(message *tgbotapi.Message) error {
 	return reply(message, "*Weather:* "+weather)
 }
 
-func search(message *tgbotapi.Message) error {
+func search(message *OctaafMessage) error {
 	if len(message.CommandArguments()) == 0 {
 		return reply(message, "What do you expect me to do? 🤔🤔🤔🤔")
 	}
@@ -227,7 +227,7 @@ func search(message *tgbotapi.Message) error {
 	return reply(message, "I found nothing 😱😱😱")
 }
 
-func sendStallman(message *tgbotapi.Message) error {
+func sendStallman(message *OctaafMessage) error {
 
 	image, err := scrapers.GetStallman()
 
@@ -238,10 +238,10 @@ func sendStallman(message *tgbotapi.Message) error {
 	return reply(message, image)
 }
 
-func sendImage(rootSpan opentracing.Span, message *tgbotapi.Message) error {
-	span := rootSpan.Tracer().StartSpan(
+func sendImage(message *OctaafMessage) error {
+	span := message.Span.Tracer().StartSpan(
 		"/img request",
-		opentracing.ChildOf(rootSpan.Context()),
+		opentracing.ChildOf(message.Span.Context()),
 	)
 	defer span.Finish()
 
@@ -302,7 +302,6 @@ func sendImage(rootSpan opentracing.Span, message *tgbotapi.Message) error {
 		res, err := client.Get(url)
 
 		if err != nil {
-			ext.Error.Set(imgSpan, true)
 			imgSpan.SetTag("error", err)
 			continue
 		}
@@ -329,7 +328,7 @@ func sendImage(rootSpan opentracing.Span, message *tgbotapi.Message) error {
 	return reply(message, "I did not find images for the query: `"+message.CommandArguments()+"`")
 }
 
-func xkcd(message *tgbotapi.Message) error {
+func xkcd(message *OctaafMessage) error {
 	image, err := scrapers.GetXKCD()
 
 	if err != nil {
@@ -339,7 +338,7 @@ func xkcd(message *tgbotapi.Message) error {
 	return reply(message, image)
 }
 
-func doubt(message *tgbotapi.Message) error {
+func doubt(message *OctaafMessage) error {
 	msg := tgbotapi.NewPhotoUpload(message.Chat.ID, "assets/doubt.jpg")
 	msg.ReplyToMessageID = message.MessageID
 	_, err := Octaaf.Send(msg)
@@ -349,7 +348,7 @@ func doubt(message *tgbotapi.Message) error {
 	return err
 }
 
-func quote(message *tgbotapi.Message) error {
+func quote(message *OctaafMessage) error {
 	// Fetch a random quote
 	if message.ReplyToMessage == nil {
 		quote := models.Quote{}
@@ -390,7 +389,7 @@ func quote(message *tgbotapi.Message) error {
 	return reply(message, "Quote successfully saved!")
 }
 
-func nextLaunch(message *tgbotapi.Message) error {
+func nextLaunch(message *OctaafMessage) error {
 	res, err := http.Get("https://launchlibrary.net/1.3/launch?next=5&mode=verbose")
 
 	if err != nil {
@@ -433,7 +432,7 @@ func nextLaunch(message *tgbotapi.Message) error {
 	return reply(message, msg)
 }
 
-func issues(message *tgbotapi.Message) error {
+func issues(message *OctaafMessage) error {
 	res, err := http.Get("https://api.github.com/repos/bartwillems/Octaaf/issues?state=open")
 
 	if err != nil {
@@ -465,7 +464,7 @@ func issues(message *tgbotapi.Message) error {
 	return reply(message, msg)
 }
 
-func kaliRank(message *tgbotapi.Message) error {
+func kaliRank(message *OctaafMessage) error {
 	if message.Chat.ID != settings.Telegram.KaliID {
 		return reply(message, "You are not allowed!")
 	}
@@ -486,7 +485,7 @@ func kaliRank(message *tgbotapi.Message) error {
 	return reply(message, msg)
 }
 
-func iasip(message *tgbotapi.Message) error {
+func iasip(message *OctaafMessage) error {
 	server := "http://159.89.14.97:6969"
 
 	res, err := http.Get(server)
@@ -506,7 +505,7 @@ func iasip(message *tgbotapi.Message) error {
 	return reply(message, string(body))
 }
 
-func reported(message *tgbotapi.Message) error {
+func reported(message *OctaafMessage) error {
 	if message.Chat.ID != settings.Telegram.KaliID {
 		return reply(message, "Yeah well, you need to update to Strontbot Enterprise edition for Workgroups to use this feature.")
 	}
@@ -531,7 +530,7 @@ func reported(message *tgbotapi.Message) error {
 	return reply(message, MDEscape(fmt.Sprintf("So far, %v people have been reported by: @%v", reportCount, reporter.User.UserName)))
 }
 
-func care(message *tgbotapi.Message) error {
+func care(message *OctaafMessage) error {
 	msg := "¯\\_(ツ)_/¯"
 
 	return reply(message, MDEscape(msg))

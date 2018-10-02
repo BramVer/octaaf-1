@@ -8,14 +8,13 @@ import (
 	"time"
 
 	"github.com/dustin/go-humanize/english"
-	"github.com/go-telegram-bot-api/telegram-bot-api"
 	log "github.com/sirupsen/logrus"
 )
 
 // KaliCount is an integer that holds the ID of the last sent message in the Kali group
 var KaliCount int
 
-func kaliHandler(message *tgbotapi.Message) {
+func kaliHandler(message *OctaafMessage) {
 	if message.Chat.ID == settings.Telegram.KaliID {
 		log.Debug("Kalimember found")
 		KaliCount = message.MessageID
@@ -32,7 +31,7 @@ func kaliHandler(message *tgbotapi.Message) {
 	}
 }
 
-func kaliReport(message *tgbotapi.Message) {
+func kaliReport(message *OctaafMessage) {
 	if message.From.ID == settings.Telegram.ReporterID {
 		log.Debug("Reporter found")
 		if strings.ToLower(message.Text) == "reported" ||
@@ -89,7 +88,7 @@ func getLeetBlazers(event string) {
 	Redis.Del(event)
 }
 
-func addLeetBlazer(message *tgbotapi.Message, event string) {
+func addLeetBlazer(message *OctaafMessage, event string) {
 	if strings.Contains(message.Text, event) {
 		log.Infof("Leetblazer found with id: %v!", message.From.ID)
 		Redis.SAdd(event, message.From.ID)
