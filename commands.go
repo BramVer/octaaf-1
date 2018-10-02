@@ -89,7 +89,7 @@ func remind(message *OctaafMessage) error {
 		Executed:  false}
 
 	go startReminder(reminder)
-	return reply(message, "Reminder saved!")
+	return message.Reply("Reminder saved!")
 }
 
 func sendRoll(message *OctaafMessage) error {
@@ -109,21 +109,21 @@ func sendRoll(message *OctaafMessage) error {
 	if dubscount > -1 {
 		roll = points[dubscount] + " " + roll
 	}
-	return reply(message, roll)
+	return message.Reply(roll)
 }
 
 func count(message *OctaafMessage) error {
-	return reply(message, fmt.Sprintf("%v", message.MessageID))
+	return message.Reply(fmt.Sprintf("%v", message.MessageID))
 }
 
 func whoami(message *OctaafMessage) error {
-	return reply(message, fmt.Sprintf("%v", message.From.ID))
+	return message.Reply(fmt.Sprintf("%v", message.From.ID))
 }
 
 func m8Ball(message *OctaafMessage) error {
 
 	if len(message.CommandArguments()) == 0 {
-		return reply(message, "Oi! You have to ask question hé 🖕")
+		return message.Reply("Oi! You have to ask question hé 🖕")
 	}
 
 	answers := [20]string{"👌 It is certain",
@@ -148,7 +148,7 @@ func m8Ball(message *OctaafMessage) error {
 		"🖕 Very doubtful"}
 	rand.Seed(time.Now().UnixNano())
 	roll := rand.Intn(19)
-	return reply(message, answers[roll])
+	return message.Reply(answers[roll])
 }
 
 func sendBodegem(message *OctaafMessage) error {
@@ -187,76 +187,90 @@ func what(message *OctaafMessage) error {
 	query := message.CommandArguments()
 	resp, err := http.Get(fmt.Sprintf("https://api.duckduckgo.com/?q=%v&format=json&no_html=1&skip_disambig=1", query))
 	if err != nil {
-		return reply(message, "Just what is this? 🤔")
+		return reply(message, "Just what is this?")
 	}
 
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		return reply(message, "Just what is this? 🤔")
+		return reply(message, "Just what is this?")
 	}
 
 	result := gjson.Get(string(body), "AbstractText").String()
 
 	if len(result) == 0 {
-		return reply(message, fmt.Sprintf("What is this %v you speak of? 🤔", Markdown(query, mdbold)))
+		return reply(message, fmt.Sprintf("What is this %v you speak of?", Markdown(query, mdbold)))
 	}
 
 	return reply(message, fmt.Sprintf("%v: %v", Markdown(query, mdbold), result))
 }
 
 func weather(message *OctaafMessage) error {
+	weatherSpan := message.Span.Tracer().StartSpan(
+		"Fetching weather status...",
+		opentracing.ChildOf(message.Span.Context()),
+	)
 	weather, found := scrapers.GetWeatherStatus(message.CommandArguments(), settings.Google.ApiKey)
+
+	weatherSpan.SetTag("found", found == true)
+	weatherSpan.Finish()
 	if !found {
-		return reply(message, "No data found 🙈🙈🙈🤔🤔🤔")
+		return message.Reply("No data found 🙈🙈🙈")
 	}
-	return reply(message, "*Weather:* "+weather)
+	return message.Reply("*Weather:* " + weather)
 }
 
 func search(message *OctaafMessage) error {
 	if len(message.CommandArguments()) == 0 {
-		return reply(message, "What do you expect me to do? 🤔🤔🤔🤔")
+		return message.Reply("What do you expect me to do? 🤔🤔🤔🤔")
 	}
+
+	searchSpan := message.Span.Tracer().StartSpan(
+		"Searching on duckduckgo...",
+		opentracing.ChildOf(message.Span.Context()),
+	)
 
 	url, found := scrapers.Search(message.CommandArguments(), message.Command() == "search_nsfw")
 
-	if found {
-		return reply(message, MDEscape(url))
-	}
+	searchSpan.SetTag("found", found == true)
+	searchSpan.Finish()
 
-	return reply(message, "I found nothing 😱😱😱")
+	if found {
+		return message.Reply(MDEscape(url))
+	}
+	return message.Reply("I found nothing 😱😱😱")
 }
 
 func sendStallman(message *OctaafMessage) error {
+	fetchSpan := message.Span.Tracer().StartSpan(
+		"Fetch a stallman",
+		opentracing.ChildOf(message.Span.Context()),
+	)
 
 	image, err := scrapers.GetStallman()
 
-	if err != nil {
-		return reply(message, "Stallman went bork? 🤔🤔🤔🤔")
-	}
+	fetchSpan.Finish()
 
-	return reply(message, image)
+	if err != nil {
+		fetchSpan.SetTag("error", err)
+		return message.Reply("Stallman went bork?")
+	}
+	return message.Reply(image)
 }
 
 func sendImage(message *OctaafMessage) error {
-	span := message.Span.Tracer().StartSpan(
-		"/img request",
-		opentracing.ChildOf(message.Span.Context()),
-	)
-	defer span.Finish()
-
 	var images []string
 	var err error
 	more := message.Command() == "more"
-	span.SetTag("more", more)
+	message.Span.SetTag("more", more)
 	key := fmt.Sprintf("images_%v", message.Chat.ID)
 	if !more {
 		if len(message.CommandArguments()) == 0 {
 			return reply(message, fmt.Sprintf("What am I to do, @%v? 🤔🤔🤔🤔", message.From.UserName))
 		}
 
-		fetchSpan := span.Tracer().StartSpan(
+		fetchSpan := message.Span.Tracer().StartSpan(
 			"fetch query from google",
-			opentracing.ChildOf(span.Context()),
+			opentracing.ChildOf(message.Span.Context()),
 		)
 
 		images, err = scrapers.GetImages(message.CommandArguments(), message.Command() == "img_sfw")
@@ -292,9 +306,9 @@ func sendImage(message *OctaafMessage) error {
 
 	for attempt, url := range images {
 
-		imgSpan := span.Tracer().StartSpan(
+		imgSpan := message.Span.Tracer().StartSpan(
 			fmt.Sprintf("Download attempt %v", attempt),
-			opentracing.ChildOf(span.Context()),
+			opentracing.ChildOf(message.Span.Context()),
 		)
 
 		imgSpan.SetTag("url", url)
@@ -336,10 +350,10 @@ func xkcd(message *OctaafMessage) error {
 	image, err := scrapers.GetXKCD()
 
 	if err != nil {
-		return reply(message, "Failed to parse XKCD image")
+		return message.Reply("Failed to parse XKCD image")
 	}
 
-	return reply(message, image)
+	return message.Reply(image)
 }
 
 func doubt(message *OctaafMessage) error {
@@ -361,23 +375,23 @@ func quote(message *OctaafMessage) error {
 
 		if err != nil {
 			log.Errorf("Quote fetch error: %v", err)
-			return reply(message, "No quote found boi")
+			return message.Reply("No quote found boi")
 		}
 
 		user, userErr := getUsername(quote.UserID, message.Chat.ID)
 
 		if userErr != nil {
 			log.Errorf("Unable to find the username for id '%v' : %v", quote.UserID, userErr)
-			return reply(message, quote.Quote)
+			return message.Reply(quote.Quote)
 		}
 		msg := fmt.Sprintf("\"%v\"", Markdown(quote.Quote, mdquote))
 		msg += fmt.Sprintf(" \n    ~@%v", MDEscape(user.User.UserName))
-		return reply(message, msg)
+		return message.Reply(msg)
 	}
 
 	// Unable to store this quote
 	if message.ReplyToMessage.Text == "" {
-		return reply(message, "No text found in the comment. Not saving the quote!")
+		return message.Reply("No text found in the comment. Not saving the quote!")
 	}
 
 	err := DB.Save(&models.Quote{
@@ -387,16 +401,23 @@ func quote(message *OctaafMessage) error {
 
 	if err != nil {
 		log.Errorf("Unable to save quote '%v', error: %v", message.ReplyToMessage.Text, err)
-		return reply(message, "Unable to save the quote...")
+		return message.Reply("Unable to save the quote...")
 	}
 
-	return reply(message, "Quote successfully saved!")
+	return message.Reply("Quote successfully saved!")
 }
 
 func nextLaunch(message *OctaafMessage) error {
+	fetchSpan := message.Span.Tracer().StartSpan(
+		"Fetching nextlaunch data...",
+		opentracing.ChildOf(message.Span.Context()),
+	)
 	res, err := http.Get("https://launchlibrary.net/1.3/launch?next=5&mode=verbose")
 
+	fetchSpan.Finish()
+
 	if err != nil {
+		fetchSpan.SetTag("error", err)
 		return reply(message, "Unable to fetch launch data")
 	}
 

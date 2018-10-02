@@ -59,7 +59,9 @@ func handle(m *tgbotapi.Message) {
 	go kaliHandler(message)
 
 	if message.IsCommand() {
+		message.Span.SetOperationName(fmt.Sprintf("Command /%v", message.Command()))
 		message.Span.SetTag("telegram-command", message.Command())
+		message.Span.SetTag("telegram-command-arguments", message.CommandArguments())
 		log.Debugf("Command received: %v", message.Command())
 		switch message.Command() {
 		case "all":
