@@ -41,10 +41,12 @@ require (
 	github.com/technoweenie/multipartstreamer v1.0.1 // indirect
 	github.com/tidwall/gjson v1.1.3
 	github.com/tidwall/match v0.0.0-20171002075945-1731857f09b1 // indirect
+	github.com/uber-go/atomic v1.3.2 // indirect
 	github.com/uber/jaeger-client-go v2.14.0+incompatible
-	github.com/uber/jaeger-lib v1.5.0
+	github.com/uber/jaeger-lib v1.5.0 // indirect
 	github.com/ugorji/go v1.1.1 // indirect
 	github.com/vmihailenco/msgpack v4.0.0+incompatible
+	go.uber.org/atomic v1.3.2 // indirect
 	golang.org/x/crypto v0.0.0-20180910181607-0e37d006457b // indirect
 	golang.org/x/net v0.0.0-20180911220305-26e67e76b6c3 // indirect
 	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect

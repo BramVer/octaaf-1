@@ -142,22 +142,22 @@ github.com/tidwall/gjson
 # github.com/tidwall/match v0.0.0-20171002075945-1731857f09b1
 github.com/tidwall/match
 # github.com/uber/jaeger-client-go v2.14.0+incompatible
-github.com/uber/jaeger-client-go/config
-github.com/uber/jaeger-client-go/log
 github.com/uber/jaeger-client-go
-github.com/uber/jaeger-client-go/internal/baggage/remote
-github.com/uber/jaeger-client-go/internal/throttler/remote
-github.com/uber/jaeger-client-go/rpcmetrics
+github.com/uber/jaeger-client-go/config
 github.com/uber/jaeger-client-go/internal/baggage
 github.com/uber/jaeger-client-go/internal/spanlog
 github.com/uber/jaeger-client-go/internal/throttler
+github.com/uber/jaeger-client-go/log
 github.com/uber/jaeger-client-go/thrift
 github.com/uber/jaeger-client-go/thrift-gen/jaeger
 github.com/uber/jaeger-client-go/thrift-gen/sampling
 github.com/uber/jaeger-client-go/thrift-gen/zipkincore
 github.com/uber/jaeger-client-go/utils
-github.com/uber/jaeger-client-go/thrift-gen/baggage
+github.com/uber/jaeger-client-go/internal/baggage/remote
+github.com/uber/jaeger-client-go/internal/throttler/remote
+github.com/uber/jaeger-client-go/rpcmetrics
 github.com/uber/jaeger-client-go/thrift-gen/agent
+github.com/uber/jaeger-client-go/thrift-gen/baggage
 # github.com/uber/jaeger-lib v1.5.0
 github.com/uber/jaeger-lib/metrics
 # github.com/ugorji/go v1.1.1
@@ -168,8 +168,8 @@ github.com/vmihailenco/msgpack/codes
 # golang.org/x/crypto v0.0.0-20180910181607-0e37d006457b
 golang.org/x/crypto/ssh/terminal
 # golang.org/x/net v0.0.0-20180911220305-26e67e76b6c3
-golang.org/x/net/html
 golang.org/x/net/context
+golang.org/x/net/html
 golang.org/x/net/html/atom
 # golang.org/x/sync v0.0.0-20180314180146-1d60e4601c6f
 golang.org/x/sync/errgroup

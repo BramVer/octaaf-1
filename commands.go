@@ -19,7 +19,6 @@ import (
 	"github.com/olebedev/when/rules/common"
 	"github.com/olebedev/when/rules/en"
 	opentracing "github.com/opentracing/opentracing-go"
-	"github.com/opentracing/opentracing-go/ext"
 	log "github.com/sirupsen/logrus"
 	"github.com/tidwall/gjson"
 )
@@ -256,15 +255,18 @@ func sendImage(message *OctaafMessage) error {
 		}
 
 		fetchSpan := span.Tracer().StartSpan(
-			"fetch from google",
+			"fetch query from google",
 			opentracing.ChildOf(span.Context()),
 		)
-		defer fetchSpan.Finish()
 
 		images, err = scrapers.GetImages(message.CommandArguments(), message.Command() == "img_sfw")
 		if err != nil {
+			fetchSpan.SetTag("error", err)
+			fetchSpan.Finish()
 			return reply(message, "Something went wrong!")
 		}
+
+		fetchSpan.Finish()
 
 		Cache.Set(&cache.Item{
 			Key:        key,
@@ -291,10 +293,9 @@ func sendImage(message *OctaafMessage) error {
 	for attempt, url := range images {
 
 		imgSpan := span.Tracer().StartSpan(
-			"Image Download",
+			fmt.Sprintf("Download attempt %v", attempt),
 			opentracing.ChildOf(span.Context()),
 		)
-		defer imgSpan.Finish()
 
 		imgSpan.SetTag("url", url)
 		imgSpan.SetTag("attempt", attempt)
@@ -303,6 +304,7 @@ func sendImage(message *OctaafMessage) error {
 
 		if err != nil {
 			imgSpan.SetTag("error", err)
+			imgSpan.Finish()
 			continue
 		}
 
@@ -311,8 +313,8 @@ func sendImage(message *OctaafMessage) error {
 		img, err := ioutil.ReadAll(res.Body)
 
 		if err != nil {
-			ext.Error.Set(imgSpan, true)
 			imgSpan.SetTag("error", err)
+			imgSpan.Finish()
 			log.Errorf("Unable to load image %v; error: %v", url, err)
 			continue
 		}
@@ -320,9 +322,11 @@ func sendImage(message *OctaafMessage) error {
 		err = reply(message, img)
 
 		if err == nil {
+			imgSpan.Finish()
 			return nil
 		}
 		imgSpan.SetTag("error", err)
+		imgSpan.Finish()
 	}
 
 	return reply(message, "I did not find images for the query: `"+message.CommandArguments()+"`")
