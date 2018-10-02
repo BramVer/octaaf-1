@@ -25,18 +25,29 @@ import (
 
 func changelog(message *OctaafMessage) error {
 	if settings.Version == "" {
-		return reply(message, "Current version not found, check the changelog here: "+GitUri+"/tags")
+		return message.Reply("Current version not found, check the changelog here: " + GitUri + "/tags")
 	}
 
-	return reply(message, fmt.Sprintf("%v/tags/%v", GitUri, settings.Version))
+	return message.Reply(fmt.Sprintf("%v/tags/%v", GitUri, settings.Version))
 }
 
 func all(message *OctaafMessage) error {
+	userIDSpan := message.Span.Tracer().StartSpan(
+		"Fetch user ids from redis",
+		opentracing.ChildOf(message.Span.Context()),
+	)
 	members := Redis.SMembers(fmt.Sprintf("members_%v", message.Chat.ID)).Val()
 
+	userIDSpan.Finish()
+
 	if len(members) == 0 {
-		return reply(message, "I'm afraid I can't do that.")
+		return message.Reply("I'm afraid I can't do that.")
 	}
+
+	usernamesSpan := message.Span.Tracer().StartSpan(
+		"Load usernames",
+		opentracing.ChildOf(message.Span.Context()),
+	)
 
 	// used to load the usernames in goroutines
 	var wg sync.WaitGroup
@@ -60,7 +71,8 @@ func all(message *OctaafMessage) error {
 	}
 
 	wg.Wait()
-	return reply(message, MDEscape(fmt.Sprintf("%v %v", response, message.CommandArguments())))
+	usernamesSpan.Finish()
+	return message.Reply(MDEscape(fmt.Sprintf("%v %v", response, message.CommandArguments())))
 }
 
 func remind(message *OctaafMessage) error {
@@ -71,13 +83,15 @@ func remind(message *OctaafMessage) error {
 	r, err := w.Parse(message.CommandArguments(), time.Now())
 
 	if err != nil {
-		log.Error("Reminder parser error: ", err)
-		return reply(message, "Unable to parse")
+		log.Errorf("Reminder parser error: %v", err)
+		message.Span.SetTag("error", err)
+		return message.Reply("Unable to parse")
 	}
 
 	if r == nil {
 		log.Error("No reminder found for message: ", message.CommandArguments())
-		return reply(message, "No reminder found")
+		message.Span.SetTag("error", "No reminder found")
+		return message.Reply("No reminder found")
 	}
 
 	reminder := models.Reminder{
@@ -153,7 +167,7 @@ func m8Ball(message *OctaafMessage) error {
 
 func sendBodegem(message *OctaafMessage) error {
 	span := message.Span.Tracer().StartSpan(
-		"/bodegem",
+		"Fetch Bodegem Map",
 		opentracing.ChildOf(message.Span.Context()),
 	)
 	msg := tgbotapi.NewLocation(message.Chat.ID, 50.8614773, 4.211304)
@@ -167,7 +181,7 @@ func where(message *OctaafMessage) error {
 	argument := strings.Replace(message.CommandArguments(), " ", "+", -1)
 
 	span := message.Span.Tracer().StartSpan(
-		"/where",
+		"Fetch location",
 		opentracing.ChildOf(message.Span.Context()),
 	)
 	location, found := scrapers.GetLocation(argument, settings.Google.ApiKey)
