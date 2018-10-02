@@ -58,7 +58,15 @@ func handle(m *tgbotapi.Message) {
 
 	go kaliHandler(message)
 
-	if message.IsCommand() {
+	isReporter := (message.From.ID == settings.Telegram.ReporterID)
+	allowed := true
+	if isReporter {
+		allowed = message.MessageID%2 == 0
+	}
+
+	if message.IsCommand() && !allowed {
+		message.Reply("You have been rate limited for spreading lies.")
+	} else if message.IsCommand() {
 		message.Span.SetOperationName(fmt.Sprintf("Command /%v", message.Command()))
 		message.Span.SetTag("telegram-command", message.Command())
 		message.Span.SetTag("telegram-command-arguments", message.CommandArguments())
@@ -110,7 +118,6 @@ func handle(m *tgbotapi.Message) {
 			care(message)
 		}
 	}
-
 	if message.MessageID%100000 == 0 {
 		msg := tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf("💯💯💯💯 YOU HAVE MESSAGE %v 💯💯💯💯", message.MessageID))
 		msg.ReplyToMessageID = message.MessageID
