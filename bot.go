@@ -117,6 +117,13 @@ func handle(m *tgbotapi.Message) {
 		case "care":
 			care(message)
 		}
+
+		if message.From.ID == settings.Telegram.ModeratorID {
+			switch message.Command() {
+			case "limit":
+				message.Reply("Not implemented yet.")
+			}
+		}
 	}
 	if message.MessageID%100000 == 0 {
 		msg := tgbotapi.NewMessage(message.Chat.ID, fmt.Sprintf("💯💯💯💯 YOU HAVE MESSAGE %v 💯💯💯💯", message.MessageID))
