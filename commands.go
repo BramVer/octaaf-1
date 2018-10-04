@@ -572,5 +572,5 @@ func reported(message *OctaafMessage) error {
 func care(message *OctaafMessage) error {
 	msg := "¯\\_(ツ)_/¯"
 
-	return reply(message, MDEscape(msg))
+	return message.Reply(MDEscape(msg))
 }
